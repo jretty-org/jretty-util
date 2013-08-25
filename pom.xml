@@ -17,7 +17,7 @@
 	<groupId>org.zollty</groupId>
 	<artifactId>zollty-util</artifactId>
 	<packaging>jar</packaging>
-	<version>1.3</version>
+	<version>1.1</version>
 	<name>zollty-util</name>
 	<url>https://github.com/zollty-org/zollty-util</url>
 	<description>A simple Java util's library.</description>
@@ -32,9 +32,9 @@
 		<dependency>
 			<groupId>org.zollty</groupId>
 			<artifactId>zollty-log</artifactId>
-			<version>1.2</version>
+			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/zollty-log-1.2.jar</systemPath>
+			<systemPath>${project.basedir}/lib/zollty-log-1.0.jar</systemPath>
 		</dependency>
 		<!-- Servlet -->
 		<dependency>
@@ -86,6 +86,7 @@
 					<optimize>true</optimize>
 				</configuration>
 			</plugin>
+			
 			<!-- jar-plugin config -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -112,7 +113,8 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- javadoc-plugin config -->
+
+			<!-- 生成javadoc-绑定到install阶段 -->
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.8.1</version>
@@ -128,17 +130,14 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 打包源代码 -->
+			
+			<!-- 打包源代码-绑定到install阶段 -->
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.2.1</version>
-				<configuration>
-					<attach>true</attach>
-				</configuration>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
-						<phase>verify</phase>
 						<goals>
 							<goal>jar-no-fork</goal>
 						</goals>
@@ -151,6 +150,14 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
