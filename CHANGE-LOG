@@ -1,0 +1,8 @@
+Zollty Log Library CHANGELOG
+===============================
+http://www.zollty.org/zollty-util
+
+
+Changes in version 1.0 (2013-05-30)
+-------------------------------------
+Create this project. It's a simple Java util's library, shared by almost all projects under zollty-org group.
