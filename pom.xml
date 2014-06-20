@@ -20,7 +20,7 @@
 	<version>1.3</version>
 	<name>zollty-util</name>
 	<url>https://github.com/zollty-org/zollty-util</url>
-	<description> A simple Java util's library.</description>
+	<description>A simple Java util's library.</description>
 	
 	
 	<!-- CONST -->
