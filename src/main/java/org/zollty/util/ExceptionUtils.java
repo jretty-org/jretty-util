@@ -36,6 +36,7 @@ public class ExceptionUtils {
     public static String getStackTraceStr(LineChecker linechecker, Throwable e) {
         return getStackTraceStr(linechecker, e, null);
     }
+    
 	
 	/**
 	 * 智能将StackTrace堆栈信息转换成字符串
@@ -53,6 +54,7 @@ public class ExceptionUtils {
             e.printStackTrace(out);
             out.flush();
         } catch (RuntimeException ex) {
+            throw new NestedRuntimeException(ex);
         } finally {
             out.close();
         }
@@ -100,12 +102,12 @@ public class ExceptionUtils {
                             errorMsg = null;
                         } else {
                             sb.append(errorMsg).append('\n');
-                            back = new String(errorMsg);
+                            back = errorMsg;
                             errorMsg = null;
                         }
                     } else {
                         sb.append(errorMsg).append('\n');
-                        back = new String(errorMsg);
+                        back = errorMsg;
                         errorMsg = null;
                     }
                 }
@@ -133,6 +135,7 @@ public class ExceptionUtils {
                 skip++;
             }
         } catch (Exception exp) {
+            throw new NestedRuntimeException(exp);
         }
         if (errorMsg != null) {
             sb.append(errorMsg);
@@ -202,24 +205,23 @@ public class ExceptionUtils {
      * @author zollty 2013-7-27
      */
     public static String errorMsgCut(String errorMsg, int maxLen) {
-        if (errorMsg == null)
+        if (errorMsg == null) {
             return null;
+        }
         int strLen = errorMsg.length();
-        if (strLen < 200 || strLen < maxLen)
-            return errorMsg; // 小于200的字符，不做处理
-
+        if (strLen < 200 || strLen < maxLen) { // 小于200的字符，不做处理
+            return errorMsg;
+        }
         int front = maxLen * 8 / 11;
-        errorMsg = new String(errorMsg.substring(0, front) + "......"
-                + errorMsg.substring(strLen - maxLen + front, strLen));
+        errorMsg = errorMsg.substring(0, front) + "......" + errorMsg.substring(strLen - maxLen + front, strLen);
         return errorMsg;
     }
 
-    
     public static interface SecureRun<T> {
         T run() throws Throwable;
     }
 
-    public static <T>T doInSecure(final SecureRun<T> runHook) throws NestedCheckedException {
+    public static <T> T doInSecure(final SecureRun<T> runHook) throws NestedCheckedException {
         try {
             return runHook.run();
         }

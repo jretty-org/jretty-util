@@ -39,6 +39,7 @@ public class ServletFileUpload {
 	private static final Logger LOG = LogFactory.getLogger(ServletFileUpload.class);
 	
 	public static final int MAX_POST_SIZE = 30720; // 30M
+	private static final String CHARSET = "UTF-8"; // Use UTF-8 encoding
 	
 	private HttpServletRequest request;
 	private String absoluteTargetDir;
@@ -83,7 +84,7 @@ public class ServletFileUpload {
 			String breakStr = ""; // 终止字符串
 			//String objRef = ""; // 对象引用
 			if (position != -1) { // 第一行不为空
-				breakStr = new String(buffer, 0, 28);
+				breakStr = new String(buffer, 0, 28, CHARSET);
 				//objRef = new String(buffer, 29, position);
 				if (LogFactory.isTraceEnabled()){
 				    LOG.trace("终止字符串：" + breakStr);
@@ -93,7 +94,7 @@ public class ServletFileUpload {
 			 // 读取第二行
 			position = inputStream.readLine(buffer, 0, buffer.length);
 			if (position != -1) {
-				String head = new String(buffer, 0, position);
+				String head = new String(buffer, 0, position, CHARSET);
 				if (LogFactory.isTraceEnabled())
 				    LOG.trace("头信息：" + head);
 				int fileNamePosition = 0;
@@ -125,7 +126,7 @@ public class ServletFileUpload {
 			position = inputStream.readLine(buffer, 0, buffer.length);
 			String type = "";
 			if (position != -1) {
-				type = new String(buffer, 0, position);
+				type = new String(buffer, 0, position, CHARSET);
 				if (LogFactory.isTraceEnabled())
 				    LOG.trace("文件类型：" + type);//Content-Type: application/x-compress
 				String mimeType = (String) type.subSequence(type.indexOf("Content-Type:") + 14, type.length());
@@ -143,7 +144,7 @@ public class ServletFileUpload {
 					tempbb = queue.poll(); // 出队
 					outputStream.write(tempbb.buffer, 0, tempbb.size);
 				}
-				isBreakStr = new String(buffer, 0, position);
+				isBreakStr = new String(buffer, 0, position, CHARSET);
 				if (isBreakStr.length() > 28
 						&& isBreakStr.substring(0, 28).equals(breakStr)) // 遇到分隔符则终止读取
 				{
@@ -221,20 +222,30 @@ public class ServletFileUpload {
 		this.absoluteTargetDir = absoluteTargetDir;
 	}
 
-	public String[] getInludeSuffix() {
-		return inludeSuffix;
-	}
+    public String[] getInludeSuffix() {
+        if (null != inludeSuffix) {
+            return inludeSuffix.clone();
+        }
+        return null;
+    }
 
 	public void setInludeSuffix(String inludeSuffix[]) {
-		this.inludeSuffix = inludeSuffix;
+	    if(inludeSuffix!=null){
+	        this.inludeSuffix = inludeSuffix.clone();
+	    }
 	}
 
-	public String[] getIncludeMimeType() {
-		return includeMimeType;
-	}
+    public String[] getIncludeMimeType() {
+        if (null != includeMimeType) {
+            return includeMimeType.clone();
+        }
+        return null;
+    }
 
 	public void setIncludeMimeType(String includeMimeType[]) {
-		this.includeMimeType = includeMimeType;
+	    if(includeMimeType!=null){
+	        this.includeMimeType = includeMimeType.clone();
+        }
 	}
 
 	public String getReName() {
@@ -253,12 +264,12 @@ public class ServletFileUpload {
         this.allowCover = allowCover;
     }
 
-    private class ByteBufferInfo {
+    private static class ByteBufferInfo {
 		public byte[] buffer;
 		public int size;
 
 		public ByteBufferInfo(byte[] buffer, int size) {
-			this.buffer = (byte[]) (buffer.clone());
+			this.buffer = buffer.clone();
 			this.size = size;
 		}
 	}

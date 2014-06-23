@@ -62,9 +62,12 @@ public class ParamPart extends Part {
    * 
    * @return value of parameter as raw bytes
    */
-  public byte[] getValue() {
-    return value;
-  }
+    public byte[] getValue() {
+        if (null != value) {
+            return value.clone();
+        }
+        return null;
+    }
   
   /** 
    * Returns the value of the parameter in as a string (using the

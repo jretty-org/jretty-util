@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -48,7 +49,8 @@ public class FileUtils {
         }
         return file.delete();
     }
-	
+
+    
 	/**
 	 * 复制整个文件夹内容
 	 * @param oldPath 原文件路径 如：c:/fqf
@@ -56,18 +58,31 @@ public class FileUtils {
 	 * @return boolean
 	 */
     public static void copyFolder(String oldPath, String newPath) {
-        File a = new File(oldPath);
-        String[] file = a.list();
-        if (null == file) {
-            LOG.debug("#copyFolder() - file is null. [oldPath={}]", oldPath);
+        File oldFile = new File(oldPath);
+        String[] files = oldFile.list();
+        if (null == files) {
+            if (LOG.isInfoEnabled()) {
+                LOG.error("#copyFolder() - file is null. [oldPath={}]", oldPath);
+            }
             return;
         }
-        (new File(newPath)).mkdirs(); // 如果文件夹不存在 则建立新文件夹
-
+        File nfile = new File(newPath);
+        if (!nfile.exists() && (new File(newPath)).mkdirs()) { // 如果文件夹不存在 则建立新文件夹
+            if (LOG.isInfoEnabled()) {
+                LOG.error("#copyFolder() - can't mk dir - [newPath={}]", newPath);
+            }
+            return;
+        }
+        else if (!nfile.isDirectory()) {
+            if (LOG.isInfoEnabled()) {
+                LOG.error("#copyFolder() - newPath is not a directory - [newPath={}]", newPath);
+            }
+            return;
+        }
         File sourceFile;
         String fileName;
-        for (int i = 0; i < file.length; i++) {
-            fileName = file[i];
+        for (int i = 0; i < files.length; i++) {
+            fileName = files[i];
             sourceFile = new File(oldPath + SEPARATOR + fileName);
             if (sourceFile.isFile()) {
                 try {
@@ -130,7 +145,10 @@ public class FileUtils {
     /**
      * 按文件修改日期降序排列【最新的排在最上面】
      */
-    static public class FileModifiedTimeComparator implements Comparator<File> {
+    static public class FileModifiedTimeComparator implements Comparator<File>, Serializable {
+
+        private static final long serialVersionUID = -5254632622733699354L;
+
         @Override
         public int compare(File f1, File f2) {
             if (f1.lastModified() < f2.lastModified()) { // 降序

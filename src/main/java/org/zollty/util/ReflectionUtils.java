@@ -768,7 +768,7 @@ public class ReflectionUtils {
 	/**
 	 * Pre-built FieldFilter that matches all non-static, non-final fields.
 	 */
-	public static FieldFilter COPYABLE_FIELDS = new FieldFilter() {
+	public static final FieldFilter COPYABLE_FIELDS = new FieldFilter() {
 
 		public boolean matches(Field field) {
 			return !(Modifier.isStatic(field.getModifiers()) || Modifier.isFinal(field.getModifiers()));
@@ -779,7 +779,7 @@ public class ReflectionUtils {
 	/**
 	 * Pre-built MethodFilter that matches all non-bridge methods.
 	 */
-	public static MethodFilter NON_BRIDGED_METHODS = new MethodFilter() {
+	public static final MethodFilter NON_BRIDGED_METHODS = new MethodFilter() {
 
 		public boolean matches(Method method) {
 			return !method.isBridge();
@@ -791,7 +791,7 @@ public class ReflectionUtils {
 	 * Pre-built MethodFilter that matches all non-bridge methods
 	 * which are not declared on <code>java.lang.Object</code>.
 	 */
-	public static MethodFilter USER_DECLARED_METHODS = new MethodFilter() {
+	public static final MethodFilter USER_DECLARED_METHODS = new MethodFilter() {
 
 		public boolean matches(Method method) {
 			return (!method.isBridge() && method.getDeclaringClass() != Object.class);

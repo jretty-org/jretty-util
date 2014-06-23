@@ -12,6 +12,7 @@
  */
 package org.zollty.tool;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -39,7 +40,7 @@ public class AlgorithmTools {
         }
         try {
             MessageDigest msgdig = MessageDigest.getInstance("MD5");
-            msgdig.update(str.getBytes());
+            msgdig.update(str.getBytes("UTF-8"));
             byte[] hash = msgdig.digest();
 
             StringBuilder hexString = new StringBuilder(33);
@@ -54,6 +55,9 @@ public class AlgorithmTools {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
+            throw new BasicRuntimeException(e.toString());
+        }
+        catch (UnsupportedEncodingException e) {
             throw new BasicRuntimeException(e.toString());
         }
     }

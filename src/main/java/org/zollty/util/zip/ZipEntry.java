@@ -240,10 +240,14 @@ class ZipEntry implements ZipConstants, Cloneable {
      * @see #getExtra()
      */
     public void setExtra(byte[] extra) {
-	if (extra != null && extra.length > 0xFFFF) {
-	    throw new IllegalArgumentException("invalid extra field length");
-	}
-	this.extra = extra;
+        if (extra != null) {
+            if (extra.length > 0xFFFF) {
+                throw new IllegalArgumentException("invalid extra field length");
+            }
+            this.extra = extra.clone();
+        } else {
+            this.extra = null;
+        }
     }
 
     /**
@@ -252,7 +256,10 @@ class ZipEntry implements ZipConstants, Cloneable {
      * @see #setExtra(byte[])
      */
     public byte[] getExtra() {
-	return extra;
+        if (extra != null) {
+            return extra.clone();
+        }
+        return null;
     }
 
     /**

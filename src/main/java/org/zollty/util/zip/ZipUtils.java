@@ -214,8 +214,9 @@ public class ZipUtils {
                 LOG.trace(name);
             File child = new File(directory + SEPARATOR + name);
             if (name.endsWith(SEPARATOR)) { // directory name.lastIndexOf("/") == (name.length() - 1)
-                if (!child.exists())
-                    child.mkdirs();
+                if (!child.exists() && !child.mkdirs()){
+                    throw new BasicRuntimeException("create directory \"" + child.getAbsolutePath() + "\" failed.");
+                }
                 continue;
             }
             FileOutputStream output = null;
@@ -249,11 +250,10 @@ public class ZipUtils {
             // 使用默认缓冲区大小创建新的输出流 ---512 byte
             gzipout = new GZIPOutputStream(out);
             // 写入此输出流
-            if (null != orgCharset) {
-                gzipout.write(str.getBytes(orgCharset));
-            } else {
-                gzipout.write(str.getBytes());
+            if (null == orgCharset) {
+                orgCharset = UTF_8;
             }
+            gzipout.write(str.getBytes(orgCharset));
         } catch (UnsupportedEncodingException e) {
             throw new BasicRuntimeException("compress failed! UnsupportedEncodingException - " + orgCharset);
         } catch (IOException e) {

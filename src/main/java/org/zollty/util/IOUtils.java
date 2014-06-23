@@ -49,6 +49,8 @@ public class IOUtils {
      * min read file buffer size. default 1k
      */
     private static final int MIN_BUFFER_SIZE = 1024;
+    
+    private static final String DEFAULT_CHARSET = "UTF-8";
 
     // /**
     // * default read file buffer size.
@@ -66,11 +68,10 @@ public class IOUtils {
 	 */
     public static BufferedWriter getBufferedWriter(String fileFullPath, boolean append, String charSet)
             throws IOException {
-        if (null != charSet) {
-            return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileFullPath, append), charSet));
-        } else {
-            return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileFullPath, append)));
+        if (StringUtils.isNullOrEmpty(charSet)) {
+            charSet = DEFAULT_CHARSET;
         }
+        return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileFullPath, append), charSet));
     }
 
 	/**
@@ -81,24 +82,22 @@ public class IOUtils {
 	 * @throws IOException
 	 */
     public final static BufferedReader getBufferedReader(String fileFullPath, String charSet) throws IOException {
-        if (null != charSet) {
-            return new BufferedReader(new InputStreamReader(new FileInputStream(fileFullPath), charSet));
-        } else {
-            return new BufferedReader(new InputStreamReader(new FileInputStream(fileFullPath)));
+        if (StringUtils.isNullOrEmpty(charSet)) {
+            charSet = DEFAULT_CHARSET;
         }
+        return new BufferedReader(new InputStreamReader(new FileInputStream(fileFullPath), charSet));
     }
 
 	/**
 	 * 将字符串转换为 InputStream 输入流
 	 * @param charSet 指定字符编码
-	 * @author zouty <br>2013-5-15
 	 */
     public final static InputStream getInputStreamFromString(String str, String charSet) {
         if (str == null) {
             throw new IllegalArgumentException("str==null");
         }
         if (StringUtils.isNullOrEmpty(charSet)) {
-            return new ByteArrayInputStream(str.getBytes());
+            charSet = DEFAULT_CHARSET;
         }
         try {
             return new ByteArrayInputStream(str.getBytes(charSet));
