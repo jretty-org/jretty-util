@@ -152,17 +152,7 @@ public class StringUtils {
 		return path2.substring(0,folderIndex+1);
 	}
 	
-	public static void main(String[] args) {
-	    String path = "opt/my/file.txt";
-	    String ext = getFilenameExtension(path);
-	    if(ext!=null){
-	        ext = "." + ext;
-	    }else {
-	        ext = "";
-	    }
-	    System.out.println(stripFilenameFromPath(path)+getFilenameWithoutExtension(path)+ext);
-    }
-	
+
 	/**
 	 * 从路径（url或者目录都可以）中获取文件名称（不带后缀，形如 abc）
 	 * Extract the filename without it's extension from the given path,
@@ -231,12 +221,13 @@ public class StringUtils {
 		}
 		return path2+FOLDER_SEPARATOR+relativePath2;
 	}
+
 	
 	private static final String REPLACE_LABEL = "{}";
 	/**
 	 * 用objs[]的值去替换字符串s中的{}符号
 	 */
-	public static String replaceParams(String s, Object[] objs) {
+	public static String replaceParams(String s, Object... objs) {
 		if(s==null) return s;
 		if(objs == null || objs.length == 0)
 			return s;
@@ -272,7 +263,6 @@ public class StringUtils {
 	
 	/**
 	 * 转换html里面的5个特殊字符：<code>&, <, >, ', and "</code>,
-	 * @author zollty
 	 */
 	public static String simpleHtmlEscape(String str) {
 		if (str == null)
