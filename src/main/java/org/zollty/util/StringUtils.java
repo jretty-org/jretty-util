@@ -103,6 +103,22 @@ public class StringUtils {
 		return Charset.defaultCharset().displayName();
 	}
 	
+	
+	/**
+	 * 重新定义了String.getBytes()。默认用UTF-8编码，以便去除与平台的相关性。
+	 * 且将CheckedException转换成了RuntimeException。
+	 * @param str 原字符串
+	 * @return str.getBytes(UTF_8)的结果
+	 */
+	public static byte[] getBytes(String str) {
+	    try {
+            return str.getBytes(UTF_8);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new NestedRuntimeException(e);
+        }
+	}
+	
 	/**
 	 * 字符串编码转换
 	 * @param newCharset 新编码，例如UTF-8
