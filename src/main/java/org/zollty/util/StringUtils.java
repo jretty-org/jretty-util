@@ -22,16 +22,6 @@ import java.nio.charset.Charset;
  */
 public class StringUtils {
 	
-	/** 通常用于网络数据传输的默认编码 range 0000-00FF (0-255)  */
-	public static final String ISO_8859_1 = "ISO-8859-1";
-	public static final String UTF_8 = "UTF-8";
-	public static final String GBK = "GBK";
-	
-	public static final String FOLDER_SEPARATOR = "/";
-	public static final String WINDOWS_FOLDER_SEPARATOR = "\\";
-	public static final char EXTENSION_SEPARATOR = '.';
-	
-
 	/**
 	 * Checks if a String is null or empty ("").
 	 */
@@ -95,6 +85,19 @@ public class StringUtils {
     	return str==null?"":str;
     }
 	
+    public static String decideCharSet(String charSet) {
+        if (StringUtils.isNullOrEmpty(charSet)) {
+            return Const.DEFAULT_CHARSET;
+        }
+        return charSet;
+    }
+    
+    public static Charset toCharSet(String charSet) {
+        if (StringUtils.isNullOrEmpty(charSet)) {
+            return Charset.forName(Const.DEFAULT_CHARSET);
+        }
+        return Charset.forName(charSet);
+    }
 	
 	/**
 	 * 当前环境的默认编码(即file.encoding)
@@ -106,18 +109,37 @@ public class StringUtils {
 	
 	/**
 	 * 重新定义了String.getBytes()。默认用UTF-8编码，以便去除与平台的相关性。
+	 * <p>
 	 * 且将CheckedException转换成了RuntimeException。
+	 * 
 	 * @param str 原字符串
-	 * @return str.getBytes(UTF_8)的结果
+	 * @return str.getBytes("UTF-8")的结果
 	 */
 	public static byte[] getBytes(String str) {
 	    try {
-            return str.getBytes(UTF_8);
+            return str.getBytes(Const.UTF_8);
         }
         catch (UnsupportedEncodingException e) {
             throw new NestedRuntimeException(e);
         }
 	}
+	
+	/**
+     * String.getBytes()，将CheckedException转换成了RuntimeException。
+     * <p>
+     * 默认用UTF-8编码，以便去除与平台的相关性。
+     * 
+     * @param str 原字符串
+     * @return str.getBytes("UTF-8")的结果
+     */
+    public static byte[] getBytes(String str, String charSet) {
+        try {
+            return str.getBytes(decideCharSet(charSet));
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new NestedRuntimeException(e);
+        }
+    }
 	
 	/**
 	 * 字符串编码转换
@@ -127,8 +149,8 @@ public class StringUtils {
 	public static String changeEncode(String str, String newCharset){
 		if(str == null || str.length() ==0) return str;
 		try{
-			String iso = new String(str.getBytes(newCharset),ISO_8859_1);  //ISO-8859-1
-			return new String(iso.getBytes(ISO_8859_1),newCharset);
+			String iso = new String(str.getBytes(newCharset),Const.ISO_8859_1);  //ISO-8859-1
+			return new String(iso.getBytes(Const.ISO_8859_1),newCharset);
 		}catch( UnsupportedEncodingException e ){
 			throw new NestedRuntimeException(e);
 		}
@@ -144,9 +166,9 @@ public class StringUtils {
 	 */
 	public static String getFilenameFromPath(String path) {
 		if( null==path ) return null;
-		String path2 = path.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
+		String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
 		//path = path.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
-		int separatorIndex = path2.lastIndexOf(FOLDER_SEPARATOR);
+		int separatorIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
 		return (separatorIndex != -1 ? path2.substring(separatorIndex + 1) : path2);
 	}
 	
@@ -160,15 +182,16 @@ public class StringUtils {
 	 */
 	public static String stripFilenameFromPath(String path){
 		if( null==path ) return null;
-		String path2 = path.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
-		int folderIndex = path2.lastIndexOf(FOLDER_SEPARATOR);
+		String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+		int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
 		if (folderIndex == -1) {
 			return path2;
 		}
 		return path2.substring(0,folderIndex+1);
 	}
 	
-
+	private static final char EXTENSION_SEPARATOR = '.';
+	
 	/**
 	 * 从路径（url或者目录都可以）中获取文件名称（不带后缀，形如 abc）
 	 * Extract the filename without it's extension from the given path,
@@ -180,11 +203,11 @@ public class StringUtils {
 		if( null==path ) return null;
 		int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
 		if (extIndex == -1) {
-		    return path.substring(path.lastIndexOf(FOLDER_SEPARATOR)+1,path.length()); 
+		    return path.substring(path.lastIndexOf(Const.FOLDER_SEPARATOR)+1,path.length()); 
 			//return null;
 		}
-		String path2 = path.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
-		int folderIndex = path2.lastIndexOf(FOLDER_SEPARATOR);
+		String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+		int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
 		if (folderIndex > extIndex) {
 			//throw new RuntimeException("the path form is not correct!--"+path);
 			return null;
@@ -205,8 +228,8 @@ public class StringUtils {
 		if (extIndex == -1) {
 			return null;
 		}
-		String path2 = path.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
-		int folderIndex = path2.lastIndexOf(FOLDER_SEPARATOR);
+		String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+		int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
 		if (folderIndex > extIndex) {
 			return null;
 		}
@@ -222,20 +245,20 @@ public class StringUtils {
 	 * @return the full file path that results from applying the relative path
 	 */
 	public static String applyRelativePath(String path, String relativePath) {
-		String path2 = path.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
-		String relativePath2 = relativePath.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
+		String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+		String relativePath2 = relativePath.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
 		
-		if ( path2.endsWith(FOLDER_SEPARATOR) ) {
-			if ( relativePath2.startsWith(FOLDER_SEPARATOR) ) {
+		if ( path2.endsWith(Const.FOLDER_SEPARATOR) ) {
+			if ( relativePath2.startsWith(Const.FOLDER_SEPARATOR) ) {
 				return path2.substring(0, path2.length()-1)+relativePath2;
 			}
 			return path2+relativePath2;
 		}
 		
-		if ( relativePath2.startsWith(FOLDER_SEPARATOR) ) {
+		if ( relativePath2.startsWith(Const.FOLDER_SEPARATOR) ) {
 			return path2+relativePath2;
 		}
-		return path2+FOLDER_SEPARATOR+relativePath2;
+		return path2+Const.FOLDER_SEPARATOR+relativePath2;
 	}
 
 	

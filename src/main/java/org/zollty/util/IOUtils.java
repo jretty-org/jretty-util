@@ -50,8 +50,6 @@ public class IOUtils {
      */
     private static final int MIN_BUFFER_SIZE = 1024;
     
-    private static final String DEFAULT_CHARSET = "UTF-8";
-
     // /**
     // * default read file buffer size.
     // * default 8k
@@ -68,10 +66,7 @@ public class IOUtils {
 	 */
     public static BufferedWriter getBufferedWriter(String fileFullPath, boolean append, String charSet)
             throws IOException {
-        if (StringUtils.isNullOrEmpty(charSet)) {
-            charSet = DEFAULT_CHARSET;
-        }
-        return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileFullPath, append), charSet));
+        return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileFullPath, append), StringUtils.decideCharSet(charSet)));
     }
 
 	/**
@@ -82,10 +77,7 @@ public class IOUtils {
 	 * @throws IOException
 	 */
     public final static BufferedReader getBufferedReader(String fileFullPath, String charSet) throws IOException {
-        if (StringUtils.isNullOrEmpty(charSet)) {
-            charSet = DEFAULT_CHARSET;
-        }
-        return new BufferedReader(new InputStreamReader(new FileInputStream(fileFullPath), charSet));
+        return new BufferedReader(new InputStreamReader(new FileInputStream(fileFullPath), StringUtils.decideCharSet(charSet)));
     }
 
 	/**
@@ -96,11 +88,8 @@ public class IOUtils {
         if (str == null) {
             throw new IllegalArgumentException("str==null");
         }
-        if (StringUtils.isNullOrEmpty(charSet)) {
-            charSet = DEFAULT_CHARSET;
-        }
         try {
-            return new ByteArrayInputStream(str.getBytes(charSet));
+            return new ByteArrayInputStream(str.getBytes(StringUtils.decideCharSet(charSet)));
         } catch (UnsupportedEncodingException e) {
             throw new BasicRuntimeException("UnsupportedEncodingException[String.getBytes()] charSet=" + charSet);
         }

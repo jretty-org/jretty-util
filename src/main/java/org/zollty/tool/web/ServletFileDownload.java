@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.zollty.util.BasicRuntimeException;
+import org.zollty.util.Const;
 import org.zollty.util.IOUtils;
 import org.zollty.util.NestedRuntimeException;
 import org.zollty.util.StringUtils;
@@ -139,9 +140,9 @@ public class ServletFileDownload {
         String rtn;
         UserAgentParser uap = new UserAgentParser(request);
         if (uap.isMSIEBrowser()) {
-            rtn = "filename=" + URLEncoder.encode(fileName, StringUtils.UTF_8);
+            rtn = "filename=" + URLEncoder.encode(fileName, Const.UTF_8);
         } else {
-            rtn = "filename=" + new String(fileName.getBytes(StringUtils.UTF_8), StringUtils.ISO_8859_1);
+            rtn = "filename=" + new String(fileName.getBytes(Const.UTF_8), Const.ISO_8859_1);
         }
         // // Opera浏览器只能采用filename*
         // if (userAgent.indexOf("opera") != -1) {
