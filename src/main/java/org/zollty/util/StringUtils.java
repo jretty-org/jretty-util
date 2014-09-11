@@ -116,10 +116,13 @@ public class StringUtils {
 	 * @return str.getBytes("UTF-8")的结果
 	 */
 	public static byte[] getBytes(String str) {
-	    try {
-            return str.getBytes(Const.UTF_8);
+	    if (str == null) {
+            return null;
         }
-        catch (UnsupportedEncodingException e) {
+	    try {
+            return str.getBytes(Const.DEFAULT_CHARSET);
+        }
+        catch (final UnsupportedEncodingException e) {
             throw new NestedRuntimeException(e);
         }
 	}
@@ -132,11 +135,36 @@ public class StringUtils {
      * @param str 原字符串
      * @return str.getBytes("UTF-8")的结果
      */
-    public static byte[] getBytes(String str, String charSet) {
+    public static byte[] getBytes(final String str, final String charSet) {
+        if (str == null) {
+            return null;
+        }
         try {
             return str.getBytes(decideCharSet(charSet));
         }
-        catch (UnsupportedEncodingException e) {
+        catch (final UnsupportedEncodingException e) {
+            throw new NestedRuntimeException(e);
+        }
+    }
+    
+    public static String newString(final byte[] bytes) {
+        if (bytes == null) {
+            return null;
+        }
+        try {
+            return new String(bytes, Const.DEFAULT_CHARSET);
+        } catch (final UnsupportedEncodingException e) {
+            throw new NestedRuntimeException(e);
+        }
+    }
+    
+    public static String newString(final byte[] bytes, final String charSet) {
+        if (bytes == null) {
+            return null;
+        }
+        try {
+            return new String(bytes, decideCharSet(charSet));
+        } catch (final UnsupportedEncodingException e) {
             throw new NestedRuntimeException(e);
         }
     }
@@ -146,12 +174,12 @@ public class StringUtils {
 	 * @param newCharset 新编码，例如UTF-8
 	 * @author zouty <br>2013-6-6
 	 */
-	public static String changeEncode(String str, String newCharset){
+	public static String changeEncode(final String str, final String newCharset){
 		if(str == null || str.length() ==0) return str;
 		try{
 			String iso = new String(str.getBytes(newCharset),Const.ISO_8859_1);  //ISO-8859-1
 			return new String(iso.getBytes(Const.ISO_8859_1),newCharset);
-		}catch( UnsupportedEncodingException e ){
+		}catch(final UnsupportedEncodingException e ){
 			throw new NestedRuntimeException(e);
 		}
 	}
