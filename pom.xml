@@ -43,6 +43,7 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+		
 		<!-- For Test -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -53,8 +54,9 @@
 		<dependency>
 			<groupId>org.zollty</groupId>
 			<artifactId>zollty-tesper</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-			<scope>test</scope>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/zollty-tesper-1.0.jar</systemPath>
 		</dependency>
 	</dependencies>
 
