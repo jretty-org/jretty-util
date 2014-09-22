@@ -1,5 +1,4 @@
 /*
- * @(#)ZolltyUtils.java
  * Copyright (C) 2013-2014 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -15,9 +14,9 @@ package org.zollty.util;
 
 
 /**
- * @author zollty
- * @since 2013-6-7
+ * @deprecated it will be removed in later version.
  */
+@Deprecated
 public class ZolltyUtils {
     
     public static class ArrayUtil {
