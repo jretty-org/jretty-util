@@ -288,7 +288,7 @@ public class StringUtils {
 		}
 		return path2+Const.FOLDER_SEPARATOR+relativePath2;
 	}
-
+	
 	
 	private static final String REPLACE_LABEL = "{}";
 	/**
@@ -298,8 +298,14 @@ public class StringUtils {
 		if(s==null) return s;
 		if(objs == null || objs.length == 0)
 			return s;
-		if(s.indexOf(REPLACE_LABEL) == -1)
-			return s;
+		if(s.indexOf(REPLACE_LABEL) == -1){
+		    StringBuilder result = new StringBuilder();
+		    result.append(s);
+		    for(Object obj: objs){
+		        result.append(" ").append(obj);
+		    }
+		    return result.toString();
+		}
 		
 		String[] stra = new String[objs.length];
 		int len=s.length();
@@ -325,6 +331,11 @@ public class StringUtils {
 			index++;
 		}
 		result.append(s.substring(cursor, s.length()));
+        if (index < objs.length) {
+            for (int i = index; i < objs.length; i++) {
+                result.append(" ").append(objs[i]);
+            }
+        }
 		return result.toString();
 	}
 	
