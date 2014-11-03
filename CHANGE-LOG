@@ -6,3 +6,15 @@ http://www.zollty.org/zollty-util
 Changes in version 1.0 (2013-05-30)
 -------------------------------------
 Create this project. It's a simple Java util's library, shared by almost all projects under zollty-org group.
+
+Changes in version 1.7 (2014-09-22)
+-------------------------------------
+Add org.zollty.util.match.* for Path (or URL) Matching. 
+ZolltyPathMatcher is a very powerful tool for path matching, is better than the well-known AntPathMatcher.
+See its test case class "org.zollty.util.match.ZolltyPathMatcherTest" for usage.
+
+Changes in version 1.8 (2014-11-03)
+-------------------------------------
+Add org.zollty.tool.file.* for Text File Processing.
+
+

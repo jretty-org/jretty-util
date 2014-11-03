@@ -17,7 +17,7 @@
 	<groupId>org.zollty</groupId>
 	<artifactId>zollty-util</artifactId>
 	<packaging>jar</packaging>
-	<version>1.7</version>
+	<version>1.8</version>
 	<name>zollty-util</name>
 	<url>https://github.com/zollty-org/zollty-util</url>
 	<description>A simple Java util's library.</description>
