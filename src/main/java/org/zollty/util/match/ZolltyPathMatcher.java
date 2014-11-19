@@ -60,9 +60,6 @@ public class ZolltyPathMatcher implements PathMatcher {
             tempMfList.add(new MatchFlag(ma));
         }
         
-        if(LogFactory.isTraceEnabled()){
-            LOG.trace("Pattern={}, Src={}", pattern, src);
-        }
         if (!this.isMatch(src, tempMfList, tempValueList)) {
             if(LogFactory.isTraceEnabled()){
                 LOG.trace("Matched Failure. Pattern={}, Src={}", pattern, src);
