@@ -16,6 +16,7 @@ private static Logger LOG = LogFactory.getLogger();
     private static List<TestData> forTest = new ArrayList<TestData>();
     static {
         forTest.add(new TestData("/mlf4j/*/*/*", "/mlf4j/vf/logConfig/uu", "[vf, logConfig, uu]"));
+        forTest.add(new TestData("/a*c/**/b", "/a/c/CC-TD/b", "[/, CC-TD]"));
         forTest.add(new TestData("*/ab/**/*", "P/ab/CC-TD/S", "[P, CC-TD, S]"));
         forTest.add(new TestData("**/ab/**/ffd/*/dff*ddf/*S", "s/s/ab/g/g/ffd/m/dffrddf/sS", "[s/s, g/g, m, r, s]"));
         forTest.add(new TestData("**/ab/**/ffd/*/dff*ddf/*S", "/ab/g/g/ffd/m/dffrddf/sS", "[, g/g, m, r, s]"));
