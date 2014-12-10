@@ -29,7 +29,6 @@ import org.zollty.log.LogFactory;
 import org.zollty.log.Logger;
 import org.zollty.util.IOUtils;
 import org.zollty.util.StringUtils;
-import org.zollty.util.match.PathMatcher;
 import org.zollty.util.match.ZolltyPathMatcher;
 
 /**
@@ -176,7 +175,7 @@ public class FileTools {
         // 获取源文件夹当前下的文件或目录
         File[] file = (new File(sourceDir)).listFiles();
 
-        List<PathMatcher> discardMather = new ArrayList<PathMatcher>();
+        List<ZolltyPathMatcher> discardMather = new ArrayList<ZolltyPathMatcher>();
         if (patterns != null) {
             for (String pattern : patterns) {
                 discardMather.add(new ZolltyPathMatcher(pattern));
@@ -210,9 +209,9 @@ public class FileTools {
         }
     }
 
-    private static boolean isDiscard(String path, List<PathMatcher> matcher) {
+    private static boolean isDiscard(String path, List<ZolltyPathMatcher> matcher) {
         boolean ret = false;
-        for (PathMatcher pm : matcher) {
+        for (ZolltyPathMatcher pm : matcher) {
             if (pm.isMatch(path)) {
                 ret = true;
             }
@@ -220,9 +219,9 @@ public class FileTools {
         return ret;
     }
 
-    private static boolean isInclude(String path, List<PathMatcher> matcher) {
+    private static boolean isInclude(String path, List<ZolltyPathMatcher> matcher) {
         boolean ret = true;
-        for (PathMatcher pm : matcher) {
+        for (ZolltyPathMatcher pm : matcher) {
             if (pm.isMatch(path)) {
                 ret = false;
             }

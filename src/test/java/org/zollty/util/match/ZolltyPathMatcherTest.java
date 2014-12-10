@@ -14,9 +14,13 @@ private static Logger LOG = LogFactory.getLogger();
     
     //  测试用例
     private static List<TestData> forTest = new ArrayList<TestData>();
+    
+    private static List<String> p1 = new ArrayList<String>();
+    private static List<String> p2 = new ArrayList<String>();
+    private static List<Boolean> ret = new ArrayList<Boolean>();
+    
     static {
         forTest.add(new TestData("/mlf4j/*/*/*", "/mlf4j/vf/logConfig/uu", "[vf, logConfig, uu]"));
-        forTest.add(new TestData("/a*c/**/b", "/a/c/CC-TD/b", "[/, CC-TD]"));
         forTest.add(new TestData("*/ab/**/*", "P/ab/CC-TD/S", "[P, CC-TD, S]"));
         forTest.add(new TestData("**/ab/**/ffd/*/dff*ddf/*S", "s/s/ab/g/g/ffd/m/dffrddf/sS", "[s/s, g/g, m, r, s]"));
         forTest.add(new TestData("**/ab/**/ffd/*/dff*ddf/*S", "/ab/g/g/ffd/m/dffrddf/sS", "[, g/g, m, r, s]"));
@@ -40,6 +44,22 @@ private static Logger LOG = LogFactory.getLogger();
         // 15
         
         forTest.add(new TestData("**/ab/**/ccc", "lov/cx/ab/f/h/ccc", "[lov/cx, f/h]"));
+        
+        forTest.add(new TestData("/a*c/**/b", "/a/c/CC-TD/b", "null"));
+        String p1 = "/a/bc/k/k/b";
+        forTest.add(new TestData("/a**c/*/*/b", p1, "[/b, k, k]"));
+        forTest.add(new TestData("/a/*bc/**/b", p1, "[, k/k]"));
+        
+        
+        // 以下是测试 ZolltyPathMatcher.isTwoPatternSimilar() 方法
+        addPattern("/ac/**/b", "/ac/*/*/b", true);
+        addPattern("/a*c/*/*/b", "/ac/*/*/b", true);
+        addPattern("/ab/**/f/*/c/", "**/ab/**/f/*/c/**", true); // 例如 /ab/a/f/CC/f/M/c/
+        
+        // 兼容两根斜杠的情况
+        addPattern("/a*c/*/*/b", "/abc/**/b", true);
+        addPattern("/a*c/*/*/*/b", "/abc/**/b", false);
+        
     }
     
     @Test
@@ -50,6 +70,9 @@ private static Logger LOG = LogFactory.getLogger();
         for(int i=0; i<forTest.size(); i++) {
             testcase = forTest.get(i);
             result = match(testcase.pattern, testcase.src);
+            if(result==null){
+                result = "null";
+            }
             if(testcase.assume.equals(result)){
                 LOG.info((i+1)+". Success. pattern="+testcase.pattern+", src="+testcase.src+", assume="+testcase.assume);
             } else {
@@ -80,6 +103,22 @@ private static Logger LOG = LogFactory.getLogger();
             this.src = src;
             this.assume = assume;
         }
+    }
+    
+    
+    private static void addPattern(String pattern1, String pattern2, boolean result){
+        p1.add(pattern1);
+        p2.add(pattern2);
+        ret.add(result);
+    }
+    
+    @Test
+    public void testIsTwoPatternSimilar(){
+        
+        for(int i=0; i<p1.size(); i++){
+            Assert.assertEquals(p1.get(i)+" is a duplicate of "+p2.get(i), ret.get(i), ZolltyPathMatcher.isTwoPatternSimilar(p1.get(i), p2.get(i)));
+        }
+        
     }
 
 }

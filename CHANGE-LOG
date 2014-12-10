@@ -17,4 +17,6 @@ Changes in version 1.8 (2014-11-03)
 -------------------------------------
 Add org.zollty.tool.file.* for Text File Processing.
 
-
+Changes in version 1.9 (2014-12-10)
+-------------------------------------
+ZolltyPathMatcher optimization. Add "isTwoPatternSimilar" method to check wether two pattern are similar or equal.
