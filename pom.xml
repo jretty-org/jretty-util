@@ -120,7 +120,7 @@
             <execution>
               <phase>package</phase>
               <goals>
-                <goal>aggregate</goal>
+                <goal>jar</goal><!-- aggregate -->
               </goals>
               <configuration>
                 <excludes>
