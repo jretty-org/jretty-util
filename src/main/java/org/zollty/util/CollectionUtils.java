@@ -12,6 +12,9 @@
  */
 package org.zollty.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 集合工具类
  * 
@@ -56,6 +59,153 @@ public class CollectionUtils {
         System.arraycopy(array, 0, newArr, 0, array.length);
         newArr[array.length] = cchar;
         return newArr;
+    }
+    
+    
+    //==============================================================
+    //===============Change Array Element Type
+    
+    public static Integer[] changeType(int[] array) {
+        if (array == null) {
+            return null;
+        }
+        Integer[] arr = new Integer[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+    
+    public static int[] changeType(Integer[] array) {
+        if (array == null) {
+            return null;
+        }
+        int[] arr = new int[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+    
+    public static Long[] changeType(long[] array) {
+        if (array == null) {
+            return null;
+        }
+        Long[] arr = new Long[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+    
+    public static long[] changeType(Long[] array) {
+        if (array == null) {
+            return null;
+        }
+        long[] arr = new long[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+    
+    public static Double[] changeType(double[] array) {
+        if (array == null) {
+            return null;
+        }
+        Double[] arr = new Double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+    
+    public static double[] changeType(Double[] array) {
+        if (array == null) {
+            return null;
+        }
+        double[] arr = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+    
+    public static Byte[] changeType(byte[] array) {
+        if (array == null) {
+            return null;
+        }
+        Byte[] arr = new Byte[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+    
+    public static byte[] changeType(Byte[] array) {
+        if (array == null) {
+            return null;
+        }
+        byte[] arr = new byte[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+    
+    public static Boolean[] changeType(boolean[] array) {
+        if (array == null) {
+            return null;
+        }
+        Boolean[] arr = new Boolean[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+    
+    public static boolean[] changeType(Boolean[] array) {
+        if (array == null) {
+            return null;
+        }
+        boolean[] arr = new boolean[array.length];
+        for (int i = 0; i < array.length; i++) {
+            arr[i] = array[i];
+        }
+        return arr;
+    }
+    
+    
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////Check Array Element Duplication
+    
+    /**
+     * Check Array Element Duplication. <p>
+     * If it's main type element array, use like this <p>
+     * <code> checkDuplication( changeType(array) ) </code>
+     * @return return -1 if no duplication
+     */
+    public static int checkDuplication(Object[] array) {
+        return checkDuplication(Arrays.asList(array));
+    }
+    
+    /**
+     * Check List Element Duplication
+     * @return return -1 if no duplication
+     */
+    public static int checkDuplication(List<?> array) {
+        int size = array.size();
+        if(array!=null && size>0)
+        {
+            for(int i=0;i<size;i++){
+                for(int j=i+1;j<size;j++){
+                    if( ObjectUtils.safeEqual(array.get(j), array.get(i)) ) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
     }
 
 }

@@ -183,8 +183,10 @@ public class FileTools {
         }
 
         for (int i = 0; i < file.length; i++) {
-            if (file[i].isFile() && isDiscard ? isInclude(file[i].getAbsolutePath(), discardMather) : isDiscard(
-                    file[i].getAbsolutePath(), discardMather)) {
+            // isDiscard = true 时为“排除模式”，即被匹配到的path，不会被拷贝。
+            if (file[i].isFile() && 
+                    isDiscard ? !isMatched(file[i].getAbsolutePath(), discardMather) : isMatched(
+                    file[i].getAbsolutePath(), discardMather) ) {
                 // 源文件
                 File sourceFile = file[i];
                 // 目标文件
@@ -198,8 +200,8 @@ public class FileTools {
                 if (isLog)
                     LOG.debug(sourceFile.getAbsolutePath());
             }
-            else if (file[i].isDirectory() && isDiscard ? isInclude(file[i].getAbsolutePath() + "/", discardMather)
-                    : isDiscard(file[i].getAbsolutePath() + "/", discardMather)) {
+            else if (file[i].isDirectory() && isDiscard ? !isMatched(file[i].getAbsolutePath() + "/", discardMather)
+                    : isMatched(file[i].getAbsolutePath() + "/", discardMather)) {
                 // 准备复制的源文件夹
                 String dir1 = sourceDir + "/" + file[i].getName();
                 // 准备复制的目标文件夹
@@ -208,25 +210,208 @@ public class FileTools {
             }
         }
     }
-
-    private static boolean isDiscard(String path, List<ZolltyPathMatcher> matcher) {
-        boolean ret = false;
-        for (ZolltyPathMatcher pm : matcher) {
-            if (pm.isMatch(path)) {
-                ret = true;
+    
+    public static void searchAllFileOrDir(List<String> result, String rootDir, String[] patterns){
+        
+        File rootFile = new File(rootDir);
+        
+        if (!rootFile.isDirectory()) {
+            return;
+        }
+        
+        List<ZolltyPathMatcher> mather = new ArrayList<ZolltyPathMatcher>();
+        if (patterns != null) {
+            for (String pattern : patterns) {
+                mather.add(new ZolltyPathMatcher(pattern));
             }
         }
-        return ret;
+        
+        searchAllFileOrDir(result, rootDir, mather);
     }
-
-    private static boolean isInclude(String path, List<ZolltyPathMatcher> matcher) {
-        boolean ret = true;
-        for (ZolltyPathMatcher pm : matcher) {
-            if (pm.isMatch(path)) {
-                ret = false;
+    
+    
+    public static void searchAllFileOrDir(List<String> result, String rootDir, String targetFileOrDirName) {
+        
+        File rootFile = new File(rootDir);
+        
+        if (!rootFile.isDirectory()) {
+            return;
+        }
+        
+        if(rootFile.getName().equalsIgnoreCase(targetFileOrDirName)) {
+            result.add(rootFile.getAbsolutePath());
+        }
+        
+        // 获取源文件夹当前下的文件或目录
+        File[] file = rootFile.listFiles();
+        if(file.length==0) {
+            return;
+        }
+        
+        List<File> tmpDirFile = new ArrayList<File>();
+        for (int i = 0; i < file.length; i++) {
+            if (file[i].isDirectory() ){
+                tmpDirFile.add(file[i]);
+            } else if(file[i].getName().equalsIgnoreCase(targetFileOrDirName)) {
+                result.add(file[i].getAbsolutePath());
             }
         }
-        return ret;
+        
+        for (int i = 0; i < tmpDirFile.size(); i++) {
+            String newRootDir = rootDir + "/" + tmpDirFile.get(i).getName();
+            searchAllFileOrDir(result, newRootDir, targetFileOrDirName);
+        }
+        
+    }
+    
+    public static void searchAllDir(List<String> result, String rootDir, String targetDirName) {
+        
+        File rootFile = new File(rootDir);
+        
+        if (!rootFile.isDirectory()) {
+            return;
+        }
+        
+        if(rootFile.getName().equalsIgnoreCase(targetDirName)) {
+            result.add(rootFile.getAbsolutePath());
+        }
+        
+        // 获取源文件夹当前下的文件或目录
+        File[] file = rootFile.listFiles();
+        if(file.length==0) {
+            return;
+        }
+        
+        List<File> tmpDirFile = new ArrayList<File>();
+        for (int i = 0; i < file.length; i++) {
+            if (file[i].isDirectory() ){
+                tmpDirFile.add(file[i]);
+            }
+        }
+        
+        for (int i = 0; i < tmpDirFile.size(); i++) {
+            String newRootDir = rootDir + "/" + tmpDirFile.get(i).getName();
+            searchAllDir(result, newRootDir, targetDirName);
+        }
+        
+    }
+    
+    
+    public static void searchAllFile(List<String> result, String rootDir, String targetFileName) {
+        
+        File rootFile = new File(rootDir);
+        
+        if (!rootFile.isDirectory()) {
+            return;
+        }
+        
+        // 获取源文件夹当前下的文件或目录
+        File[] file = rootFile.listFiles();
+        if(file.length==0) {
+            return;
+        }
+        
+        List<File> tmpDirFile = new ArrayList<File>();
+        for (int i = 0; i < file.length; i++) {
+            if (file[i].isDirectory() ){
+                tmpDirFile.add(file[i]);
+            } else if(file[i].getName().equalsIgnoreCase(targetFileName)) {
+                result.add(file[i].getAbsolutePath());
+            }
+        }
+        
+        for (int i = 0; i < tmpDirFile.size(); i++) {
+            String newRootDir = rootDir + "/" + tmpDirFile.get(i).getName();
+            searchAllFile(result, newRootDir, targetFileName);
+        }
+        
+    }
+    
+    
+    public static String searchFileOrDir(String rootDir, String targetFileOrDirName) {
+        
+        File rootFile = new File(rootDir);
+
+        if (!rootFile.isDirectory()) {
+            return null;
+        }
+
+        if(rootFile.getName().equalsIgnoreCase(targetFileOrDirName)) {
+            return rootFile.getAbsolutePath();
+        }
+        
+        // 获取源文件夹当前下的文件或目录
+        File[] file = rootFile.listFiles();
+        if(file.length==0) {
+            return null;
+        }
+        
+        List<File> tmpDirFile = new ArrayList<File>();
+        for (int i = 0; i < file.length; i++) {
+            if(file[i].getName().equalsIgnoreCase(targetFileOrDirName)) {
+                return file[i].getAbsolutePath();
+            }
+            
+            if (file[i].isDirectory() ){
+                tmpDirFile.add(file[i]);
+            }
+        }
+        
+        for (int i = 0; i < tmpDirFile.size(); i++) {
+            String newRootDir = rootDir + "/" + tmpDirFile.get(i).getName();
+            String result = searchFileOrDir(newRootDir, targetFileOrDirName);
+            if (result != null) {
+                return result;
+            }
+        }
+        
+        return null;
+        
+    }
+    
+    
+    public static void searchAllFileOrDir(List<String> result, String rootDir, List<ZolltyPathMatcher> mather){
+        File rootFile = new File(rootDir);
+        
+        if (!rootFile.isDirectory()) {
+            return;
+        }
+        
+        if( isMatched(rootFile.getName(), mather) ) {
+            result.add(rootFile.getAbsolutePath());
+        }
+        
+        // 获取源文件夹当前下的文件或目录
+        File[] file = rootFile.listFiles();
+        
+        if(file.length==0) {
+            return;
+        }
+        
+        List<File> tmpDirFile = new ArrayList<File>();
+        for (int i = 0; i < file.length; i++) {
+            
+            if (file[i].isDirectory() ){
+                tmpDirFile.add(file[i]);
+            } else if( isMatched(file[i].getName(), mather) ) {
+                result.add(file[i].getAbsolutePath());
+            }
+        }
+        
+        for (int i = 0; i < tmpDirFile.size(); i++) {
+            String newRootDir = rootDir + "/" + tmpDirFile.get(i).getName();
+            searchAllFileOrDir(result, newRootDir, mather);
+        }
+    }
+    
+    /** 判断path是否被mathers匹配，被匹配到则返回true */
+    private static boolean isMatched(String path, List<ZolltyPathMatcher> mathers) {
+        for (ZolltyPathMatcher pm : mathers) {
+            if (pm.isMatch(path)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void appendStr2File(String fileFullPath, String str, String charSet) {

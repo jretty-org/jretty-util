@@ -17,7 +17,7 @@
 	<groupId>org.zollty</groupId>
 	<artifactId>zollty-util</artifactId>
 	<packaging>jar</packaging>
-	<version>1.9</version>
+	<version>2.0</version>
 	<name>zollty-util</name>
 	<url>https://github.com/zollty-org/zollty-util</url>
 	<description>A simple Java util's library.</description>
@@ -34,15 +34,15 @@
 			<artifactId>zollty-log</artifactId>
 			<version>1.2</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/zollty-log-1.2.jar</systemPath>
+			<systemPath>${basedir}/lib/zollty-log-1.2.jar</systemPath>
 		</dependency>
-		<!-- Servlet -->
+		<!-- Servlet
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> -->
 		
 		<!-- For Test -->
 		<dependency>
@@ -56,7 +56,7 @@
 			<artifactId>zollty-tesper</artifactId>
 			<version>1.0.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/zollty-tesper-1.0.jar</systemPath>
+			<systemPath>${basedir}/lib/zollty-tesper-1.0.jar</systemPath>
 		</dependency>
 	</dependencies>
 

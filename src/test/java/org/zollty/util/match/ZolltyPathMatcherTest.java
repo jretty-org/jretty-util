@@ -46,9 +46,16 @@ private static Logger LOG = LogFactory.getLogger();
         forTest.add(new TestData("**/ab/**/ccc", "lov/cx/ab/f/h/ccc", "[lov/cx, f/h]"));
         
         forTest.add(new TestData("/a*c/**/b", "/a/c/CC-TD/b", "null"));
+        forTest.add(new TestData("/a/bc//b", "/a/bc//b", "[]"));
+        
         String p1 = "/a/bc/k/k/b";
         forTest.add(new TestData("/a**c/*/*/b", p1, "[/b, k, k]"));
         forTest.add(new TestData("/a/*bc/**/b", p1, "[, k/k]"));
+        
+        
+        forTest.add(new TestData("/pom.*m*", "/pom.xml", "[x, l]"));
+        forTest.add(new TestData("/pom.*m*", "xxxxx/pom.xml", "null"));
+        forTest.add(new TestData("*/pom.*m*", "xxxxx/pom.xml", "[xxxxx, x, l]"));
         
         
         // 以下是测试 ZolltyPathMatcher.isTwoPatternSimilar() 方法
@@ -61,6 +68,7 @@ private static Logger LOG = LogFactory.getLogger();
         addPattern("/a*c/*/*/*/b", "/abc/**/b", false);
         
     }
+    
     
     @Test
     public void main() {
@@ -83,6 +91,16 @@ private static Logger LOG = LogFactory.getLogger();
         
         if(fail)
             Assert.fail("ZolltyPathMatcher Test Fail!");
+    }
+    
+  @Test
+    public void testIsTwoPatternSimilar() {
+
+        for (int i = 0; i < p1.size(); i++) {
+            Assert.assertEquals(p1.get(i) + " is a duplicate of " + p2.get(i), ret.get(i),
+                    ZolltyPathMatcher.isTwoPatternSimilar(p1.get(i), p2.get(i)));
+        }
+
     }
     
     static String match(final String pattern, final String src){
@@ -112,13 +130,5 @@ private static Logger LOG = LogFactory.getLogger();
         ret.add(result);
     }
     
-    @Test
-    public void testIsTwoPatternSimilar(){
-        
-        for(int i=0; i<p1.size(); i++){
-            Assert.assertEquals(p1.get(i)+" is a duplicate of "+p2.get(i), ret.get(i), ZolltyPathMatcher.isTwoPatternSimilar(p1.get(i), p2.get(i)));
-        }
-        
-    }
 
 }

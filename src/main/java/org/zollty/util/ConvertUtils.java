@@ -15,6 +15,7 @@ package org.zollty.util;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -24,6 +25,77 @@ import java.util.List;
  * @since 2014-6-25
  */
 public class ConvertUtils {
+    
+    
+    /**
+     * Convenience method to return a Collection as a delimited (e.g. CSV)
+     * String. E.g. useful for <code>toString()</code> implementations.
+     * @param coll the Collection to display
+     * @param delim the delimiter to use (probably a ",")
+     * @return the delimited String
+     */
+    public static String collectionToString(Collection<?> coll, String delim) {
+        if ( coll == null || coll.isEmpty() ) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        Iterator<?> it = coll.iterator();
+        while (it.hasNext()) {
+            sb.append(it.next());
+            if (it.hasNext()) {
+                sb.append(delim);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Convenience method to return a Collection as a CSV String.
+     * E.g. useful for <code>toString()</code> implementations.
+     * @param coll the Collection to display
+     * @return the delimited String
+     */
+    public static String collectionToString(Collection<?> coll) {
+        return collectionToString(coll, ",");
+    }
+
+    /**
+     * Convenience method to return a String array as a delimited (e.g. CSV)
+     * String. E.g. useful for <code>toString()</code> implementations.
+     * @param arr the array to display
+     * @param delim the delimiter to use (probably a ",")
+     * @return the delimited String
+     */
+    public static String arrayToString(Object[] arr, String delim) {
+        if ( arr == null || arr.length == 0 ) {
+            return "";
+        }
+        if (arr.length == 1) {
+            return String.valueOf(arr[0]);
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < arr.length; i++) {
+            if (i > 0) {
+                sb.append(delim);
+            }
+            sb.append(arr[i]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Convenience method to return a String array as a CSV String.
+     * E.g. useful for <code>toString()</code> implementations.
+     * @param arr the array to display
+     * @return the delimited String
+     */
+    public static String arrayToString(Object[] arr) {
+        return arrayToString(arr, ",");
+    }
+    
+    
+    
+    /////////////////////////////////////////
 
 	/**
 	 * Copy the given Collection into a String array.

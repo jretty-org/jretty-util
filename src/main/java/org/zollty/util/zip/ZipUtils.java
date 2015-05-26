@@ -24,9 +24,7 @@ import java.util.zip.GZIPOutputStream;
 
 import org.zollty.log.LogFactory;
 import org.zollty.log.Logger;
-import org.zollty.util.BasicRuntimeException;
 import org.zollty.util.IOUtils;
-import org.zollty.util.NestedRuntimeException;
 
 /**
  * ZIP 压缩/解压 工具类
@@ -68,7 +66,7 @@ public class ZipUtils {
                 zip(out, inputSourceFile, inputSourceFile.getName());
             }
         } catch (Exception e) {
-            throw new ZipException(e);
+            throw new NestedZipException(e);
         } finally {
             IOUtils.closeIO(out);
         }
@@ -100,7 +98,7 @@ public class ZipUtils {
                 zip(out, sourceFile, sourceFile.getName());
             }
         } catch (Exception e) {
-            throw new ZipException(e);
+            throw new NestedZipException(e);
         } finally {
             IOUtils.closeIO(out);
         }
@@ -169,7 +167,7 @@ public class ZipUtils {
             }
             unzip(directory, in);
         } catch (Exception e) {
-            throw new ZipException(e);
+            throw new NestedZipException(e);
         } finally {
             IOUtils.closeIO(in);
         }
@@ -195,7 +193,7 @@ public class ZipUtils {
             }
             unzip(directory, in);
         } catch (Exception e) {
-            throw new ZipException(e);
+            throw new NestedZipException(e);
         } finally {
             IOUtils.closeIO(in);
         }
@@ -206,7 +204,7 @@ public class ZipUtils {
         File parent = new File(directory);
 
         if (!parent.exists() && !parent.mkdirs()) {
-            throw new BasicRuntimeException("create directory \"" + parent.getAbsolutePath() + "\" failed.");
+            throw new IOException("create directory \"" + parent.getAbsolutePath() + "\" failed.");
         }
         while ((ze = in.getNextEntry()) != null) {
             String name = ze.getName();
@@ -215,7 +213,7 @@ public class ZipUtils {
             File child = new File(directory + SEPARATOR + name);
             if (name.endsWith(SEPARATOR)) { // directory name.lastIndexOf("/") == (name.length() - 1)
                 if (!child.exists() && !child.mkdirs()){
-                    throw new BasicRuntimeException("create directory \"" + child.getAbsolutePath() + "\" failed.");
+                    throw new IOException("create directory \"" + child.getAbsolutePath() + "\" failed.");
                 }
                 continue;
             }
@@ -238,7 +236,7 @@ public class ZipUtils {
      * @return    返回压缩后的字符串，注意，编码为ISO_8859_1，不可直接使用
      * @author zollty
      */
-    public static String compress(String str, String orgCharset) {
+    public static String compress(String str, String orgCharset) throws ZipException {
         if (null == str || str.length() == 0) {
             return str;
         }
@@ -255,9 +253,9 @@ public class ZipUtils {
             }
             gzipout.write(str.getBytes(orgCharset));
         } catch (UnsupportedEncodingException e) {
-            throw new BasicRuntimeException("compress failed! UnsupportedEncodingException - " + orgCharset);
+            throw new ZipException("compress failed! UnsupportedEncodingException - " + orgCharset);
         } catch (IOException e) {
-            throw new NestedRuntimeException(e, "compress failed!");
+            throw new NestedZipException(e, "compress failed!");
         } finally {
             IOUtils.closeIO(gzipout);
         }
@@ -265,7 +263,7 @@ public class ZipUtils {
             // 使用指定的 charsetName，通过解码字节将缓冲区内容转换为字符串
             return out.toString(ISO_8859_1); // 必须先关闭gzipout才能调用out.toString()
         } catch (UnsupportedEncodingException e) {
-            throw new BasicRuntimeException("UnsupportedEncodingException - ISO-8859-1");
+            throw new ZipException("UnsupportedEncodingException - ISO-8859-1");
         }
     }
 
@@ -275,7 +273,7 @@ public class ZipUtils {
      * @param orgCharset  原（未压缩的）字符串的编码格式，以便还原原字符串，如果不设置，将默认取当前JVM的编码
      * @return            返回解压缩后的字符串
      */
-    public static String uncompress(String str, String orgCharset) {
+    public static String uncompress(String str, String orgCharset) throws ZipException {
         if (null == str || str.length() == 0) {
             return str;
         }
@@ -283,7 +281,7 @@ public class ZipUtils {
         try {
             buf = str.getBytes(ISO_8859_1);
         } catch (UnsupportedEncodingException e) {
-            throw new BasicRuntimeException("UnsupportedEncodingException - ISO-8859-1");
+            throw new ZipException("UnsupportedEncodingException - ISO-8859-1");
         }
 
         // 创建一个 ByteArrayInputStream，使用 buf 作为其缓冲区数组
@@ -301,7 +299,7 @@ public class ZipUtils {
                 out.write(buffer, 0, n);
             }
         } catch (IOException e) {
-            throw new NestedRuntimeException(e, "Uncompress failed!");
+            throw new NestedZipException(e, "Uncompress failed!");
         } finally {
             IOUtils.closeIO(gzipin);
             IOUtils.closeIO(out);
@@ -310,7 +308,7 @@ public class ZipUtils {
             // 使用指定的 charsetName，通过解码字节将缓冲区内容转换为字符串
             return out.toString(orgCharset);// "GBK"
         } catch (UnsupportedEncodingException e) {
-            throw new BasicRuntimeException("Uncompress failed! UnsupportedEncodingException - " + orgCharset);
+            throw new ZipException("Uncompress failed! UnsupportedEncodingException - " + orgCharset);
         }
     }
     

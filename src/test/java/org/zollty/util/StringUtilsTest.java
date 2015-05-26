@@ -19,5 +19,11 @@ public class StringUtilsTest {
         org.junit.Assert.assertEquals(StringUtils.replaceParams("dssssssssss{}", new String[]{"1111", null, "2222"}),
                 "dssssssssss1111 null 2222");
     }
-
+    
+    @Test
+    public void testApplyRelativePath(){
+        String path = StringUtils.applyRelativePath("org/zollty/util/resource/Resource.class", "ClassPathResource.class");
+        org.junit.Assert.assertEquals("org/zollty/util/resource/ClassPathResource.class", path);
+    }
+    
 }

@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
@@ -50,11 +51,11 @@ public class IOUtils {
      */
     private static final int MIN_BUFFER_SIZE = 1024;
     
-    // /**
-    // * default read file buffer size.
-    // * default 8k
-    // */
-    // private static final int DEFAULT_BUFFER_SIZE = 8192;
+     /**
+     * default read file buffer size.
+     * default 4k
+     */
+     private static final int DEFAULT_BUFFER_SIZE = 4096;
     
 	/**
 	 * get BufferedWriter output stream
@@ -79,6 +80,11 @@ public class IOUtils {
     public final static BufferedReader getBufferedReader(String fileFullPath, String charSet) throws IOException {
         return new BufferedReader(new InputStreamReader(new FileInputStream(fileFullPath), StringUtils.decideCharSet(charSet)));
     }
+    
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // String <--> Stream  相互转换
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 	/**
 	 * 将字符串转换为 InputStream 输入流
@@ -94,6 +100,7 @@ public class IOUtils {
             throw new BasicRuntimeException("UnsupportedEncodingException[String.getBytes()] charSet=" + charSet);
         }
     }
+    
 	
     /**
      * 将字符串转换为 Reader 输入流
@@ -104,33 +111,125 @@ public class IOUtils {
         }
         return new StringReader(str);
     }
-
-    public final static void clone(final InputStream in, final OutputStream out) throws IOException {
-        clone(in, MIN_BUFFER_SIZE, out);
+    
+    /**
+     * Copy the contents of the given Reader into a String.
+     * Closes the reader when done.
+     * @param in the reader to copy from
+     * @return the String that has been copied to
+     * @throws IOException in case of I/O errors
+     */
+    public static String copyToString(Reader in) throws IOException {
+        StringWriter out = new StringWriter();
+        clone(in, out);
+        return out.toString();
     }
-
+    
+    
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // Clone or Copy  for STREAM
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+    
+    /**
+     * @see #clone(InputStream, long, OutputStream)
+     */
+    public final static int clone(final InputStream in, final OutputStream out) throws IOException {
+        return clone(in, DEFAULT_BUFFER_SIZE, out);
+    }
+    
+    /**
+     * Copy the contents of the given Reader to the given Writer.
+     * Closes both when done.
+     * @param in the Reader to copy from
+     * @param out the Writer to copy to
+     * @return the number of characters copied
+     * @throws IOException in case of I/O errors
+     */
+    public static int clone(Reader in, Writer out) throws IOException {
+        Assert.notNull(in, "No Reader specified");
+        Assert.notNull(out, "No Writer specified");
+        try {
+            int byteCount = 0;
+            char[] buffer = new char[DEFAULT_BUFFER_SIZE];
+            int bytesRead = -1;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+                byteCount += bytesRead;
+            }
+            return byteCount;
+        }
+        finally {
+            try {
+                in.close();
+            }
+            catch (IOException ex) {
+            }
+            try {
+                out.flush();
+            } catch (IOException e) {
+            }
+            try {
+                out.close();
+            }
+            catch (IOException ex) {
+            }
+        }
+    }
+    
+    
     /**
      * @param len in-source-length e.g. long len = fileIn.length()
      */
-    public final static void clone(final InputStream in, long len, final OutputStream out) throws IOException {
-        byte[] buf;
-        // 动态缓存大小
-        // case1 LEN>200000kb(195M) -- BUF=500kb e.g. 200M--500k
-        // case2 400kb< LEN <200000kb -- BUF=LEN/400 e.g. 100M--250k,
-        // 10M--25k, 400kb--1kb
-        // case3 LEN<400kb -- BUF=1kb e.g. 300kb--1kb, 0kb-1kb
-        if (len > MAX_BUFFER_SIZE * 400) {
-            buf = new byte[MAX_BUFFER_SIZE];
-        } else if (len > MIN_BUFFER_SIZE * 400) {
-            buf = new byte[(int) len / 400];
-        } else {
-            buf = new byte[MIN_BUFFER_SIZE];
+    public final static int clone(final InputStream in, long len, final OutputStream out) throws IOException {
+        Assert.notNull(in, "No InputStream specified");
+        Assert.notNull(out, "No OutputStream specified");
+        try {
+            byte[] buf;
+            // 动态缓存大小
+            // case1 LEN>200000kb(195M) -- BUF=500kb e.g. 200M--500k
+            // case2 400kb< LEN <200000kb -- BUF=LEN/400 e.g. 100M--250k, 10M--25k, 400kb--1kb
+            // case3 LEN<400kb -- BUF=1kb e.g. 300kb--1kb, 0kb-1kb
+            if (len > MAX_BUFFER_SIZE * 400) {
+                buf = new byte[MAX_BUFFER_SIZE];
+            }
+            else if (len > MIN_BUFFER_SIZE * 400) {
+                buf = new byte[(int) len / 400];
+            }
+            else {
+                buf = new byte[DEFAULT_BUFFER_SIZE];
+            }
+
+            int byteCount = 0;
+            int bytesRead = 0;
+            while (-1 != (bytesRead = in.read(buf))) {
+                out.write(buf, 0, bytesRead);
+                byteCount += bytesRead;
+            }
+            return byteCount;
         }
-        int numRead = 0;
-        while (-1 != (numRead = in.read(buf))) {
-            out.write(buf, 0, numRead);
+        finally {
+            try {
+                in.close();
+            }
+            catch (IOException ex) {
+            }
+            try {
+                out.flush();
+            } catch (IOException e) {
+            }
+            try {
+                out.close();
+            }
+            catch (IOException ex) {
+            }
         }
     }
+    
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // close IO 静默关闭IO流
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 	
     /**
      * 静默关闭输出流
@@ -211,10 +310,17 @@ public class IOUtils {
             }
         }
     }
+    
+    public final static void closeIO(Reader in, Writer out) {
+        closeIO(in);
+        closeIO(out);
+    }
 
     public final static void closeIO(InputStream in, OutputStream out) {
         closeIO(in);
         closeIO(out);
     }
+    
+    
 
 }

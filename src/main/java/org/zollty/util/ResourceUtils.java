@@ -15,8 +15,10 @@ package org.zollty.util;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -27,6 +29,13 @@ import java.util.Set;
 
 import org.zollty.log.LogFactory;
 import org.zollty.log.Logger;
+import org.zollty.util.resource.ClassPathResource;
+import org.zollty.util.resource.FileSystemResource;
+import org.zollty.util.resource.Resource;
+import org.zollty.util.resource.ResourceLoader;
+import org.zollty.util.resource.UrlResource;
+import org.zollty.util.resource.support.PathMatchingResourcePatternResolver;
+import org.zollty.util.resource.support.ResourcePatternResolver;
 
 /**
  * @author zollty 
@@ -196,6 +205,83 @@ public class ResourceUtils {
             throw new NestedCheckedException("[{}] not in [{} jar file].", resourcePath, jarClazz.getName());
         }
         return retURL;
+    }
+    
+    
+    /** Pseudo URL prefix for loading from the ServletContext relative file path, e.g. "contextpath:WEB-INF/test.dat",
+     *  @see org.zollty.util.resource.web.ServletContextResource
+     *  @see javax.servlet.ServletContext
+     */
+    public static final String CONTEXTPATH_URL_PREFIX = "contextpath:";
+    
+    /**
+     * Pseudo URL prefix for loading from local file system file path, e.g. file:C:/test.dat
+     * @see org.zollty.util.resource.FileSystemResource
+     * @see java.io.File
+     */
+    public static final String LOCAL_FILE_URL_PREFIX  = "file:";
+    
+    /** Pseudo URL prefix for loading from the class path: "classpath:" */
+    public static final String CLASSPATH_URL_PREFIX = "classpath:";
+
+    /**
+     * Pseudo URL prefix for all matching resources from the class path: "classpath*:"
+     * This differs from ResourceLoader's classpath URL prefix in that it
+     * retrieves all matching resources for a given name (e.g. "/beans.xml"),
+     * for example in the root of all deployed JAR files.
+     */
+    public static final String CLASSPATH_ALL_URL_PREFIX = "classpath*:";
+    
+    
+    public static FileSystemResource getFileSystemResource(String path) {
+        Assert.notNull(path, "path must not be null");
+        if (path.startsWith(LOCAL_FILE_URL_PREFIX)) {
+            return new FileSystemResource(path.substring(LOCAL_FILE_URL_PREFIX.length()));
+        }
+        return new FileSystemResource(path);
+    }
+    
+    public static ClassPathResource getClassPathResource(String path) {
+        return getClassPathResource(path, ClassUtils.getDefaultClassLoader());
+    }
+    
+    public static ClassPathResource getClassPathResource(String path, ClassLoader classLoader) {
+        Assert.notNull(path, "path must not be null");
+        if (path.startsWith(CLASSPATH_URL_PREFIX)) {
+            return new ClassPathResource(path.substring(CLASSPATH_URL_PREFIX.length()), classLoader);
+        }
+        return new ClassPathResource(path);
+    }
+    
+    public static UrlResource getUrlResource(String path) throws IOException {
+        try {
+            // Try to parse the path as a URL...
+            URL url = new URL(path);
+            return new UrlResource(url);
+        }
+        catch (MalformedURLException ex) {
+            // No URL -> resolve as resource path.
+            throw new FileNotFoundException(StringUtils.replaceParams("\"{}\" {}" , path, ex.getMessage()));
+        }
+    }
+    
+    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern) throws IOException {
+        ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver();
+        return resPatternLoader.getResources(locationPattern);
+    }
+    
+    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern, ClassLoader classLoader) throws IOException {
+        ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver(classLoader);
+        return resPatternLoader.getResources(locationPattern);
+    }
+    
+    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern, ResourceLoader resourceLoader) throws IOException {
+        ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver(resourceLoader);
+        return resPatternLoader.getResources(locationPattern);
+    }
+    
+    public static Resource[] getResources(String locationPattern, ResourcePatternResolver resPatternLoader) throws IOException {
+        return resPatternLoader.getResources(locationPattern);
     }
 
 }

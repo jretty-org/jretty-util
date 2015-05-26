@@ -35,14 +35,25 @@ public class ZolltyPathMatcher {
 
     private final String pattern;
     private final List<MatchInfo> miList = new ArrayList<MatchInfo>();
-
+    private final boolean notStartWithWildcard;
+    
+    private boolean notPattern;
     
     public ZolltyPathMatcher(final String pattern) {
-        this.pattern = pattern;
+        
+        this.pattern = pattern.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+        this.notPattern = ! isPattern(pattern);
         this.check();
+        
+        if ( pattern.startsWith("*") || pattern.startsWith("**")) {
+            this.notStartWithWildcard = false;
+        } else {
+            this.notStartWithWildcard = true;
+        }
+         
     }
     
-
+    
     /**
      * Match the given <code>path</code> against the given <code>pattern</code>, 
      * test whether it matched.
@@ -50,9 +61,8 @@ public class ZolltyPathMatcher {
      * @return <code>true</code> if the supplied <code>path</code> matched
      */
     public boolean isMatch(String path) {
-        if (match(path) != null)
-            return true;
-        return false;
+        
+        return null!=match(path);
     }
 
 
@@ -67,7 +77,19 @@ public class ZolltyPathMatcher {
 
         if (null == path)
             return null;
+        
+        if(notPattern){
+            if(pattern.equals(path)) {
+                return new ArrayList<String>(0);
+            }
+            return null;
+        }
+        
         String src = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+        
+        if ( notStartWithWildcard && !path.startsWith(miList.get(0).matchStr) ) {
+            return null;
+        }
 
         List<TempMatchValue> tempValueList = new ArrayList<TempMatchValue>();
         List<String> valueList = new ArrayList<String>();
@@ -127,6 +149,8 @@ public class ZolltyPathMatcher {
                 continue;
             }
         }
+        
+        
         if (pattern.endsWith("**")) {
         }
         else if (pattern.endsWith("*")) {
@@ -192,9 +216,13 @@ public class ZolltyPathMatcher {
             }
         }
 
-        if (!pattern.startsWith("*") && !pattern.startsWith("**")) {
+//        if (!pattern.startsWith("*") && !pattern.startsWith("**")) {
+//            valueList.remove(0);
+//        }
+        if( notStartWithWildcard ) {
             valueList.remove(0);
         }
+        
         if (pattern.endsWith("*") || pattern.endsWith("**")) {
             valueList.add(tempValueList.get(tempValueList.size() - 1).value);
         }
@@ -300,13 +328,36 @@ public class ZolltyPathMatcher {
             LOG.trace("MatchInfo List = {}", miList.toString());
         }
     }
+    
+    
+    /**
+     * 判断<code>pattern</code>是否为通配Pattern格式
+     */
+    public static boolean isPattern(String pattern) {
+        return (pattern.indexOf('*') != -1);
+    }
 
     /**
      * 判断两个URL Pattern 是否有包含或重叠。
      */
-    public static boolean isTwoPatternSimilar(String partten1, String partten2) {
-        return isTwoPatternSimilar(new ZolltyPathMatcher(partten1), new ZolltyPathMatcher(partten2));
+    public static boolean isTwoPatternSimilar(String pattern1, String pattern2) {
+        return isTwoPatternSimilar(new ZolltyPathMatcher(pattern1), new ZolltyPathMatcher(pattern2));
     }
+    
+    
+    /**
+     * Match the given <code>path</code> against the given <code>pattern</code>, 
+     * test whether it matched.
+     * 
+     * @param pattern the pattern to match against
+     * @param path the path String to test
+     * @return <code>true</code> if the supplied <code>path</code> matched,
+     * <code>false</code> if it didn't
+     */
+    public static boolean match(String pattern, String path){
+        return new ZolltyPathMatcher(pattern).isMatch(path);
+    }
+    
 
     /**
      * 判断两个URL Pattern 是否有包含或重叠。
@@ -321,36 +372,36 @@ public class ZolltyPathMatcher {
      * 
      * 这种情况很难检测出来。
      */
-    public static boolean isTwoPatternSimilar(ZolltyPathMatcher partten1, ZolltyPathMatcher partten2) {
+    public static boolean isTwoPatternSimilar(ZolltyPathMatcher pattern1, ZolltyPathMatcher pattern2) {
 
         String tmpPattern;
 
-        // 首先，用partten2当做“PathMatcher”去匹配partten1
+        // 首先，用pattern2当做“PathMatcher”去匹配pattern1
 
         // 比如 已存在了/app/*/*，那么当前如果是 /app/user/*，则是冲突的
-        tmpPattern = partten1.getPattern().replace("**", "a");
+        tmpPattern = pattern1.getPattern().replace("**", "a");
         tmpPattern = tmpPattern.replace('*', 'a');
-        if (partten2.isMatch(tmpPattern)) { // 匹配到了
+        if (pattern2.isMatch(tmpPattern)) { // 匹配到了
             return true;
         }
         // 再试一次
-        tmpPattern = partten1.getPattern().replace("**", "a/a");
+        tmpPattern = pattern1.getPattern().replace("**", "a/a");
         tmpPattern = tmpPattern.replace('*', 'a');
-        if (partten2.isMatch(tmpPattern)) { // 匹配到了
+        if (pattern2.isMatch(tmpPattern)) { // 匹配到了
             return true;
         }
 
-        // 其次，反过来，用partten1当做“PathMatcher”去匹配partten2
+        // 其次，反过来，用pattern1当做“PathMatcher”去匹配pattern2
 
-        tmpPattern = partten2.getPattern().replace("**", "a");
+        tmpPattern = pattern2.getPattern().replace("**", "a");
         tmpPattern = tmpPattern.replace('*', 'a');
-        if (partten1.isMatch(tmpPattern)) { // 匹配到了
+        if (pattern1.isMatch(tmpPattern)) { // 匹配到了
             return true;
         }
         // 再试一次
-        tmpPattern = partten2.getPattern().replace("**", "a/a");
+        tmpPattern = pattern2.getPattern().replace("**", "a/a");
         tmpPattern = tmpPattern.replace('*', 'a');
-        if (partten1.isMatch(tmpPattern)) { // 匹配到了
+        if (pattern1.isMatch(tmpPattern)) { // 匹配到了
             return true;
         }
 

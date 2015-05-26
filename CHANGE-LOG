@@ -20,3 +20,8 @@ Add org.zollty.tool.file.* for Text File Processing.
 Changes in version 1.9 (2014-12-10)
 -------------------------------------
 ZolltyPathMatcher optimization. Add "isTwoPatternSimilar" method to check wether two pattern are similar or equal.
+
+Changes in version 2.0 (2015-05-26)
+-------------------------------------
+1. Add org.zollty.util.resource.* for all resources( FileSystemResource, InputStreamSource, ClassPathResource, ServletContextResource, ...  ) operation. 
+2. Divide zollty-util project into zollty-util and zollty-util-web, zollty-util does not dependency servlet-api anymore.  

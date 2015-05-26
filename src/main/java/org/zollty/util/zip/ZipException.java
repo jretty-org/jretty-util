@@ -12,33 +12,30 @@
  */
 package org.zollty.util.zip;
 
-import org.zollty.util.NestedCheckedException;
+import org.zollty.util.BasicCheckedException;
 
 /**
  * @author zollty 
  * @since 2013-7-07
  */
-public class ZipException extends NestedCheckedException {
+public class ZipException extends BasicCheckedException {
+    
+    private static final long serialVersionUID = -989586841336876891L;
 
-    private static final long serialVersionUID = -950595486850209684L;
-
-    public ZipException(String message) {
-        super(message);
+    public ZipException() {
+        super();
     }
 
-    public ZipException(Throwable e) {
-        super(e);
+    public ZipException(String message, String... args) {
+        super(message, args);
     }
 
-    public ZipException(Throwable e, String message) {
-        super(e, message);
+    public ZipException(Throwable e, String message, String... args) {
+        super(e, message, args);
     }
 
-    private static final String EXCEPTION_PRIFIX = "org.zollty.ZipException: ";
-
-    @Override
-    protected String getExceptionPrifix() {
-        return EXCEPTION_PRIFIX;
+    public ZipException(Throwable arg0) {
+        super(arg0);
     }
 	
 }

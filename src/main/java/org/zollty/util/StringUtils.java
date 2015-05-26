@@ -14,6 +14,8 @@ package org.zollty.util;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 通用字符串工具类
@@ -24,6 +26,13 @@ public class StringUtils {
 	
 	/**
 	 * Checks if a String is null or empty ("").
+	 * <pre>
+     * StringUtils.isNullOrEmpty(null) = true
+     * StringUtils.isNullOrEmpty("") = true
+     * StringUtils.isNullOrEmpty(" ") = false
+     * StringUtils.isNullOrEmpty("12345") = false
+     * StringUtils.isNullOrEmpty(" 12345 ") = false
+     * </pre>
 	 */
 	public static boolean isNullOrEmpty(CharSequence str) {
 		return str == null || str.length() ==0;
@@ -38,6 +47,13 @@ public class StringUtils {
 	
 	/**
 	 * Checks if a String is empty (""), null or whitespace(e.g. " ", "\t", "\n").
+	 * <pre>
+     * StringUtils.isBlank(null) = true
+     * StringUtils.isBlank("") = true
+     * StringUtils.isBlank(" ") = true
+     * StringUtils.isBlank("12345") = false
+     * StringUtils.isBlank(" 12345 ") = false
+     * </pre>
 	 */
 	public static boolean isBlank(CharSequence str) {
 		int strLen;
@@ -186,6 +202,35 @@ public class StringUtils {
 	
 	
 	/**
+     * Replace all occurences of a substring within a string with
+     * another string. [非正则表达式，区别于String.replace()方法]
+     * @param inString String to examine
+     * @param oldPattern String to replace
+     * @param newPattern String to insert
+     * @return a String with the replacements
+     */
+    public static String replace(String inString, String oldPattern, String newPattern) {
+        if (isNullOrEmpty(inString) || isNullOrEmpty(oldPattern) || newPattern == null) {
+            return inString;
+        }
+        StringBuilder sb = new StringBuilder();
+        int pos = 0; // our position in the old string
+        int index = inString.indexOf(oldPattern);
+        // the index of an occurrence we've found, or -1
+        int patLen = oldPattern.length();
+        while (index >= 0) {
+            sb.append(inString.substring(pos, index));
+            sb.append(newPattern);
+            pos = index + patLen;
+            index = inString.indexOf(oldPattern, pos);
+        }
+        sb.append(inString.substring(pos));
+        // remember to append any characters to the right of a match
+        return sb.toString();
+    }
+	
+	
+	/**
 	 * 从路径（url或者目录都可以）中获取文件名称（带后缀，形如 abc.txt）
 	 * Extract the filename from the given path,
 	 * e.g. "mypath/myfile.txt" -> "myfile.txt".
@@ -264,29 +309,121 @@ public class StringUtils {
 		return path2.substring(extIndex + 1);
 	}
 	
+	
 	/**
-	 * Apply the given relative path to the given path,
-	 * assuming standard Java folder separation (i.e. "/" separators).
-	 * @param path the path to start from (usually a full file path)
-	 * @param relativePath the relative path to apply
-	 * (relative to the full file path above)
-	 * @return the full file path that results from applying the relative path
-	 */
-	public static String applyRelativePath(String path, String relativePath) {
-		String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-		String relativePath2 = relativePath.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-		
-		if ( path2.endsWith(Const.FOLDER_SEPARATOR) ) {
-			if ( relativePath2.startsWith(Const.FOLDER_SEPARATOR) ) {
-				return path2.substring(0, path2.length()-1)+relativePath2;
-			}
-			return path2+relativePath2;
-		}
-		
-		if ( relativePath2.startsWith(Const.FOLDER_SEPARATOR) ) {
-			return path2+relativePath2;
-		}
-		return path2+Const.FOLDER_SEPARATOR+relativePath2;
+     * Apply the given relative path to the given path,
+     * assuming standard Java folder separation (i.e. "/" separators).
+     * @param path the path to start from (usually a full file path)
+     * @param relativePath the relative path to apply
+     * (relative to the full file path above)
+     * @return the full file path that results from applying the relative path
+     */
+    public static String applyRelativePath(String path, String relativePath) {
+        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+        String relativePath2 = relativePath.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+        
+        int separatorIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
+        if (separatorIndex != -1) {
+            String newPath = path.substring(0, separatorIndex);
+            if (!relativePath2.startsWith(Const.FOLDER_SEPARATOR)) {
+                newPath += Const.FOLDER_SEPARATOR;
+            }
+            return newPath + relativePath2;
+        }
+        else {
+            return relativePath2;
+        }
+    }
+	
+
+//	public static String applyRelativePath(String path, String relativePath) {
+//		String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+//		String relativePath2 = relativePath.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+//		
+//		if ( path2.endsWith(Const.FOLDER_SEPARATOR) ) {
+//			if ( relativePath2.startsWith(Const.FOLDER_SEPARATOR) ) {
+//				return path2.substring(0, path2.length()-1)+relativePath2;
+//			}
+//			return path2+relativePath2;
+//		}
+//		
+//		if ( relativePath2.startsWith(Const.FOLDER_SEPARATOR) ) {
+//			return path2+relativePath2;
+//		}
+//		return path2+Const.FOLDER_SEPARATOR+relativePath2;
+//	}
+	
+	/**
+     * Count the occurrences of the substring in string s.
+     * @param str string to search in. Return 0 if this is null.
+     * @param sub string to search for. Return 0 if this is null.
+     */
+    public static int countOccurrencesOf(String str, String sub) {
+        if (str == null || sub == null || str.length() == 0 || sub.length() == 0) {
+            return 0;
+        }
+        int count = 0;
+        int pos = 0;
+        int idx;
+        while ((idx = str.indexOf(sub, pos)) != -1) {
+            ++count;
+            pos = idx + sub.length();
+        }
+        return count;
+    }
+	
+	public static String cleanPath(String path) {
+	    if (path == null) {
+            return null;
+        }
+        String pathToUse = replace(path, Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+
+        // Strip prefix from path to analyze, to not treat it as part of the
+        // first path element. This is necessary to correctly parse paths like
+        // "file:core/../core/io/Resource.class", where the ".." should just
+        // strip the first "core" directory while keeping the "file:" prefix.
+        int prefixIndex = pathToUse.indexOf(":");
+        String prefix = "";
+        if (prefixIndex != -1) {
+            prefix = pathToUse.substring(0, prefixIndex + 1);
+            pathToUse = pathToUse.substring(prefixIndex + 1);
+        }
+        if (pathToUse.startsWith(Const.FOLDER_SEPARATOR)) {
+            prefix = prefix + Const.FOLDER_SEPARATOR;
+            pathToUse = pathToUse.substring(1);
+        }
+
+        String[] pathArray = StringSplitUtils.splitByWholeSeparatorWorker(pathToUse, Const.FOLDER_SEPARATOR, true, true);
+        List<String> pathElements = new LinkedList<String>();
+        int tops = 0;
+
+        for (int i = pathArray.length - 1; i >= 0; i--) {
+            String element = pathArray[i];
+            if (Const.CURRENT_PATH.equals(element)) {
+                // Points to current directory - drop it.
+            }
+            else if (Const.TOP_PATH.equals(element)) {
+                // Registering top path found.
+                tops++;
+            }
+            else {
+                if (tops > 0) {
+                    // Merging path element with element corresponding to top path.
+                    tops--;
+                }
+                else {
+                    // Normal path element found.
+                    pathElements.add(0, element);
+                }
+            }
+        }
+
+        // Remaining top paths need to be retained.
+        for (int i = 0; i < tops; i++) {
+            pathElements.add(0, Const.TOP_PATH);
+        }
+        
+        return prefix + ConvertUtils.collectionToString(pathElements, Const.FOLDER_SEPARATOR);
 	}
 	
 	
@@ -338,6 +475,12 @@ public class StringUtils {
         }
 		return result.toString();
 	}
+	/**
+	 * @see #replaceParams(String, Object...)
+	 */
+	public static String replaceParams(String s, String... objs) {
+        return StringUtils.replaceParams(s, (Object[])objs);
+    }
 	
 	/**
 	 * 转换html里面的5个特殊字符：<code>&, <, >, ', and "</code>,
