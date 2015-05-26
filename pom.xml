@@ -62,7 +62,7 @@
       <dependency>
         <groupId>org.zollty</groupId>
         <artifactId>zollty-tesper</artifactId>
-        <version>1.0.0</version>
+        <version>1.0</version>
         <scope>system</scope>
         <systemPath>${basedir}/../lib/zollty-tesper-1.0.jar</systemPath>
       </dependency>
