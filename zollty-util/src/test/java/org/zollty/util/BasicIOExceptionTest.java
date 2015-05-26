@@ -9,9 +9,12 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.zollty.log.LogFactory;
+import org.zollty.log.Logger;
 
 public class BasicIOExceptionTest {
     
+    private static final Logger LOG = LogFactory.getLogger();
    
     @Test
     public void test1() {
@@ -20,8 +23,7 @@ public class BasicIOExceptionTest {
             doController1();
         }
         catch (Exception ne) {
-            DebugTool.printStack(ne);
-//            DebugTool.error(ne.toString());
+            LOG.info(ne);
 
             Assert.assertTrue(ne.getStackTrace()[0].toString().startsWith(this.getClass().getName() + ".underService"));
 
@@ -37,8 +39,7 @@ public class BasicIOExceptionTest {
             doController2();
         }
         catch (Exception ne) {
-            DebugTool.printStack(ne);
-//            DebugTool.error(ne.toString());
+            LOG.info(ne);
 
             Assert.assertTrue(ne.getStackTrace()[0].toString().startsWith(this.getClass().getName() + ".underService"));
 

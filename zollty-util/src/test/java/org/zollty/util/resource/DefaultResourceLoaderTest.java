@@ -5,10 +5,13 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.zollty.util.DebugTool;
+import org.zollty.log.LogFactory;
+import org.zollty.log.Logger;
 import org.zollty.util.resource.support.PathMatchingResourcePatternResolver;
 
 public class DefaultResourceLoaderTest {
+    
+    private static final Logger LOG = LogFactory.getLogger();
     
     private ResourceLoader dloader = new DefaultResourceLoader();
     private ResourceLoader ploader = new PathMatchingResourcePatternResolver();
@@ -38,7 +41,7 @@ public class DefaultResourceLoaderTest {
             Assert.fail();
         }
         catch (IOException e) {
-            DebugTool.printStack(e);
+            LOG.info(e);
         }
     }
 

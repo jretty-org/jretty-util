@@ -9,13 +9,15 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.zollty.util.DebugTool;
+import org.zollty.log.LogFactory;
+import org.zollty.log.Logger;
 import org.zollty.util.NestedCheckedException;
 import org.zollty.util.NestedException;
 import org.zollty.util.NestedIOException;
 
 public class NestedExceptionDelegateTest {
     
+    private static final Logger LOG = LogFactory.getLogger();
     
     @Test
     public void testAll() {
@@ -99,7 +101,7 @@ public class NestedExceptionDelegateTest {
             
 //            DebugTool.printStack(ne);
             
-            DebugTool.error(ne.toString());
+            LOG.info(ne.toString());
 
             Assert.assertTrue(ne.getStackTrace()[0].toString().startsWith(this.getClass().getName() + ".underService"));
 

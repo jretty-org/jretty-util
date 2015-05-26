@@ -13,6 +13,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.zollty.log.LogFactory;
+import org.zollty.log.Logger;
 import org.zollty.util.resource.ClassPathResource;
 import org.zollty.util.resource.FileSystemContextResource;
 import org.zollty.util.resource.Resource;
@@ -23,6 +25,8 @@ import org.zollty.util.resource.Resource;
  */
 @RunWith(JUnit4.class)
 public class WebResourceUtilsTest {
+    
+    private static final Logger LOG = LogFactory.getLogger();
 
     @Test
     public void testGetResource() {
@@ -46,7 +50,7 @@ public class WebResourceUtilsTest {
             Assert.assertEquals(FileSystemContextResource.class, resource.getClass());
         }
         catch (IOException e) {
-            DebugTool.printStack(e);
+            LOG.error(e);
         }
 
         String path4 = "org/zollty/util/resource/Resource.class";

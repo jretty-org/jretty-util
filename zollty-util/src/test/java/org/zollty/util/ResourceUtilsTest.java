@@ -29,8 +29,20 @@ public class ResourceUtilsTest {
     
     private static final Logger LOG = LogFactory.getLogger(ResourceUtilsTest.class);
     
+    /**
+     * JDK支持的8种URL协议
+     *     http://www.math.com/faq.html
+     *     https://www.math.com/faq.html
+     *     ftp://ftp.is.co.za/rfc/rfc1808.txt
+     *     file:C:/test.dat
+     *     jar:dddddd
+     *     netdoc:sdfffdfdffd
+     *     mailto:mduerst@ifi.unizh.ch
+     *     gopher://spinaltap.micro.com/Weather/California/Los%20Angeles
+     *     支持以上8种协议。参见 JRE -> lib -> rt.jar -> \sun\net\www\protocol
+     */
     @Test
-    public void test() {
+    public void testURL() {
         try {
             new URL("netdoc://g");
         }
@@ -42,7 +54,7 @@ public class ResourceUtilsTest {
             Assert.fail("该协议未被支持");
         }
         catch (MalformedURLException ex) {
-//            ex.printStackTrace();
+            LOG.info(ex.toString());
         }
     }
     
@@ -82,40 +94,141 @@ public class ResourceUtilsTest {
     
     
     
-    // @Test
-    public void test01() throws Exception {
-       // getInputStreamFromJar();
+    /**
+     * 取得class所在 jar包 中的资源 {注意jar必须在文件目录下，不能在war或ear包中}<BR>
+     */
+    @Test
+    public void testGetInputStreamFromJar(){
+        getInputStreamFromJar(Logger.class, "org/zollty/log/Logger.class");
+        getInputStreamFromJar(Logger.class, "org/zollty/log/");
+        
+        noInputStreamFromJar(Logger.class, "zollty-log0.properties");
+    }
+    
+    /**
+     * 取得clazz.getClassLoader()所在 ClassPath下的资源（非url.openStream()模式，支持动态更新）
+     */
+    @Test
+    public void testGetInputStreamFromClassPath(){
+        getInputStreamFromClassPath(getClass().getClassLoader(), "org/zollty/util/StringUtils.class");
+        noInputStreamFromClassPath(getClass().getClassLoader(), "org/zollty/util/StringUtils222.class");
+    }
+    
+    /**
+     * 采用Java ClassLoader自带的getResourceAsStream获取资源。
+     * （可以读取ClassLoader下classpath/jar/zip/war/ear中的资源）
+     * 但是不支持动态更新和加载，只在ClassLoader初始化时加载一遍，以后更改，不会再次加载
+     */
+    @Test
+    public void testGetInputStreamFromClassLoader(){
+        getInputStreamFromClassLoader(getClass(), "org/zollty/util/StringUtils.class");
+        noInputStreamFromClassLoader(getClass(), "org/zollty/util/StringUtils222.class");
+    }
+    
+    @Test
+    public void testGetResource(){
+        Resource resource = ResourceUtils.getResource("classpath:org/zollty/util/StringUtils.class");
+        Assert.assertTrue(resource.exists());
+        try {
+            LOG.info(resource.contentLength());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        resource = ResourceUtils.getResource("classpath:org/zollty/log/Logger.class");
+        Assert.assertTrue(resource.exists());
+        try {
+            LOG.info(resource.contentLength());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        resource = ResourceUtils.getResource("classpath:org/zollty/log/");
+        Assert.assertTrue(resource.exists());
+        try {
+            LOG.info(resource.contentLength());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        resource = ResourceUtils.getResource("classpath:org/zollty/util/StringUtils222.class");
+        Assert.assertFalse(resource.exists());
     }
     
     
-    public void getInputStreamFromJar(){
+    private void getInputStreamFromJar(Class<?> jarClazz, String resourcePath){
         try {
-//            InputStream in = ResourceUtils.getInputStreamFromJar(Logger.class, "org/zollty/log/Logger.class");
-            InputStream in = ResourceUtils.getInputStreamFromJar(Logger.class, "zollty-log0.properties");
-            LOG.info(in);
+            InputStream in = ResourceUtils.getInputStreamFromJar(jarClazz, resourcePath);
+            LOG.info(in.available());
         }
         catch (NestedCheckedException e) {
+            Assert.fail(e.toString());
+        }
+        catch (IOException e) {
             LOG.error(e);
         }
     }
     
-    public void getInputStreamFromClassPath(){
+    private void noInputStreamFromJar(Class<?> jarClazz, String resourcePath){
         try {
-            InputStream in = ResourceUtils.getInputStreamFromClassPath(getClass().getClassLoader(), "org/zollty/util/StringUtils.class");
-            LOG.info(in);
+            ResourceUtils.getInputStreamFromJar(jarClazz, resourcePath);
+            Assert.fail("assert no resources under "+ resourcePath);
         }
         catch (NestedCheckedException e) {
+            LOG.info(e);
+        }
+    }
+    
+    
+    private void getInputStreamFromClassPath(ClassLoader classLoader, String resourcePath) {
+        try {
+            InputStream in = ResourceUtils.getInputStreamFromClassPath(classLoader, resourcePath);
+            LOG.info(in.available());
+        }
+        catch (NestedCheckedException e) {
+            Assert.fail(e.toString());
+        }
+        catch (IOException e) {
             LOG.error(e);
         }
     }
     
-    public void getInputStreamFromClassLoader(){
+    private void noInputStreamFromClassPath(ClassLoader classLoader, String resourcePath) {
         try {
-            InputStream in = ResourceUtils.getInputStreamFromClassLoader(getClass(), "org/zollty/util/StringUtils.class");
-            LOG.info(in);
+            ResourceUtils.getInputStreamFromClassPath(classLoader, resourcePath);
+            Assert.fail("assert no resources under "+ resourcePath);
         }
         catch (NestedCheckedException e) {
+            LOG.info(e);
+        }
+    }
+    
+    
+    @SuppressWarnings("deprecation")
+    private void getInputStreamFromClassLoader(Class<?> clazz, String resourcePath) {
+        try {
+            InputStream in = ResourceUtils.getInputStreamFromClassLoader(getClass(), resourcePath);
+            LOG.info(in.available());
+        }
+        catch (NestedCheckedException e) {
+            Assert.fail(e.toString());
+        }
+        catch (IOException e) {
             LOG.error(e);
+        }
+    }
+    
+    @SuppressWarnings("deprecation")
+    private void noInputStreamFromClassLoader(Class<?> clazz, String resourcePath) {
+        try {
+            ResourceUtils.getInputStreamFromClassLoader(getClass(), resourcePath);
+            Assert.fail("assert no resources under "+ resourcePath);
+        }
+        catch (NestedCheckedException e) {
+            LOG.info(e);
         }
     }
     

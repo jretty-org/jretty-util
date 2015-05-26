@@ -30,6 +30,7 @@ import java.util.Set;
 import org.zollty.log.LogFactory;
 import org.zollty.log.Logger;
 import org.zollty.util.resource.ClassPathResource;
+import org.zollty.util.resource.DefaultResourceLoader;
 import org.zollty.util.resource.FileSystemResource;
 import org.zollty.util.resource.Resource;
 import org.zollty.util.resource.ResourceLoader;
@@ -38,76 +39,135 @@ import org.zollty.util.resource.support.PathMatchingResourcePatternResolver;
 import org.zollty.util.resource.support.ResourcePatternResolver;
 
 /**
- * @author zollty 
+ * @author zollty
  * @since 2013-6-07
  */
 public class ResourceUtils {
-    
+
     private static final Logger LOG = LogFactory.getLogger(ResourceUtils.class);
-	
-	/**
-	 * 取得class所在 jar包 中的资源 {注意jar必须在文件目录下，不能在war或ear包中}<BR>
-	 * 
-	 * @param jarClazz 
-	 * @param resourcePath 资源文件的相对路径（比如 FS_RQ.xsd，比如 com/zollty/config/FS_RQ.xsd）
-	 * @return the InputStream (may be null)
-	 */
+    
+    /**
+     * Pseudo URL prefix for loading from the ServletContext relative file path, e.g. "contextpath:WEB-INF/test.dat",
+     * 
+     * @see org.zollty.util.resource.web.ServletContextResource
+     * @see javax.servlet.ServletContext
+     */
+    public static final String CONTEXTPATH_URL_PREFIX = "contextpath:";
+
+    /**
+     * Pseudo URL prefix for loading from local file system file path, e.g. file:C:/test.dat
+     * 
+     * @see org.zollty.util.resource.FileSystemResource
+     * @see java.io.File
+     */
+    public static final String LOCAL_FILE_URL_PREFIX = "file:";
+
+    /** Pseudo URL prefix for loading from the class path: "classpath:" */
+    public static final String CLASSPATH_URL_PREFIX = "classpath:";
+
+    /**
+     * Pseudo URL prefix for all matching resources from the class path: "classpath*:" 
+     * This differs from ResourceLoader's classpath URL prefix in that it retrieves all matching
+     * resources for a given name (e.g. "/beans.xml"), for example in the root of all deployed JAR files.
+     */
+    public static final String CLASSPATH_ALL_URL_PREFIX = "classpath*:";
+
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // 以下几个方法 针对于 Resource API
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+    
+    public static Resource getResource(String location) {
+        return new DefaultResourceLoader(ClassUtils.getDefaultClassLoader()).getResource(location);
+    }
+    
+    public static Resource getResource(ClassLoader classLoader, String location) {
+        return new DefaultResourceLoader(classLoader).getResource(location);
+    }
+    
+    public static Resource getResource(ResourceLoader resourceLoader, String location) {
+        return resourceLoader.getResource(location);
+    }
+    
+    public static FileSystemResource getFileSystemResource(String path) {
+        Assert.notNull(path, "path must not be null");
+        if (path.startsWith(LOCAL_FILE_URL_PREFIX)) {
+            return new FileSystemResource(path.substring(LOCAL_FILE_URL_PREFIX.length()));
+        }
+        return new FileSystemResource(path);
+    }
+
+    public static ClassPathResource getClassPathResource(String path) {
+        return getClassPathResource(path, ClassUtils.getDefaultClassLoader());
+    }
+
+    public static ClassPathResource getClassPathResource(String path, ClassLoader classLoader) {
+        Assert.notNull(path, "path must not be null");
+        if (path.startsWith(CLASSPATH_URL_PREFIX)) {
+            return new ClassPathResource(path.substring(CLASSPATH_URL_PREFIX.length()), classLoader);
+        }
+        return new ClassPathResource(path);
+    }
+
+    public static UrlResource getUrlResource(String path) throws IOException {
+        try {
+            // Try to parse the path as a URL...
+            URL url = new URL(path);
+            return new UrlResource(url);
+        }
+        catch (MalformedURLException ex) {
+            // No URL -> resolve as resource path.
+            throw new FileNotFoundException(StringUtils.replaceParams("\"{}\" {}", path, ex.getMessage()));
+        }
+    }
+
+    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern) throws IOException {
+        ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver();
+        return resPatternLoader.getResources(locationPattern);
+    }
+
+    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern, ClassLoader classLoader) throws IOException {
+        ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver(classLoader);
+        return resPatternLoader.getResources(locationPattern);
+    }
+
+    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern, ResourceLoader resourceLoader) throws IOException {
+        ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver(resourceLoader);
+        return resPatternLoader.getResources(locationPattern);
+    }
+
+    public static Resource[] getResources(String locationPattern, ResourcePatternResolver resPatternLoader) throws IOException {
+        return resPatternLoader.getResources(locationPattern);
+    }
+    
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // 以下几个方法 为获取指定类型的resource inputstream
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+    
+    /**
+     * 取得class所在 jar包 中的资源 {注意jar必须在文件目录下，不能在war或ear包中}<BR>
+     * 
+     * @param jarClazz
+     * @param resourcePath 资源文件的相对路径（比如 FS_RQ.xsd，比如 com/zollty/config/FS_RQ.xsd）
+     * @return the InputStream (may be null)
+     */
     public static InputStream getInputStreamFromJar(Class<?> jarClazz, String resourcePath) throws NestedCheckedException {
         URL url = getResourceFromJar(jarClazz, resourcePath);
         try {
             return url != null ? url.openStream() : null;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new NestedCheckedException(e);
         }
     }
     
     /**
-     * 采用Java ClassLoader自带的getResourceAsStream获取资源。
-     * （可以读取ClassLoader下classpath/jar/zip/war/ear中的资源）
-     * 但是不支持动态更新和加载，只在ClassLoader初始化时加载一遍，以后更改，不会再次加载
-     * @param jarClazz
+     * 取得clazz.getClassLoader()所在 ClassPath下的资源（非url.openStream()模式，支持动态更新）
+     * 
+     * @param classLoader
      * @param resourcePath 相对路径
-     * @return the resource's InputStream
-     * @throws NestedCheckedException if can't get resource's InputStream
      */
-    public static InputStream getInputStreamFromClassLoader(Class<?> clazz, String resourcePath) throws NestedCheckedException {
-        InputStream in = null;
-        try{
-            in = clazz.getClassLoader().getResourceAsStream(resourcePath);
-            LOG.debug("Got [{}] through [clazz.getClassLoader().getResourceAsStream()]", resourcePath);
-        } catch (Exception e) {
-            // ignore
-        }
-        if (in == null) {
-            try{
-                in = ResourceUtils.class.getClassLoader().getResourceAsStream(resourcePath);
-                LOG.debug("Got [{}] through [ResourceUtils.class.getClassLoader().getResourceAsStream()]", resourcePath);
-            } catch (Exception e) {
-                // ignore
-            }
-        }
-        if (in == null) {
-            try{
-                in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
-                LOG.debug("Got [{}] through [Thread.currentThread().getContextClassLoader().getResourceAsStream()]", resourcePath);
-            } catch (Exception e) {
-                // ignore
-            }
-        }
-        if (in == null) {
-            throw new NestedCheckedException(
-                    "Can't find [{}] through 1.clazz.getClassLoader().getResourceAsStream() 2.ResourceUtils.class.getClassLoader().getResourceAsStream() 3.Thread.currentThread().getContextClassLoader().getResourceAsStream().",
-                    resourcePath);
-        }
-        return in;
-    }
-    
-	/**
-	 * 取得clazz.getClassLoader()所在 ClassPath下的资源（非url.openStream()模式，支持动态更新）
-	 * 
-	 * @param classLoader 
-	 * @param resourcePath 相对路径
-	 */
     public static InputStream getInputStreamFromClassPath(ClassLoader classLoader, String resourcePath) throws NestedCheckedException {
         String resourcePathNew = resourcePath;
         if (resourcePathNew.startsWith("/") || resourcePathNew.startsWith(File.separator)) {
@@ -115,63 +175,88 @@ public class ResourceUtils {
         }
         InputStream in = null;
         URL url = classLoader.getResource(resourcePathNew); // 必须是ClassLoader
-        if (url != null) {
-            try {
-                String fileUrl = url.getPath();
-                fileUrl = fileUrl.replaceAll("%20", " ");
-                if (!fileUrl.contains("!")) { // 含!的在jar或者ZIP中
-                    in = new BufferedInputStream(new FileInputStream(fileUrl));
-                }// else in = url.openStream();
-            } catch (Exception e) {
-                throw new NestedCheckedException(e);
-            }
-        }
-        else {
+        if (url == null) {
             throw new NestedCheckedException("Can't find [{}] under common ClassPath.", resourcePathNew);
         }
-        return in;
-    }
-
-    /**
-     * 通过输入流获取Properties实例
-     */
-    public static Properties getProperties(InputStream in) {
-        if (in == null) {
-            throw new IllegalArgumentException("in==null");
-        }
-        Properties props = new Properties();
         try {
-            props.load(in);
-            return props;
-        } catch (IOException e) {
-            throw new NestedRuntimeException(e);
-        } finally {
-            IOUtils.closeIO(in);
+            String fileUrl = url.getPath();
+            fileUrl = fileUrl.replaceAll("%20", " ");
+            if (!fileUrl.contains("!")) { // 含!的在jar或者ZIP中
+                in = new BufferedInputStream(new FileInputStream(fileUrl));
+                return in;
+            }
+            else {
+                // in = url.openStream();
+                throw new NestedCheckedException("Can't find [{}] under common ClassPath. it's in [{}].", resourcePathNew, fileUrl);
+            }
+        }
+        catch (Exception e) {
+            throw new NestedCheckedException(e);
         }
     }
 
+
     /**
-     * 将Properties资源转换成Map类型
+     * 采用Java ClassLoader自带的getResourceAsStream获取资源。 
+     * （可以读取ClassLoader下classpath/jar/zip/war/ear中的资源） 
+     * 但是不支持动态更新和加载，只在ClassLoader初始化时加载一遍，以后更改，不会再次加载
+     * @deprecated 建议使用{@link #getResource(String)}替代
+     * @param jarClazz
+     * @param resourcePath 相对路径
+     * @return the resource's InputStream
+     * @throws NestedCheckedException if can't get resource's InputStream
      */
-    public static Map<String, String> covertProperties2Map(Properties props) {
-        if (props == null) {
-            throw new IllegalArgumentException("props==null");
+    public static InputStream getInputStreamFromClassLoader(Class<?> clazz, String resourcePath) throws NestedCheckedException {
+        InputStream in = null;
+        try {
+            in = clazz.getClassLoader().getResourceAsStream(resourcePath);
         }
-        Set<Entry<Object, Object>> set = props.entrySet();
-        Map<String, String> mymap = new HashMap<String, String>();
-        for (Entry<Object, Object> oo : set) {
-            mymap.put(oo.getKey().toString(), oo.getValue().toString());
+        catch (Exception e) {
+            // ignore
         }
-        return mymap;
+        if (in != null) {
+            LOG.debug("Got [{}] through [clazz.getClassLoader().getResourceAsStream()]", resourcePath);
+            return in;
+        }
+        else {
+            try {
+                in = ResourceUtils.class.getClassLoader().getResourceAsStream(resourcePath);
+            }
+            catch (Exception e) {
+                // ignore
+            }
+        }
+        if (in != null) {
+            LOG.debug("Got [{}] through [ResourceUtils.class.getClassLoader().getResourceAsStream()]", resourcePath);
+            return in;
+        }
+        else {
+            try {
+                in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
+            }
+            catch (Exception e) {
+                // ignore
+            }
+        }
+
+        if (in != null) {
+            LOG.debug("Got [{}] through [Thread.currentThread().getContextClassLoader().getResourceAsStream()]", resourcePath);
+            return in;
+        }
+        else {
+            throw new NestedCheckedException(
+                    "Can't find [{}] through \n1.clazz.getClassLoader().getResourceAsStream() \n2.ResourceUtils.class.getClassLoader().getResourceAsStream() \n3.Thread.currentThread().getContextClassLoader().getResourceAsStream().",
+                    resourcePath);
+        }
     }
-	
-	/**
-	 * 取得class所在 jar包 中的资源
-	 * 
-	 * @param jarClazz 
-	 * @param resourcePath 相对路径
-	 * @return Resource's URL (null if the resourcePath is not found)
-	 */
+    
+    /**
+     * 取得class所在 jar包 中的资源
+     * 
+     * @param jarClazz
+     * @param resourcePath 相对路径
+     * @return Resource's URL (null if the resourcePath is not found)
+     */
     public static URL getResourceFromJar(Class<?> jarClazz, String resourcePath) throws NestedCheckedException {
         String resourcePathNew = resourcePath;
         if (resourcePathNew.startsWith("/") || resourcePathNew.startsWith(File.separator)) {
@@ -186,19 +271,21 @@ public class ResourceUtils {
             // return jarClazz.getResource(resource); 不存在jar文件，这个类就在ClassPath下面
         }
         // else 存在jar文件
-        String path = classDir.getPath();
+        // String path = classDir.getPath();
         URL retURL = null;
         try { // 从jar中去寻找resource文件
             Enumeration<URL> res = jarClazz.getClassLoader().getResources(resourcePathNew);
             URL tempURL;
             while (res.hasMoreElements()) {
                 tempURL = res.nextElement();
-                if (tempURL.getPath().startsWith(path)) {
-                    retURL = tempURL;
-                    break;
-                }
+                // if (tempURL.getPath().startsWith(path)) {
+                retURL = tempURL;
+                LOG.debug("get [{}] under [{}]", resourcePath, tempURL.getPath());
+                break;
+                // }
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new NestedCheckedException(e);
         }
         if (retURL == null) {
@@ -208,80 +295,44 @@ public class ResourceUtils {
     }
     
     
-    /** Pseudo URL prefix for loading from the ServletContext relative file path, e.g. "contextpath:WEB-INF/test.dat",
-     *  @see org.zollty.util.resource.web.ServletContextResource
-     *  @see javax.servlet.ServletContext
-     */
-    public static final String CONTEXTPATH_URL_PREFIX = "contextpath:";
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // 以下两个方法 针对于 Properties API
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
     
     /**
-     * Pseudo URL prefix for loading from local file system file path, e.g. file:C:/test.dat
-     * @see org.zollty.util.resource.FileSystemResource
-     * @see java.io.File
+     * 通过输入流获取Properties实例
      */
-    public static final String LOCAL_FILE_URL_PREFIX  = "file:";
-    
-    /** Pseudo URL prefix for loading from the class path: "classpath:" */
-    public static final String CLASSPATH_URL_PREFIX = "classpath:";
-
-    /**
-     * Pseudo URL prefix for all matching resources from the class path: "classpath*:"
-     * This differs from ResourceLoader's classpath URL prefix in that it
-     * retrieves all matching resources for a given name (e.g. "/beans.xml"),
-     * for example in the root of all deployed JAR files.
-     */
-    public static final String CLASSPATH_ALL_URL_PREFIX = "classpath*:";
-    
-    
-    public static FileSystemResource getFileSystemResource(String path) {
-        Assert.notNull(path, "path must not be null");
-        if (path.startsWith(LOCAL_FILE_URL_PREFIX)) {
-            return new FileSystemResource(path.substring(LOCAL_FILE_URL_PREFIX.length()));
+    public static Properties getProperties(InputStream in) {
+        if (in == null) {
+            throw new IllegalArgumentException("in==null");
         }
-        return new FileSystemResource(path);
-    }
-    
-    public static ClassPathResource getClassPathResource(String path) {
-        return getClassPathResource(path, ClassUtils.getDefaultClassLoader());
-    }
-    
-    public static ClassPathResource getClassPathResource(String path, ClassLoader classLoader) {
-        Assert.notNull(path, "path must not be null");
-        if (path.startsWith(CLASSPATH_URL_PREFIX)) {
-            return new ClassPathResource(path.substring(CLASSPATH_URL_PREFIX.length()), classLoader);
-        }
-        return new ClassPathResource(path);
-    }
-    
-    public static UrlResource getUrlResource(String path) throws IOException {
+        Properties props = new Properties();
         try {
-            // Try to parse the path as a URL...
-            URL url = new URL(path);
-            return new UrlResource(url);
+            props.load(in);
+            return props;
         }
-        catch (MalformedURLException ex) {
-            // No URL -> resolve as resource path.
-            throw new FileNotFoundException(StringUtils.replaceParams("\"{}\" {}" , path, ex.getMessage()));
+        catch (IOException e) {
+            throw new NestedRuntimeException(e);
+        }
+        finally {
+            IOUtils.closeIO(in);
         }
     }
     
-    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern) throws IOException {
-        ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver();
-        return resPatternLoader.getResources(locationPattern);
+    /**
+     * 将Properties资源转换成Map类型
+     */
+    public static Map<String, String> covertProperties2Map(Properties props) {
+        if (props == null) {
+            throw new IllegalArgumentException("props==null");
+        }
+        Set<Entry<Object, Object>> set = props.entrySet();
+        Map<String, String> mymap = new HashMap<String, String>();
+        for (Entry<Object, Object> oo : set) {
+            mymap.put(oo.getKey().toString(), oo.getValue().toString());
+        }
+        return mymap;
     }
-    
-    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern, ClassLoader classLoader) throws IOException {
-        ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver(classLoader);
-        return resPatternLoader.getResources(locationPattern);
-    }
-    
-    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern, ResourceLoader resourceLoader) throws IOException {
-        ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver(resourceLoader);
-        return resPatternLoader.getResources(locationPattern);
-    }
-    
-    public static Resource[] getResources(String locationPattern, ResourcePatternResolver resPatternLoader) throws IOException {
-        return resPatternLoader.getResources(locationPattern);
-    }
+
 
 }
