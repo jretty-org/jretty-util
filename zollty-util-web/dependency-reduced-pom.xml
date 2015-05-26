@@ -4,7 +4,6 @@
     <artifactId>zollty-util-parent</artifactId>
     <groupId>org.zollty</groupId>
     <version>1.0.0-RELEASE</version>
-    <relativePath>../zollty-util-parent/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>zollty-util-web</artifactId>

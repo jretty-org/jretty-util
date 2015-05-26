@@ -22,8 +22,8 @@
   <name>zollty-util-parent</name>
 
   <modules>
-    <module>../zollty-util</module>
-    <module>../zollty-util-web</module>
+    <module>zollty-util</module>
+    <module>zollty-util-web</module>
   </modules>
 
   <!-- CONST -->

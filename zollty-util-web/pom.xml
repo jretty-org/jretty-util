@@ -19,7 +19,7 @@
     <groupId>org.zollty</groupId>
     <artifactId>zollty-util-parent</artifactId>
     <version>1.0.0-RELEASE</version>
-    <relativePath>../zollty-util-parent/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>zollty-util-web</artifactId>
   <packaging>jar</packaging>
