@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Exception Tools Instruction</title>
+</head>
+<body>
+  <h1>Exception Tools Instruction</h1>
+  
+  <h3>Basic Exception 基础异常</h3>
+  <ul>
+    <li>org.zollty.util.BasicCheckedException ( extends Exception )</li>
+    <li>org.zollty.util.BasicRuntimeException ( extends RuntimeException )</li>
+  </ul>
+  
+  <h3>Nested Exception 基础嵌套异常（继承于 Basic Exception）</h3>
+  <ul>
+    <li>org.zollty.util.NestedCheckedException ( extends BasicCheckedException )</li>
+    <li>org.zollty.util.NestedRuntimeException ( extends BasicRuntimeException )</li>
+  </ul>
+  
+  <br>
+  <h3>特殊业务异常</h3>
+  <ul>
+    <li>org.zollty.util.NestedIOException ( extends IOException )</li>
+    <li></li>
+    <li>org.zollty.util.zip.ZipException ( extends BasicCheckedException )</li>
+    <li>org.zollty.util.zip.NestedZipException ( extends ZipException )</li>
+    <li></li>
+    <li>more......自行扩展，参考ZipException和NestedZipException 以及其src/test下面的 NestedIOException 单元测试类</li>
+  </ul>
+  <p>举个例子：</p>
+  <pre>
+     压缩文件的接口：void zipFile(String out, String in) throws ZipException，为了便于外界判断“压缩文件过程中的报错”
+  ，这里定义了一个特殊异常ZipException（可以理解为 zipFile(String out, String in) 这个方法要么不报错，要么只报 ZipException类型的错误）
+  故，ZipException的设计是必要的。
+     ZipException的功能主要有三点：
+      1、包含堆栈信息的原始异常；（BasicCheckedException）
+      2、不包含堆栈信息的原始异常、或者嵌套的异常；（）
+     
+     其中1必须用 BasicCheckedException，2必须是 NestedException。而 ZipException 不可能同时兼容Nested和“非Nested”的异常。
+     
+     所以，考虑如下方案：
+      定义一个 ZipException extend BasicCheckedException
+      定义一个 NestedZipException extend ZipException 并实现 ExceptionDelegateSupport（即实现Nested异常）。
+  </pre>
+  
+  
+</body>
+</html>
