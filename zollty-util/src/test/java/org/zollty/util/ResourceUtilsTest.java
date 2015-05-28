@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -58,7 +59,7 @@ public class ResourceUtilsTest {
         }
     }
     
-    
+    @Ignore
     @Test
     public void testGetUrlResource () {
         String path = "file:C:\\Windows\\system\\SHELL.DLL";
@@ -78,6 +79,7 @@ public class ResourceUtilsTest {
         }
     }
     
+    @Ignore
     @Test
     public void testGetFileSystemResource () {
         String path = "file:C:\\Windows\\system\\SHELL.DLL";

@@ -10,6 +10,7 @@ package org.zollty.util;
 import java.io.IOException;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -28,6 +29,7 @@ public class WebResourceUtilsTest {
     
     private static final Logger LOG = LogFactory.getLogger();
 
+    @Ignore
     @Test
     public void testGetResource() {
         String path = "file:C:\\Windows\\system\\SHELL.DLL";
