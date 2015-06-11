@@ -27,6 +27,7 @@ import javax.servlet.ServletContext;
 
 import org.zollty.log.LogFactory;
 import org.zollty.log.Logger;
+import org.zollty.util.IOUtils;
 import org.zollty.util.UrlUtils;
 import org.zollty.util.StringUtils;
 import org.zollty.util.resource.Resource;
@@ -163,8 +164,9 @@ public class ServletContextResourcePatternResolver extends PathMatchingResourceP
 		if (logger.isDebugEnabled()) {
 			logger.debug("Searching jar file [" + jarFilePath + "] for entries matching [" + entryPattern + "]");
 		}
+		JarFile jarFile = null;
 		try {
-			JarFile jarFile = new JarFile(jarFilePath);
+			jarFile = new JarFile(jarFilePath);
 			for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
 				JarEntry entry = entries.nextElement();
 				String entryPath = entry.getName();
@@ -178,6 +180,8 @@ public class ServletContextResourcePatternResolver extends PathMatchingResourceP
 		catch (IOException ex) {
 				logger.warn(ex, "Cannot search for matching resources in jar file [" + jarFilePath +
 						"] because the jar cannot be opened through the file system");
+		} finally {
+		    IOUtils.close(jarFile);
 		}
 	}
 
