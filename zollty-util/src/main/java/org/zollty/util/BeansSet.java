@@ -39,7 +39,7 @@ public class BeansSet {
             }
         }
     }
-	
+
     /**
      * 向Set容器中添加一个bean对象，注意bean的id不能重复
      * 
@@ -68,7 +68,7 @@ public class BeansSet {
         }
         return (T) ob.getObject();
     }
-	
+
     /**
      * 获取指定id的bean对象，同时把它从Set容器中移除
      */
@@ -80,7 +80,7 @@ public class BeansSet {
         }
         return (T) ob.getObject();
     }
-	
+
     /**
      * 从Set容器中移除指定id的bean对象
      */
@@ -91,10 +91,10 @@ public class BeansSet {
         }
         return false;
     }
-	
-	/**
-	 * 替换或者新增一个bean
-	 */
+
+    /**
+     * 替换或者新增一个bean
+     */
     public <T> T replaceOrAdd(String id, T newObj) {
         if (StringUtils.isNullOrEmpty(id))
             return null;
@@ -102,7 +102,7 @@ public class BeansSet {
         objects.put(id, obj);
         return newObj;
     }
-	
+
     public void clear() {
         objects.clear();
     }

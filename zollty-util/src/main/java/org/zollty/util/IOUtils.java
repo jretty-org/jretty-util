@@ -32,54 +32,58 @@ import java.io.Writer;
 import org.zollty.log.LogFactory;
 import org.zollty.log.Logger;
 
-
 /**
- * IO utils best practice
+ * IO utils best practice 
  * {高效的IO工具类}
  * 
  * @author zollty
  * @since 2013-6-15
  */
 public class IOUtils {
-	
+
     private static final Logger LOG = LogFactory.getLogger(IOUtils.class);
 
     /**
      * max read file buffer size. default 500k
      */
     private static final int MAX_BUFFER_SIZE = 512000;
-    
+
     /**
      * min read file buffer size. default 1k
      */
     private static final int MIN_BUFFER_SIZE = 1024;
-    
-     /**
-     * default read file buffer size.
-     * default 4k
+
+    /**
+     * default read file buffer size. default 4k
      */
-     private static final int DEFAULT_BUFFER_SIZE = 4096;
-    
-	/**
-	 * get BufferedWriter output stream
-	 * @param fileFullPath	the absolute file path
-	 * @param append 		true if can append
-	 * @param charSet		assign charSet,null if use the default charSet
-	 * @return BufferedWriter
-	 * @throws IOException
-	 */
-    public static BufferedWriter getBufferedWriter(String fileFullPath, boolean append, String charSet)
-            throws IOException {
+    private static final int DEFAULT_BUFFER_SIZE = 4096;
+
+    /**
+     * get BufferedWriter output stream
+     * 
+     * @param fileFullPath
+     *            the absolute file path
+     * @param append
+     *            true if can append
+     * @param charSet
+     *            assign charSet,null if use the default charSet
+     * @return BufferedWriter
+     * @throws IOException
+     */
+    public static BufferedWriter getBufferedWriter(String fileFullPath, boolean append, String charSet) throws IOException {
         return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileFullPath, append), StringUtils.decideCharSet(charSet)));
     }
 
-	/**
-	 * get BufferedReader input stream
-	 * @param fileFullPath		the absolute file path
-	 * @param charSet			assign charSet,null if use the default charSet
-	 * @return BufferedReader
-	 * @throws IOException
-	 */
+    /**
+     * get BufferedReader input stream
+     * 
+     * @param fileFullPath
+     *            the absolute file path
+     * @param charSet
+     *            assign charSet,null if use the default charSet
+     * @return BufferedReader
+     * @throws IOException
+     */
     public final static BufferedReader getBufferedReader(String fileFullPath, String charSet) throws IOException {
         return new BufferedReader(new InputStreamReader(new FileInputStream(fileFullPath), StringUtils.decideCharSet(charSet)));
     }
@@ -89,22 +93,24 @@ public class IOUtils {
     // String <--> Stream  相互转换
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-	/**
-	 * 将字符串转换为 InputStream 输入流
-	 * @param charSet 指定字符编码
-	 */
+    /**
+     * 将字符串转换为 InputStream 输入流
+     * 
+     * @param charSet
+     *            指定字符编码
+     */
     public final static InputStream getInputStreamFromString(String str, String charSet) {
         if (str == null) {
             throw new IllegalArgumentException("str==null");
         }
         try {
             return new ByteArrayInputStream(str.getBytes(StringUtils.decideCharSet(charSet)));
-        } catch (UnsupportedEncodingException e) {
+        }
+        catch (UnsupportedEncodingException e) {
             throw new BasicRuntimeException("UnsupportedEncodingException[String.getBytes()] charSet=" + charSet);
         }
     }
-    
-	
+
     /**
      * 将字符串转换为 Reader 输入流
      */
@@ -114,13 +120,15 @@ public class IOUtils {
         }
         return new StringReader(str);
     }
-    
+
     /**
-     * Copy the contents of the given Reader into a String.
-     * Closes the reader when done.
-     * @param in the reader to copy from
+     * Copy the contents of the given Reader into a String. Closes the reader when done.
+     * 
+     * @param in
+     *            the reader to copy from
      * @return the String that has been copied to
-     * @throws IOException in case of I/O errors
+     * @throws IOException
+     *             in case of I/O errors
      */
     public static String copyToString(Reader in) throws IOException {
         StringWriter out = new StringWriter();
@@ -128,8 +136,7 @@ public class IOUtils {
         return out.toString();
     }
     
-    
-    
+
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
     // Clone or Copy  for STREAM
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -140,14 +147,17 @@ public class IOUtils {
     public final static int clone(final InputStream in, final OutputStream out) throws IOException {
         return clone(in, DEFAULT_BUFFER_SIZE, out);
     }
-    
+
     /**
-     * Copy the contents of the given Reader to the given Writer.
-     * Closes both when done.
-     * @param in the Reader to copy from
-     * @param out the Writer to copy to
+     * Copy the contents of the given Reader to the given Writer. Closes both when done.
+     * 
+     * @param in
+     *            the Reader to copy from
+     * @param out
+     *            the Writer to copy to
      * @return the number of characters copied
-     * @throws IOException in case of I/O errors
+     * @throws IOException
+     *             in case of I/O errors
      */
     public static int clone(Reader in, Writer out) throws IOException {
         Assert.notNull(in, "No Reader specified");
@@ -161,8 +171,7 @@ public class IOUtils {
                 byteCount += bytesRead;
             }
             return byteCount;
-        }
-        finally {
+        } finally {
             try {
                 in.close();
             }
@@ -170,7 +179,8 @@ public class IOUtils {
             }
             try {
                 out.flush();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
             }
             try {
                 out.close();
@@ -179,10 +189,10 @@ public class IOUtils {
             }
         }
     }
-    
-    
+
     /**
-     * @param len in-source-length e.g. long len = fileIn.length()
+     * @param len
+     *            in-source-length e.g. long len = fileIn.length()
      */
     public final static int clone(final InputStream in, long len, final OutputStream out) throws IOException {
         Assert.notNull(in, "No InputStream specified");
@@ -210,8 +220,7 @@ public class IOUtils {
                 byteCount += bytesRead;
             }
             return byteCount;
-        }
-        finally {
+        } finally {
             try {
                 in.close();
             }
@@ -219,7 +228,8 @@ public class IOUtils {
             }
             try {
                 out.flush();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
             }
             try {
                 out.close();
@@ -228,7 +238,7 @@ public class IOUtils {
             }
         }
     }
-    
+
     
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
     // close IO 静默关闭IO流
@@ -241,14 +251,16 @@ public class IOUtils {
         if (null != out) {
             try {
                 out.flush();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 if (LogFactory.isDebugEnabled()) {
                     LOG.warn("flush error", e);
                 }
             }
             try {
                 out.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 if (LogFactory.isDebugEnabled()) {
                     LOG.warn("close error", e);
                 }
@@ -260,14 +272,16 @@ public class IOUtils {
         if (null != out) {
             try {
                 out.flush();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 if (LogFactory.isDebugEnabled()) {
                     LOG.warn("flush error", e);
                 }
             }
             try {
                 out.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 if (LogFactory.isDebugEnabled()) {
                     LOG.warn("close error", e);
                 }
@@ -282,7 +296,8 @@ public class IOUtils {
         if (null != in) {
             try {
                 in.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 if (LogFactory.isDebugEnabled()) {
                     LOG.warn("close error", e);
                 }
@@ -294,26 +309,28 @@ public class IOUtils {
         if (null != in) {
             try {
                 in.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 if (LogFactory.isDebugEnabled()) {
                     LOG.warn("close error", e);
                 }
             }
         }
     }
-    
+
     public final static void close(Closeable clo) {
         if (clo != null) {
             try {
                 clo.close();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 if (LogFactory.isDebugEnabled()) {
                     LOG.warn("close error", e);
                 }
             }
         }
     }
-    
+
     public final static void closeIO(Reader in, Writer out) {
         closeIO(in);
         closeIO(out);
@@ -323,7 +340,5 @@ public class IOUtils {
         closeIO(in);
         closeIO(out);
     }
-    
-    
 
 }

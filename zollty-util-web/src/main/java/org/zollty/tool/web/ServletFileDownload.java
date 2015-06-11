@@ -30,13 +30,14 @@ import org.zollty.util.NestedRuntimeException;
 import org.zollty.util.StringUtils;
 
 /**
- * Servlet方式下载【通过Response.getOutputStream推送到客户端】
- * 前端建议用iframe的方式去下载
- * @author zollty 
+ * Servlet方式下载【通过Response.getOutputStream推送到客户端】 
+ * <br>前端建议用iframe的方式去下载
+ * 
+ * @author zollty
  * @since 2013-10-24
  */
 public class ServletFileDownload {
-	
+
     public static final Map<String, String> MIME = new HashMap<String, String>();
     static {
         // MIME类型
@@ -53,12 +54,12 @@ public class ServletFileDownload {
         // MIME.put("zip", "multipart/x-zip");
         MIME.put("gz", "application/x-gzip");
         MIME.put("rar", "application/x-rar-compressed");
-        
+
         MIME.put("doc", "application/msword");
         MIME.put("docx", "application/msword");
         MIME.put("wps", "application/application/vnd.ms-works");
         MIME.put("ppt", "application/application/vnd.ms-powerpoint");
-        
+
         MIME.put("pdf", "application/pdf");
         MIME.put("jpe", "image/jpeg");
         MIME.put("jpeg", "image/jpeg");
@@ -67,14 +68,14 @@ public class ServletFileDownload {
         MIME.put("png", "image/png");
         MIME.put("js", "application/x-javascript");
         // MIME.put("js", "application/x-ns-proxy-autoconfig");
-        
+
         // MIME.put("rar", "application/rar");
-       
+
         MIME.put("css", "text/css");
         MIME.put("avi", "video/msvideo");
         MIME.put("mp3", "audio/mp3");
         MIME.put("mp4", "video/mp4");
-        
+
         MIME.put("jar", "application/x-java-archive");
         MIME.put("java", "text/x-java-source");
         MIME.put("class", "application/octet-stream");
@@ -88,14 +89,12 @@ public class ServletFileDownload {
         fileDownload(fileName, fileFullPath, contentType, request, response);
     }
 
-    public static void fileDownload(String fileFullPath, String contentType, HttpServletRequest request,
-            HttpServletResponse response) {
+    public static void fileDownload(String fileFullPath, String contentType, HttpServletRequest request, HttpServletResponse response) {
         String fileName = StringUtils.getFilenameFromPath(fileFullPath);
         fileDownload(fileName, fileFullPath, contentType, request, response);
     }
 
-    public static void fileDownload(String fileName, String fileFullPath, String contentType,
-            HttpServletRequest request, HttpServletResponse response) {
+    public static void fileDownload(String fileName, String fileFullPath, String contentType, HttpServletRequest request, HttpServletResponse response) {
         if (StringUtils.isNullOrEmpty(fileName)) {
             throw new BasicRuntimeException("The file name is null or empty! fileName=" + fileName);
         }
@@ -117,31 +116,33 @@ public class ServletFileDownload {
             response.addHeader("Content-Disposition", "attachment; " + praseAttachmentFilename(fileName, request));
             int len = (int) file.length();
             response.setContentLength(len);
-//            byte[] buf = null;
-//            if (len < 2048) {
-//                buf = new byte[len];
-//            } else {
-//                buf = new byte[2048];
-//            }
-//            int numRead = 0;
-//            while ((numRead = in.read(buf)) != -1) {
-//                out.write(buf, 0, numRead);
-//            }
+            // byte[] buf = null;
+            // if (len < 2048) {
+            // buf = new byte[len];
+            // } else {
+            // buf = new byte[2048];
+            // }
+            // int numRead = 0;
+            // while ((numRead = in.read(buf)) != -1) {
+            // out.write(buf, 0, numRead);
+            // }
             IOUtils.clone(in, len, out);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new NestedRuntimeException(e, "Error occured when download the file[" + fileFullPath + "]");
         } finally {
             IOUtils.closeIO(in, out);
         }
     }
 
-    private static String praseAttachmentFilename(String fileName, HttpServletRequest request)
+    private static String praseAttachmentFilename(String fileName, HttpServletRequest request) 
             throws UnsupportedEncodingException {
         String rtn;
         UserAgentParser uap = new UserAgentParser(request);
         if (uap.isMSIEBrowser()) {
             rtn = "filename=" + URLEncoder.encode(fileName, Const.UTF_8);
-        } else {
+        }
+        else {
             rtn = "filename=" + new String(fileName.getBytes(Const.UTF_8), Const.ISO_8859_1);
         }
         // // Opera浏览器只能采用filename*

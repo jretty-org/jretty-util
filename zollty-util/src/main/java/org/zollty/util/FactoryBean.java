@@ -19,7 +19,7 @@ package org.zollty.util;
  * @since 2013-06-27
  */
 public interface FactoryBean<T> {
-    
+
     /**
      * @return bean实例对象
      */
@@ -29,7 +29,7 @@ public interface FactoryBean<T> {
      * @return bean对象的 Class Type
      */
     Class<?> getType();
-    
+
     /**
      * @return bean对象的 id
      */

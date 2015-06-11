@@ -25,10 +25,10 @@ import org.zollty.log.LogFactory;
 import org.zollty.log.Logger;
 
 /**
- * file utils best practice
+ * file utils best practice 
  * {高效的常用文件工具类}
  * 
- * @author zollty 
+ * @author zollty
  * @since 2013-6-23
  */
 public class FileUtils {
@@ -37,11 +37,13 @@ public class FileUtils {
 
     public static final char SEPARATOR = '/';
 
-	/**
-	 * deletes file or folder with all subfolders and subfiles.
-	 * @param file  [file or directory to delete]
-	 * @return true [if all files are deleted]
-	 */
+    /**
+     * deletes file or folder with all subfolders and subfiles.
+     * 
+     * @param file
+     *            [file or directory to delete]
+     * @return true [if all files are deleted]
+     */
     public static boolean deleteAll(final File file) {
         if (file.isDirectory()) {
             for (File subFile : file.listFiles()) {
@@ -52,13 +54,16 @@ public class FileUtils {
         }
         return file.delete();
     }
-    
-	/**
-	 * 复制整个文件夹内容
-	 * @param oldPath 原文件路径 如：c:/fqf
-	 * @param newPath 复制后路径 如：f:/fqf/ff
-	 * @return boolean
-	 */
+
+    /**
+     * 复制整个文件夹内容
+     * 
+     * @param oldPath
+     *            原文件路径 如：c:/fqf
+     * @param newPath
+     *            复制后路径 如：f:/fqf/ff
+     * @return boolean
+     */
     public static void copyFolder(String oldPath, String newPath) {
         File oldFile = new File(oldPath);
         String[] files = oldFile.list();
@@ -89,12 +94,14 @@ public class FileUtils {
             if (sourceFile.isFile()) {
                 try {
                     cloneFile(sourceFile, new File(newPath + SEPARATOR + fileName));
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     if (LOG.isInfoEnabled()) {
                         LOG.warn(e, "cloneFile error. [filePath={}]", oldPath + SEPARATOR + fileName);
                     }
                 }
-            } else if (sourceFile.isDirectory()) {// 如果是子文件夹
+            }
+            else if (sourceFile.isDirectory()) {// 如果是子文件夹
                 copyFolder(oldPath + SEPARATOR + fileName, newPath + SEPARATOR + fileName);
             }
         }
@@ -123,7 +130,8 @@ public class FileUtils {
         ArrayList<File> result = new ArrayList<File>();
         if (file.isFile() && checkFileType(file, inludeType)) {
             result.add(file);
-        } else if (file.isDirectory()) {
+        }
+        else if (file.isDirectory()) {
             File[] files = file.listFiles();
             for (File filePath : files) {
                 result.addAll(loopFiles(filePath, inludeType));
@@ -155,7 +163,8 @@ public class FileUtils {
         public int compare(File f1, File f2) {
             if (f1.lastModified() < f2.lastModified()) { // 降序
                 return 1;
-            } else {
+            }
+            else {
                 return -1;
             }
         }

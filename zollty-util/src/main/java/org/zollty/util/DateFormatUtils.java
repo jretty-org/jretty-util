@@ -47,13 +47,14 @@ public class DateFormatUtils {
 
     public static final String HH_mm_ss = "HH:mm:ss";
     public static final String HH_mm_ss_SSS = "HH:mm:ss,SSS";
-	
-	// 其他格式 可调用 format() 和 formatDate(Date) 方法 自行组装
-	
-	/**
-	 * 自定义日期格式
-	 * @param datePattern
-	 */
+
+    // 其他格式 可调用 format() 和 formatDate(Date) 方法 自行组装
+
+    /**
+     * 自定义日期格式
+     * 
+     * @param datePattern
+     */
     public DateFormatUtils(final String datePattern) {
         threadLocal = new ThreadLocal<SimpleDateFormat>() {
             protected SimpleDateFormat initialValue() {
@@ -93,7 +94,8 @@ public class DateFormatUtils {
     public Date parse(String dateStr) {
         try {
             return getFormat().parse(dateStr);
-        } catch (ParseException e) {
+        }
+        catch (ParseException e) {
             return null;
         }
     }
@@ -105,20 +107,21 @@ public class DateFormatUtils {
         return uniformat(new Date());
     }
 
-	/**
-	 * 获得一个含详细时间信息的对象，可以根据需要自由组合。
-	 * 例如 组合成 yyyyMMdd 格式： 
-	 * dateInfo.getYyyy()+dateInfo.getMM()+dateInfo.getDd()
-	 * 也可以用如下一些现成的方法：
-	 * @see #format_yyyy_MM_dd(Date)
-	 * @see #format_yyyy_MM_dd_HH_mm_ss(Date)
-	 * @see #format_yyyy_MM_dd_HH_mm_ss_SSS(Date)
-	 * 需要其他格式，请自行添加(参照如上的写法)
-	 */
+    /**
+     * 获得一个含详细时间信息的对象，可以根据需要自由组合。 
+     * 例如 组合成 yyyyMMdd 格式： dateInfo.getYyyy()+dateInfo.getMM()+dateInfo.getDd() 
+     * 
+     * 也可以用如下一些现成的方法：
+     * 
+     * @see #format_yyyy_MM_dd(Date)
+     * @see #format_yyyy_MM_dd_HH_mm_ss(Date)
+     * @see #format_yyyy_MM_dd_HH_mm_ss_SSS(Date) 
+     * 需要其他格式，请自行添加(参照如上的写法)
+     */
     public static DateInfo formatDate(Date date) {
         return uniformat(date);
     }
-	
+
     /**
      * format成 yyyy-MM-dd 格式
      */
@@ -127,8 +130,7 @@ public class DateFormatUtils {
     }
 
     /**
-     * @param spitChar
-     *            指定分割年月日的字符，常用的分隔符有"-"、"/"
+     * @param spitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
     public static String format_yyyy_MM_dd(Date date, String spitChar) {
         DateInfo dinfo = uniformat(date);
@@ -143,14 +145,13 @@ public class DateFormatUtils {
         sbu.append(dinfo.day);
         return sbu.toString();
     }
-    
+
     public static String format_yyyy_MM_dd_HH_mm(Date date) {
         return format_yyyy_MM_dd_HH_mm_ss(date, DateInfo._SEP_MS);
     }
 
     /**
-     * @param dateSpitChar
-     *            指定分割年月日的字符，常用的分隔符有"-"、"/"
+     * @param dateSpitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
     public static String format_yyyy_MM_dd_HH_mm(Date date, String dateSpitChar) {
         DateInfo dinfo = uniformat(date);
@@ -184,8 +185,7 @@ public class DateFormatUtils {
     }
 
     /**
-     * @param dateSpitChar
-     *            指定分割年月日的字符，常用的分隔符有"-"、"/"
+     * @param dateSpitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
     public static String format_yyyy_MM_dd_HH_mm_ss(Date date, String dateSpitChar) {
         DateInfo dinfo = uniformat(date);
@@ -225,8 +225,7 @@ public class DateFormatUtils {
     }
 
     /**
-     * @param spitChar
-     *            指定分割年月日的字符，常用的分隔符有"-"、"/"
+     * @param spitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
     public static String format_yyyy_MM_dd_HH_mm_ss_SSS(Date date, String dateSpitChar) {
         DateInfo dinfo = uniformat(date);
@@ -276,8 +275,7 @@ public class DateFormatUtils {
     }
 
     /**
-     * @param spitChar
-     *            指定分割年月日的字符，常用的分隔符有"-"、"/"
+     * @param spitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
     public static String format_dd_MM_yyyy(Date date, String spitChar) {
         DateInfo dinfo = uniformat(date);
@@ -298,8 +296,7 @@ public class DateFormatUtils {
     }
 
     /**
-     * @param dateSpitChar
-     *            指定分割年月日的字符，常用的分隔符有"-"、"/"
+     * @param dateSpitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
     public static String format_dd_MM_yyyy_HH_mm_ss(Date date, String dateSpitChar) {
         DateInfo dinfo = uniformat(date);
@@ -401,7 +398,8 @@ public class DateFormatUtils {
         if (millis < 10) {
             sbu.append('0');
             sbu.append(millis);
-        } else {
+        }
+        else {
             sbu.append(millis);
         }
         return sbu.toString();
@@ -425,13 +423,13 @@ public class DateFormatUtils {
         }
     }
 
-	////////////////////////下面是内部实现方法/////////////////////////////////
-	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ////////////////////////下面是内部实现方法/////////////////////////////////
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     protected ThreadLocal<SimpleDateFormat> threadLocal;
 
-	///////////////////////////////////////////////////////////////////////////////
-	// 缓存calendar对象，但是使用时要线程同步，实测比每次都new calendar效率要高很多
+    ///////////////////////////////////////////////////////////////////////////////
+    // 缓存calendar对象，但是使用时要线程同步，实测比每次都new calendar效率要高很多
     private static Calendar calendar = Calendar.getInstance();
 
     protected static DateInfo uniformat(Date date) {
@@ -584,7 +582,8 @@ public class DateFormatUtils {
         public String getDd() {
             if (day < 10) {
                 dd = "0" + Integer.toString(day);
-            } else {
+            }
+            else {
                 dd = Integer.toString(day);
             }
             return dd;
@@ -596,7 +595,8 @@ public class DateFormatUtils {
         public String getHH() {
             if (hour < 10) {
                 HH = "0" + Integer.toString(hour);
-            } else {
+            }
+            else {
                 HH = Integer.toString(hour);
             }
             return HH;
@@ -608,7 +608,8 @@ public class DateFormatUtils {
         public String getMm() {
             if (mins < 10) {
                 mm = "0" + Integer.toString(mins);
-            } else {
+            }
+            else {
                 mm = Integer.toString(mins);
             }
             return mm;
@@ -620,7 +621,8 @@ public class DateFormatUtils {
         public String getSs() {
             if (secs < 10) {
                 ss = "0" + Integer.toString(secs);
-            } else {
+            }
+            else {
                 ss = Integer.toString(secs);
             }
             return ss;

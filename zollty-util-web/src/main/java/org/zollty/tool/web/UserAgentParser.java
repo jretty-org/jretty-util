@@ -15,7 +15,9 @@ package org.zollty.tool.web;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author zollty 
+ * 获取浏览器的 User-Agent
+ * 
+ * @author zollty
  * @since 2013-10-24
  */
 public class UserAgentParser {

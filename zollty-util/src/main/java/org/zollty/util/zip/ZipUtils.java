@@ -24,6 +24,7 @@ import java.util.zip.GZIPOutputStream;
 
 import org.zollty.log.LogFactory;
 import org.zollty.log.Logger;
+import org.zollty.util.Const;
 import org.zollty.util.IOUtils;
 
 /**
@@ -35,12 +36,8 @@ import org.zollty.util.IOUtils;
  * @since 2013-6-07
  */
 public class ZipUtils {
-	
-    private static final Logger LOG = LogFactory.getLogger(ZipUtils.class);
 
-    private static final String SEPARATOR = "/";
-    public static final String ISO_8859_1 = "ISO-8859-1";
-    public static final String UTF_8 = "UTF-8";
+    private static final Logger LOG = LogFactory.getLogger(ZipUtils.class);
 
     /**
      * 压缩文件
@@ -57,15 +54,18 @@ public class ZipUtils {
         try {
             if (null == charSet || charSet.length() == 0) {
                 out = new ZipOutputStream(new FileOutputStream(outputZipFile));
-            } else {
+            }
+            else {
                 out = new ZipOutputStream(new FileOutputStream(outputZipFile), charSet);
             }
             if (inputSourceFile.isDirectory()) {
                 zip(out, inputSourceFile, "");
-            } else {
+            }
+            else {
                 zip(out, inputSourceFile, inputSourceFile.getName());
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new NestedZipException(e);
         } finally {
             IOUtils.closeIO(out);
@@ -82,22 +82,24 @@ public class ZipUtils {
     /**
      * 压缩文件
      */
-    public static void zipFile(String fullOutputZipFileName, String fullInputFileOrFolderName, String charSet)
-            throws ZipException {
+    public static void zipFile(String fullOutputZipFileName, String fullInputFileOrFolderName, String charSet) throws ZipException {
         ZipOutputStream out = null;
         try {
             if (null == charSet || charSet.length() == 0) {
                 out = new ZipOutputStream(new FileOutputStream(fullOutputZipFileName));
-            } else {
+            }
+            else {
                 out = new ZipOutputStream(new FileOutputStream(fullOutputZipFileName), charSet);
             }
             File sourceFile = new File(fullInputFileOrFolderName);
             if (sourceFile.isDirectory()) {
                 zip(out, sourceFile, "");
-            } else {
+            }
+            else {
                 zip(out, sourceFile, sourceFile.getName());
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new NestedZipException(e);
         } finally {
             IOUtils.closeIO(out);
@@ -107,16 +109,18 @@ public class ZipUtils {
     private static void zip(ZipOutputStream zipOut, File sourceFile, String itemName) throws IOException {
         if (sourceFile.isDirectory()) {
             File[] fl = sourceFile.listFiles();
-            zipOut.putNextEntry(new ZipEntry(itemName + SEPARATOR));
+            zipOut.putNextEntry(new ZipEntry(itemName + Const.FOLDER_SEPARATOR));
             try {
                 for (int i = 0; i < fl.length; i++) {
                     if (itemName.length() > 0) {
-                        zip(zipOut, fl[i], itemName + SEPARATOR + fl[i].getName());
-                    } else {
+                        zip(zipOut, fl[i], itemName + Const.FOLDER_SEPARATOR + fl[i].getName());
+                    }
+                    else {
                         zip(zipOut, fl[i], fl[i].getName());
                     }
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 if (LogFactory.isDebugEnabled()) {
                     LOG.warn(e);
                 }
@@ -125,7 +129,8 @@ public class ZipUtils {
                 zipOut.flush();
                 zipOut.closeEntry();
             }
-        } else {
+        }
+        else {
             zipOut.putNextEntry(new ZipEntry(itemName));
             if (LogFactory.isTraceEnabled()) {
                 LOG.trace(itemName);
@@ -134,7 +139,8 @@ public class ZipUtils {
             try {
                 in = new FileInputStream(sourceFile);
                 IOUtils.clone(in, sourceFile.length(), zipOut);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 if (LogFactory.isDebugEnabled()) {
                     LOG.warn(e);
                 }
@@ -162,11 +168,13 @@ public class ZipUtils {
         try {
             if (null == charSet || charSet.length() == 0) {
                 in = new ZipInputStream(new FileInputStream(fullIutputZipFileName));
-            } else {
+            }
+            else {
                 in = new ZipInputStream(new FileInputStream(fullIutputZipFileName), charSet);
             }
             unzip(directory, in);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new NestedZipException(e);
         } finally {
             IOUtils.closeIO(in);
@@ -188,11 +196,13 @@ public class ZipUtils {
         try {
             if (null == charSet || charSet.length() == 0) {
                 in = new ZipInputStream(new FileInputStream(zip));
-            } else {
+            }
+            else {
                 in = new ZipInputStream(new FileInputStream(zip), charSet);
             }
             unzip(directory, in);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new NestedZipException(e);
         } finally {
             IOUtils.closeIO(in);
@@ -210,9 +220,9 @@ public class ZipUtils {
             String name = ze.getName();
             if (LogFactory.isTraceEnabled())
                 LOG.trace(name);
-            File child = new File(directory + SEPARATOR + name);
-            if (name.endsWith(SEPARATOR)) { // directory name.lastIndexOf("/") == (name.length() - 1)
-                if (!child.exists() && !child.mkdirs()){
+            File child = new File(directory + Const.FOLDER_SEPARATOR + name);
+            if (name.endsWith(Const.FOLDER_SEPARATOR)) { // directory name.lastIndexOf("/") == (name.length() - 1)
+                if (!child.exists() && !child.mkdirs()) {
                     throw new IOException("create directory \"" + child.getAbsolutePath() + "\" failed.");
                 }
                 continue;
@@ -221,7 +231,8 @@ public class ZipUtils {
             try {
                 output = new FileOutputStream(child);
                 IOUtils.clone(in, child.length(), output);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 if (LogFactory.isDebugEnabled())
                     LOG.warn(e);
             } finally {
@@ -229,11 +240,13 @@ public class ZipUtils {
             }
         }
     }
-    
-	/**
+
+    /**
      * 字符串的压缩
-     * @param str 待压缩的字符串
-     * @return    返回压缩后的字符串，注意，编码为ISO_8859_1，不可直接使用
+     * 
+     * @param str
+     *            待压缩的字符串
+     * @return 返回压缩后的字符串，注意，编码为ISO_8859_1，不可直接使用
      * @author zollty
      */
     public static String compress(String str, String orgCharset) throws ZipException {
@@ -249,29 +262,35 @@ public class ZipUtils {
             gzipout = new GZIPOutputStream(out);
             // 写入此输出流
             if (null == orgCharset) {
-                orgCharset = UTF_8;
+                orgCharset = Const.UTF_8;
             }
             gzipout.write(str.getBytes(orgCharset));
-        } catch (UnsupportedEncodingException e) {
+        }
+        catch (UnsupportedEncodingException e) {
             throw new ZipException("compress failed! UnsupportedEncodingException - " + orgCharset);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new NestedZipException(e, "compress failed!");
         } finally {
             IOUtils.closeIO(gzipout);
         }
         try {
             // 使用指定的 charsetName，通过解码字节将缓冲区内容转换为字符串
-            return out.toString(ISO_8859_1); // 必须先关闭gzipout才能调用out.toString()
-        } catch (UnsupportedEncodingException e) {
+            return out.toString(Const.ISO_8859_1); // 必须先关闭gzipout才能调用out.toString()
+        }
+        catch (UnsupportedEncodingException e) {
             throw new ZipException("UnsupportedEncodingException - ISO-8859-1");
         }
     }
 
     /**
      * 字符串的解压
-     * @param str         待解压的字符串，注意必须为ISO_8859_1编码
-     * @param orgCharset  原（未压缩的）字符串的编码格式，以便还原原字符串，如果不设置，将默认取当前JVM的编码
-     * @return            返回解压缩后的字符串
+     * 
+     * @param str
+     *            待解压的字符串，注意必须为ISO_8859_1编码
+     * @param orgCharset
+     *            原（未压缩的）字符串的编码格式，以便还原原字符串，如果不设置，将默认取当前JVM的编码
+     * @return 返回解压缩后的字符串
      */
     public static String uncompress(String str, String orgCharset) throws ZipException {
         if (null == str || str.length() == 0) {
@@ -279,8 +298,9 @@ public class ZipUtils {
         }
         byte buf[];
         try {
-            buf = str.getBytes(ISO_8859_1);
-        } catch (UnsupportedEncodingException e) {
+            buf = str.getBytes(Const.ISO_8859_1);
+        }
+        catch (UnsupportedEncodingException e) {
             throw new ZipException("UnsupportedEncodingException - ISO-8859-1");
         }
 
@@ -298,7 +318,8 @@ public class ZipUtils {
                 // 将指定 byte 数组中从偏移量 off 开始的 len 个字节写入此 byte数组输出流
                 out.write(buffer, 0, n);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new NestedZipException(e, "Uncompress failed!");
         } finally {
             IOUtils.closeIO(gzipin);
@@ -307,9 +328,10 @@ public class ZipUtils {
         try {
             // 使用指定的 charsetName，通过解码字节将缓冲区内容转换为字符串
             return out.toString(orgCharset);// "GBK"
-        } catch (UnsupportedEncodingException e) {
+        }
+        catch (UnsupportedEncodingException e) {
             throw new ZipException("Uncompress failed! UnsupportedEncodingException - " + orgCharset);
         }
     }
-    
+
 }

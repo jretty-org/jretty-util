@@ -13,8 +13,8 @@
 package org.zollty.util;
 
 /**
- * @author zollty 
- * @since 2013-10-27 
+ * @author zollty
+ * @since 2013-10-27
  */
 public interface I18nExceptionSupport {
 
