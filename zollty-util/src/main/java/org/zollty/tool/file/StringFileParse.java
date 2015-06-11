@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by Zollty Tsou on 2013-08-13 [http://blog.zollty.com]
+ * Create by ZollTy on 2013-8-13 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.tool.file;
 

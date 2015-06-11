@@ -1,6 +1,5 @@
-/*
- * @(#)ClassUtils.java
- * Copyright (C) 2013-2014 the original author or authors.
+/* 
+ * Copyright (C) 2013-2015 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -9,7 +8,6 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by zollty on 2013-6-02 [http://blog.csdn.net/zollty (or GitHub)]
  */
 package org.zollty.util;
 
@@ -38,10 +36,11 @@ import java.util.Set;
  * @author Rob Harrop
  * @author Sam Brannen
  * @auther Zollty Tsou
+ * 
+ * @since 2013-6-13
  */
 @SuppressWarnings("unchecked")
 public class ClassUtils {
-    
     
     /** Suffix for array class names: "[]" */
     public static final String ARRAY_SUFFIX = "[]";
@@ -60,7 +59,6 @@ public class ClassUtils {
 
     /** The ".class" file suffix */
     public static final String CLASS_FILE_SUFFIX = ".class";
-
 
     /**
      * Map with primitive wrapper type as key and corresponding primitive

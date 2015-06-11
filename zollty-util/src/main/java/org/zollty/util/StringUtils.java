@@ -1,4 +1,4 @@
-/* @(#)StringUtils.java 
+/* 
  * Copyright (C) 2013-2014 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by zollty on 2013-6-02 [http://blog.csdn.net/zollty (or GitHub)]
+ * Create by ZollTy on 2013-6-02 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.util;
 
@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * 通用字符串工具类
+ * 
  * @author zollty 
  * @since 2013-06-02
  */
@@ -69,6 +70,7 @@ public class StringUtils {
 		}
 		return true;
 	}
+	
 	/**
 	 * Checks if a String is empty (""), null or whitespace(e.g. " ", "\t", "\n").
 	 */
@@ -121,7 +123,6 @@ public class StringUtils {
 	public static String getJvmEncoding(){
 		return Charset.defaultCharset().displayName();
 	}
-	
 	
 	/**
 	 * 重新定义了String.getBytes()。默认用UTF-8编码，以便去除与平台的相关性。
@@ -188,7 +189,6 @@ public class StringUtils {
 	/**
 	 * 字符串编码转换
 	 * @param newCharset 新编码，例如UTF-8
-	 * @author zouty <br>2013-6-6
 	 */
 	public static String changeEncode(final String str, final String newCharset){
 		if(str == null || str.length() ==0) return str;
@@ -335,24 +335,6 @@ public class StringUtils {
         }
     }
 	
-
-//	public static String applyRelativePath(String path, String relativePath) {
-//		String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-//		String relativePath2 = relativePath.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-//		
-//		if ( path2.endsWith(Const.FOLDER_SEPARATOR) ) {
-//			if ( relativePath2.startsWith(Const.FOLDER_SEPARATOR) ) {
-//				return path2.substring(0, path2.length()-1)+relativePath2;
-//			}
-//			return path2+relativePath2;
-//		}
-//		
-//		if ( relativePath2.startsWith(Const.FOLDER_SEPARATOR) ) {
-//			return path2+relativePath2;
-//		}
-//		return path2+Const.FOLDER_SEPARATOR+relativePath2;
-//	}
-	
 	/**
      * Count the occurrences of the substring in string s.
      * @param str string to search in. Return 0 if this is null.
@@ -475,6 +457,7 @@ public class StringUtils {
         }
 		return result.toString();
 	}
+	
 	/**
 	 * @see #replaceParams(String, Object...)
 	 */
@@ -514,4 +497,5 @@ public class StringUtils {
 		}
 		return sb.toString();
 	}
+	
 }

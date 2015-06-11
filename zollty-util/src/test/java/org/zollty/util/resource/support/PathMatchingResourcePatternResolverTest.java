@@ -1,3 +1,14 @@
+/* 
+ * Copyright (C) 2013-2015 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ */
 package org.zollty.util.resource.support;
 
 import static org.junit.Assert.assertEquals;
@@ -11,7 +22,6 @@ import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
 import org.zollty.util.resource.Resource;
 
 public class PathMatchingResourcePatternResolverTest {
@@ -64,7 +74,7 @@ public class PathMatchingResourcePatternResolverTest {
         Resource[] resources = resolver.getResources("classpath*:org/zollty/util/resource/sup*/*.class");
         // Have to exclude Clover-generated class files here,
         // as we might be running as part of a Clover test run.
-        List noCloverResources = new ArrayList();
+        List<Resource> noCloverResources = new ArrayList<Resource>();
         for (int i = 0; i < resources.length; i++) {
             if (resources[i].getFilename().indexOf("$__CLOVER_") == -1) {
                 noCloverResources.add(resources[i]);
@@ -92,7 +102,7 @@ public class PathMatchingResourcePatternResolverTest {
 
     private void assertProtocolAndFilenames(
             Resource[] resources, String urlProtocol, String[] fileNames1, String[] fileNames2) throws IOException {
-        List fileNames = new ArrayList(Arrays.asList(fileNames1));
+        List<String> fileNames = new ArrayList<String>(Arrays.asList(fileNames1));
         fileNames.addAll(Arrays.asList(fileNames2));
         assertProtocolAndFilenames(resources, urlProtocol, (String[]) fileNames.toArray(new String[fileNames.size()]));
     }
@@ -100,8 +110,7 @@ public class PathMatchingResourcePatternResolverTest {
     private void assertProtocolAndFilenames(Resource[] resources, String urlProtocol, String[] fileNames)
             throws IOException {
 
-        // Uncomment the following if you encounter problems with matching against the file system
-        // It shows file locations.
+        /** Uncomment the following if you encounter problems with matching against the file system It shows file locations. */
 //      String[] actualNames = new String[resources.length];
 //      for (int i = 0; i < resources.length; i++) {
 //          actualNames[i] = resources[i].getFilename();

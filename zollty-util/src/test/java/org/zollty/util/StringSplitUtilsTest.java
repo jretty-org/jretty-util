@@ -1,32 +1,40 @@
+/* 
+ * Copyright (C) 2013-2015 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * Create by ZollTy on 2014-6-11 (http://blog.zollty.com/, zollty@163.com)
+ */
 package org.zollty.util;
 
 import java.util.Arrays;
 
 import org.junit.Test;
 
+/**
+ * @author zollty
+ * @since 2014-6-11
+ */
 public class StringSplitUtilsTest {
     
     @Test
     public void test(){
 
-      // System.out.println();
-      // System.out.println("\"ab   de fg\", null");
       splitTest("ab   de fg", null, "[ab, , , de, fg]");
       splitByWholeSeparatorTest("ab   de fg", null, "[ab, , , de, fg]");
       
-      // System.out.println();
-      // System.out.println("\"ab  KKK\\t de fg \\n\\r LLLL\", null");
       splitTest("ab  KKK\t de fg \n\r LLLL", null, "[ab, , KKK, , de, fg, , , , LLLL]");
       splitByWholeSeparatorTest("ab  KKK\t de fg \n\r LLLL", null, "[ab, , KKK, , de, fg, , , , LLLL]");
       
-      // System.out.println();
-      // System.out.println("\"00000\\n00000\", \"\\n\"");
       splitTest("00000\n00000", "\n", "[00000, 00000]");
       splitByWholeSeparatorTest("00000\n00000", "\n", "[00000, 00000]");
       
       
-      // System.out.println();
-      // System.out.println("\"/app/opt///was/\", \"/\"");
       splitTest("/app/opt///was/", "/", "[, app, opt, , , was, ]");
       splitByWholeSeparatorTest("/app/opt///was/", "/", "[, app, opt, , , was, ]");
       splitByWholeSeparatorTest("/app/opt///was//", "//", "[/app/opt, /was, ]");
@@ -41,33 +49,21 @@ public class StringSplitUtilsTest {
       splitByWholeSeparatorNoEmptyTest("/app/opt///was/", "/", "[app, opt, was]");
       
       
-      // System.out.println();
-      // System.out.println("\"app/opt///was\", \"/\"");
       splitTest("app/opt///was", "/", "[app, opt, , , was]");
       splitByWholeSeparatorTest("app/opt///was", "/", "[app, opt, , , was]");
       
-      // System.out.println();
-      // System.out.println("\"app/opt///was\", \"//\"");
       splitTest("app/opt///was", "//", "[app, opt, , , was]");
       splitByWholeSeparatorTest("app/opt///was", "//", "[app/opt, /was]");
       
-      // System.out.println();
-      // System.out.println("\"app/opt  was\", \"/\"");
       splitTest("app/opt  was", "/", "[app, opt  was]");
       splitByWholeSeparatorTest("app/opt  was", "/", "[app, opt  was]");
       
-      // System.out.println();
-      // System.out.println("\"app-/-opt-/-was\", \"-/-\"");
       splitTest("app-/-opt-/-was", "-/-", "[app, , , opt, , , was]");
       splitByWholeSeparatorTest("app-/-opt-/-was", "-/-", "[app, opt, was]");
       
-      // System.out.println();
-      // System.out.println("\"app-/-opt-/--/-was\", \"-/--/-\"");
       splitTest("app-/-opt-/--/-was", "-/--/-", "[app, , , opt, , , , , , was]");
       splitByWholeSeparatorTest("app-/-opt-/--/-was", "-/--/-", "[app-/-opt, was]");
       
-      // System.out.println();
-      // System.out.println("\"app-KKKKKK/-opt-/--/-was\", \"-/--/-\"");
       splitTest("app-KKKKKK/-opt-/--/-was", "-/--/-", "[app, KKKKKK, , opt, , , , , , was]");
       splitByWholeSeparatorTest("app-KKKKKK/-opt-/--/-was", "-/--/-", "[app-KKKKKK/-opt, was]");
       

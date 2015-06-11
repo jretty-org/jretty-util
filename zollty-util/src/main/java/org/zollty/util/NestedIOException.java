@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2013-2015 the original author or authors.
+ * Copyright (C) 2014-2015 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by Zollty Tsou (zolltytsou@gmail.com, http://blog.zollty.com)
+ * Create by ZollTy on 2014-12-13 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.util;
 
@@ -32,7 +32,7 @@ public class NestedIOException extends IOException implements NestedException, E
 
     private final Throwable exception;
     
-    private final NestedExceptionDelegate delegate; //<NestedIOException>
+    private final NestedExceptionDelegate delegate;
     
     public static final String EXCEPTION_PRIFIX = "org.zollty.IOException: ";
 

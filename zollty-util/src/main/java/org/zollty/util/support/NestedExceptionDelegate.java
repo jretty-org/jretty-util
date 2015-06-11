@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2013-2015 the original author or authors.
+ * Copyright (C) 2014-2015 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by Zollty Tsou (zolltytsou@gmail.com, http://blog.zollty.com)
+ * Create by ZollTy on 2014-12-13 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.util.support;
 
@@ -25,7 +25,7 @@ import org.zollty.util.StringUtils;
  * @version 1.0
  * @since 2014-12-13
  */
-public class NestedExceptionDelegate { //<T extends ExceptionDelegateSupport> 
+public class NestedExceptionDelegate {
     
     public static final String MSG_SPLIT = " |- ";
     public static final String CAUSED_BY = "\nCaused by: ";
@@ -35,7 +35,6 @@ public class NestedExceptionDelegate { //<T extends ExceptionDelegateSupport>
     private final String[] params;
     private final Throwable exception;
     private String prefix;
-//    private final Class<T> exceptionType;
 
     /**
      * @param message 自定义错误信息
@@ -45,7 +44,6 @@ public class NestedExceptionDelegate { //<T extends ExceptionDelegateSupport>
         this.errorMsg = message;
         this.params = args;
         this.exception = null;
-//        this.exceptionType = exceptionType; Class<T> exceptionType, 
         this.prefix = prefix;
     }
     
@@ -56,7 +54,6 @@ public class NestedExceptionDelegate { //<T extends ExceptionDelegateSupport>
         this.errorMsg = null;
         this.params = null;
         this.exception = e;
-//        this.exceptionType = exceptionType;
         this.prefix = prefix;
     }
     
@@ -69,7 +66,6 @@ public class NestedExceptionDelegate { //<T extends ExceptionDelegateSupport>
         this.errorMsg = message;
         this.params = args;
         this.exception = e;
-//        this.exceptionType = exceptionType;
         this.prefix = prefix;
     }
     
@@ -160,7 +156,6 @@ public class NestedExceptionDelegate { //<T extends ExceptionDelegateSupport>
             return buffer.append(name).append(msg).toString();
         }
     }
-
     
     /**
      * 异常的前缀名 默认为"org.zollty.NestedException: " 子类可以重载此方法，自定义前缀
@@ -182,7 +177,6 @@ public class NestedExceptionDelegate { //<T extends ExceptionDelegateSupport>
         } catch (java.io.IOException e) {
         }
     }
-
 
     /**
      * Helper method for this class

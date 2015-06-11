@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by Zollty Tsou (zolltytsou@gmail.com, http://blog.zollty.com)
+ * Create by ZollTy on 2013-6-27 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.util;
 
@@ -30,7 +30,7 @@ public class NestedCheckedException extends BasicCheckedException implements Nes
 
     private final Throwable exception;
     
-    private final NestedExceptionDelegate delegate;//<NestedCheckedException>
+    private final NestedExceptionDelegate delegate;
 
     /**
      * @param message 自定义错误信息
@@ -38,7 +38,7 @@ public class NestedCheckedException extends BasicCheckedException implements Nes
      */
     public NestedCheckedException(String message, String... args) {
         this.exception = null;
-        this.delegate = new NestedExceptionDelegate(null, message, args);//NestedCheckedException.class, 
+        this.delegate = new NestedExceptionDelegate(null, message, args);
     }
     
     /**
@@ -58,19 +58,16 @@ public class NestedCheckedException extends BasicCheckedException implements Nes
         this.exception = e;
         this.delegate = new NestedExceptionDelegate(null, e, message, args);
     }
-
     
     @Override
     public String getStackTraceStr() {
         return delegate.getStackTraceStr(null);
     }
     
-    
     @Override
     public String getMessage() {
         return delegate.getMessage();
     }
-    
 
     @Override
     public void printStackTrace() {
@@ -99,7 +96,6 @@ public class NestedCheckedException extends BasicCheckedException implements Nes
     public String toString() {
         return delegate.toString();
     }
-
     
     /**
      * 获取最原始的那个异常对象
@@ -108,7 +104,6 @@ public class NestedCheckedException extends BasicCheckedException implements Nes
     public Throwable getCause() {
         return delegate.getCause();
     }
-
     
     @Override
     public NestedExceptionDelegate getDelegate() {

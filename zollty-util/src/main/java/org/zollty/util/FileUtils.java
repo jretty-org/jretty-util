@@ -1,5 +1,5 @@
-/* @(#)FileUtils.java 
- * Copyright (C) 2013-2014 the original author or authors.
+/* 
+ * Copyright (C) 2013-2015 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by zollty on 2013-6-23 [http://blog.csdn.net/zollty (or GitHub)]
+ * Create by ZollTy on 2013-6-23 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.util;
 
@@ -25,6 +25,9 @@ import org.zollty.log.LogFactory;
 import org.zollty.log.Logger;
 
 /**
+ * file utils best practice
+ * {高效的常用文件工具类}
+ * 
  * @author zollty 
  * @since 2013-6-23
  */
@@ -49,7 +52,6 @@ public class FileUtils {
         }
         return file.delete();
     }
-
     
 	/**
 	 * 复制整个文件夹内容
@@ -145,7 +147,7 @@ public class FileUtils {
     /**
      * 按文件修改日期降序排列【最新的排在最上面】
      */
-    static public class FileModifiedTimeComparator implements Comparator<File>, Serializable {
+    public static class FileModifiedTimeComparator implements Comparator<File>, Serializable {
 
         private static final long serialVersionUID = -5254632622733699354L;
 

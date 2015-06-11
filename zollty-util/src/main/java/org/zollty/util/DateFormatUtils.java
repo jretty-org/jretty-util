@@ -1,5 +1,5 @@
-/* @(#)DateFormatUtils.java 
- * Copyright (C) 2013-2014 the original author or authors.
+/* 
+ * Copyright (C) 2013-2015 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by zollty on 2013-6-13 [http://blog.csdn.net/zollty (or GitHub)]
+ * Create by ZollTy on 2013-6-13 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.util;
 
@@ -41,6 +41,7 @@ public class DateFormatUtils {
 
     public static final String dd_MM_yy = "dd-MM-yy";
     public static final String dd_MM_yyyy = "dd-MM-yyyy";
+    public static final String dd_MM_yyyy_HH_mm = "dd-MM-yyyy HH:mm";
     public static final String dd_MM_yyyy_HH_mm_ss = "dd-MM-yyyy HH:mm:ss";
     public static final String dd_MM_yyyy_HH_mm_ss_SSS = "dd-MM-yyyy HH:mm:ss,SSS";
 
@@ -140,6 +141,41 @@ public class DateFormatUtils {
             sbu.append('0');
         }
         sbu.append(dinfo.day);
+        return sbu.toString();
+    }
+    
+    public static String format_yyyy_MM_dd_HH_mm(Date date) {
+        return format_yyyy_MM_dd_HH_mm_ss(date, DateInfo._SEP_MS);
+    }
+
+    /**
+     * @param dateSpitChar
+     *            指定分割年月日的字符，常用的分隔符有"-"、"/"
+     */
+    public static String format_yyyy_MM_dd_HH_mm(Date date, String dateSpitChar) {
+        DateInfo dinfo = uniformat(date);
+        StringBuilder sbu = new StringBuilder(20);
+        sbu.append(dinfo.year);
+        sbu.append(dateSpitChar);
+        sbu.append(getMonth(dinfo.month));
+        sbu.append(dateSpitChar);
+        if (dinfo.day < 10) {
+            sbu.append('0');
+        }
+        sbu.append(dinfo.day);
+
+        sbu.append(" ");
+        if (dinfo.hour < 10) {
+            sbu.append('0');
+        }
+        sbu.append(dinfo.hour);
+
+        sbu.append(DateInfo._SEP_CO);
+        if (dinfo.mins < 10) {
+            sbu.append('0');
+        }
+        sbu.append(dinfo.mins);
+
         return sbu.toString();
     }
 
@@ -330,28 +366,7 @@ public class DateFormatUtils {
             return nextTime;
         }
     }
-//	/**
-//	 * 产生一个独一无二的long类型的时间，长度为13，按时间先后，最短间隔为1毫秒（MilliSec）
-//	 */
-//	public static synchronized long genUniqueTimeMillis_1MS() 
-//	{
-//		try {
-//			Thread.sleep(1);
-//		} catch (InterruptedException e) {
-//		}
-//		return System.currentTimeMillis();
-//	}
-//	/**
-//	 * 产生一个独一无二的long类型的时间，长度为13，按时间先后，最短间隔为1毫秒（MilliSec）
-//	 */
-//	public static synchronized long genUniqueTimeMillis_10MS() 
-//	{
-//		try {
-//			Thread.sleep(10);
-//		} catch (InterruptedException e) {
-//		}
-//		return System.currentTimeMillis();
-//	}
+
     /**
      * 生成一个独一无二的字符串（适用于单服务器），格式为MMddHHmmssSS，长度为12，按时间先后. <br>
      * 要想适用于多服务器的话，要加上服务器标识（可为每个服务器设置不同的JVM参数作为“服务器标识”）
@@ -405,9 +420,6 @@ public class DateFormatUtils {
             if (nextTime <= lastTime2) {
                 nextTime = lastTime2;
             }
-            // if(nextTime<=lastTime2+10){
-            // nextTime = lastTime2 + 10;
-            // }
             lastTime2 = nextTime;
             return nextTime;
         }

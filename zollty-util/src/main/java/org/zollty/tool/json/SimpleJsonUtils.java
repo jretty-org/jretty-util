@@ -1,3 +1,15 @@
+/* 
+ * Copyright (C) 2013-2015 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * Create by ZollTy on 2013-12-10 (http://blog.zollty.com/, zollty@163.com)
+ */
 package org.zollty.tool.json;
 
 import java.lang.reflect.Field;
@@ -6,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 
 /**
  * @author zollty
@@ -54,37 +65,10 @@ public class SimpleJsonUtils {
         }
         return map;
     }
-//    public static Map<String, String> simpleJsonToMap(String json) {
-//        Map<String, String> map = new HashMap<String, String>();
-//        char[] chars = json.toCharArray();
-//        int a = -1;
-//        String key = null;
-//        for (int i = 1; i < chars.length - 1; i++) {
-//            if (chars[i] == '\"' && chars[i - 1] != '\\') {
-//                continue;
-//            }
-//
-//            if (a == -1) {
-//                a = i;
-//            }
-//            else {
-//                if (key == null) {
-//                    key = json.substring(a + 1, i);
-//                }
-//                else {
-//                    map.put(key, json.substring(a + 1, i).replace("\\\"", "\""));
-//                    key = null;
-//                }
-//                a = -1;
-//            }
-//            
-//        }
-//
-//        return map;
-//    }
 
     /**
-     * 组装成的简单json格式为：{"resultType": "000", "errorCode": "0x0001"}，（全部都用双引号包裹） 且默认Map<String, String>的string全都不包含特殊字符
+     * 组装成的简单json格式为：{"resultType": "000", "errorCode": "0x0001"}， 
+     * （全部都用双引号包裹） 且默认Map<String, String>的string全都不包含特殊字符
      * 
      * @see #simpleMapToJson(String)
      * @author zollty
@@ -109,7 +93,6 @@ public class SimpleJsonUtils {
 
         return strb.toString();
     }
-    
 
     /**
      * @see #simpleJsonToMap(String)
@@ -121,15 +104,15 @@ public class SimpleJsonUtils {
         Iterator<?> entryIter = map.entrySet().iterator();
         Map.Entry<?, ?> entry;
         Object value;
-//        boolean first = true;
+        // boolean first = true;
         while (entryIter.hasNext()) {
-//            if (!first) {
-//                strb.append(", ");
-//            }
-//            else {
-//                first = false;
-//            }
-            
+            // if (!first) {
+            // strb.append(", ");
+            // }
+            // else {
+            // first = false;
+            // }
+
             entry = (Entry<?, ?>) entryIter.next();
             strb.append("\"").append(entry.getKey().toString()).append("\": ");
             value = entry.getValue();
@@ -151,45 +134,42 @@ public class SimpleJsonUtils {
             else {
                 strb.append("\"").append(value.toString()).append("\"");
             }
-            
-            if( entryIter.hasNext() ) {
+
+            if (entryIter.hasNext()) {
                 strb.append(", ");
             }
         }
         strb.append("}");
         return strb.toString();
     }
-    
+
     /**
-     * 将List转化成json字符串
-     * [{APPID:XXX,ORGID:XXX},{},{}]
+     * 将List转化成json字符串 [{APPID:XXX,ORGID:XXX},{},{}]
+     * 
      * @return
      */
-    public static String SimpleListToJson(List<?> list){
+    public static String SimpleListToJson(List<?> list) {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        for(int i = 0; i < list.size(); i++){
+        for (int i = 0; i < list.size(); i++) {
             sb.append("{");
             Object obj = list.get(i);
             Field[] fields = obj.getClass().getDeclaredFields();
-            for ( Field field : fields )  
-            {  
-                // 如果不为空，设置可见性，然后返回  
-                field.setAccessible( true );  
-      
-                try  
-                {  
-                    // 设置字段可见，即可用get方法获取属性值。  
-                    sb.append("\"" + field.getName( ) + "\":\"" + field.get( obj ) +"\",");
-                }  
-                catch ( Exception e )  
-                {  
-                    // System.out.println("error--------"+methodName+".Reason is:"+e.getMessage());  
-                }  
-            }  
-            sb.deleteCharAt(sb.length()-1);
+            for (Field field : fields) {
+                // 如果不为空，设置可见性，然后返回
+                field.setAccessible(true);
+
+                try {
+                    // 设置字段可见，即可用get方法获取属性值。
+                    sb.append("\"" + field.getName() + "\":\"" + field.get(obj) + "\",");
+                }
+                catch (Exception e) {
+                    // System.out.println("error--------"+methodName+".Reason is:"+e.getMessage());
+                }
+            }
+            sb.deleteCharAt(sb.length() - 1);
             sb.append("}");
-            if(i != list.size()-1){
+            if (i != list.size() - 1) {
                 sb.append(",");
             }
         }

@@ -1,5 +1,5 @@
-/* @(#)ReflectionUtils.java 
- * Copyright (C) 2013-2014 the original author or authors.
+/* 
+ * Copyright (C) 2014-2015 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -8,7 +8,6 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by zollty on 2013-6-02 [http://blog.csdn.net/zollty (or GitHub)]
  */
 package org.zollty.util;
 
@@ -28,8 +27,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Simple utility class for working with the reflection API and handling
- * reflection exceptions.
+ * Simple utility class for working with 
+ * the reflection API and handling reflection exceptions.<br>
+ * {Java 反射API增强工具类}
  *
  * @author Juergen Hoeller
  * @author Rob Harrop
@@ -38,6 +38,8 @@ import java.util.Map.Entry;
  * @author Sam Brannen
  * @author Chris Beams
  * @auther Zollty Tsou
+ * 
+ * @since 2014-6-01
  */
 public class ReflectionUtils {
 

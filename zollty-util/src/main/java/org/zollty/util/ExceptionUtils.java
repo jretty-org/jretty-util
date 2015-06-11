@@ -1,5 +1,5 @@
-/* @(#)ExceptionUtils.java 
- * Copyright (C) 2013-2014 the original author or authors.
+/* 
+ * Copyright (C) 2013-2015 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by zollty on 2013-6-27 [http://blog.csdn.net/zollty (or GitHub)]
+ * Create by ZollTy on 2013-6-27 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.util;
 
@@ -22,6 +22,7 @@ import java.io.StringWriter;
  * 1、有些错误信息(errorMsg)非常的长，比如Spring或Hibernate或JDBC的错误信息;<br>
  * 2、一些异常的堆栈特别大，动辄几十、上百行，例如Tomcat、WebSphere的异常信息。<br>
  * 为了精简错误信息，以及防止大量冗余信息记录到日志中，故设计了这个方案：截取核心的错误信息——详见下面的算法。
+ * 
  * @author zollty 
  * @since 2013-6-27
  */
@@ -36,7 +37,6 @@ public class ExceptionUtils {
     public static String getStackTraceStr(LineChecker linechecker, Throwable e) {
         return getStackTraceStr(linechecker, e, null);
     }
-    
 	
 	/**
 	 * 智能将StackTrace堆栈信息转换成字符串
@@ -148,8 +148,6 @@ public class ExceptionUtils {
     }
 
     private static final String MSG_SPLIT = " |- ";
-    //private static final String MSG_START = "[= ";
-    //private static final String MSG_END = " =]";
 
     /**
      * 获取精简过的错误信息，(错误类型+错误描述)，默认截取440个字符（前320个+后120个）
@@ -185,20 +183,20 @@ public class ExceptionUtils {
         String error = errorMsgCut(e.toString(), errorLen);
         // getErrorDescription
         StringBuilder sb = new StringBuilder();
-        //sb.append(MSG_START);
         if (StringUtils.isNotEmpty(prompt)) {
             sb.append(prompt);
             sb.append(MSG_SPLIT);
         }
         sb.append(error);
-        //sb.append(MSG_END);
 
         return sb.toString();
     }
 
     /**
-     * 裁剪错误信息，最多只取 maxLen 个字符(maxLen>=200)，规则如下： 【只保留前面8/11的字符+后面3/11的字符】 <br>
-     * 例如一个数据库的errorMessage长度可达1000个字符，用此方法裁剪后, 假设maxLen=550，那就只保留前400个字符+后150个字符。
+     * 裁剪错误信息，最多只取 maxLen 个字符(maxLen>=200)，规则如下： <br>
+     * 【只保留前面8/11的字符+后面3/11的字符】 <br>
+     * 例如一个数据库的errorMessage长度可达1000个字符，用此方法裁剪后, <br>
+     *  假设maxLen=550，那就只保留前400个字符+后150个字符。
      * 
      * @param maxLen 截取错误字符串的最大长度，比如500
      * @return 精简后的错误信息字符串
@@ -217,10 +215,19 @@ public class ExceptionUtils {
         return errorMsg;
     }
 
+    /**
+     * Run in try-catch Throwable, change Throwable to NestedCheckedException
+     * {捕获所有异常和错误}
+     * @see doInSecure(final SecureRun<T> runHook)
+     */
     public static interface SecureRun<T> {
         T run() throws Throwable;
     }
 
+    /**
+     * Run in try-catch Throwable, change Throwable to NestedCheckedException
+     * {捕获所有异常和错误}
+     */
     public static <T> T doInSecure(final SecureRun<T> runHook) throws NestedCheckedException {
         try {
             return runHook.run();

@@ -1,4 +1,4 @@
-/* @(#)RandomUtils.java 
+/* 
  * Copyright (C) 2013-2014 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by zollty on 2013-6-07 [http://blog.csdn.net/zollty (or GitHub)]
+ * Create by ZollTy on 2013-6-07 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.util;
 
@@ -16,11 +16,15 @@ import java.util.Random;
 
 /**
  * 线程安全的随机数生成工具
+ * 
  * @author zollty 高效的算法保证
  * @since 2013-6-07
  */
 public class RandomUtils {
 
+    /**
+     * 获取 (0,1) 范围的随机实数，例如 0.019049038474404645, 0.9528710628981955
+     */
     public static double nextDouble() {
         if (randomNumberGenerator == null) {
             initRNG();

@@ -1,5 +1,5 @@
-/* @(#)ZipNestedException.java 
- * Copyright (C) 2013-2014 the original author or authors.
+/* 
+ * Copyright (C) 2013-2015 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by zollty on 2013-7-07 [http://blog.csdn.net/zollty (or GitHub)]
+ * Create by ZollTy on 2013-7-03 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.util.zip;
 
@@ -21,7 +21,7 @@ import org.zollty.util.support.NestedExceptionDelegate;
 
 /**
  * @author zollty 
- * @since 2013-7-07
+ * @since 2013-7-03
  */
 public class NestedZipException extends ZipException implements NestedException, ExceptionDelegateSupport {
     
@@ -29,7 +29,7 @@ public class NestedZipException extends ZipException implements NestedException,
 
     private final Throwable exception;
     
-    private final NestedExceptionDelegate delegate;//<ZipNestedException>
+    private final NestedExceptionDelegate delegate;
     
     private static final String EXCEPTION_PRIFIX = "org.zollty.ZipException: ";
 

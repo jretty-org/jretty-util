@@ -8,7 +8,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by Zollty Tsou on 2013-06-02 [http://blog.zollty.com]
+ * Create by ZollTy on 2013-6-02 (http://blog.zollty.com/, zollty@163.com)
  */
 package org.zollty.tool.file;
 
@@ -35,7 +35,7 @@ import org.zollty.util.match.ZolltyPathMatcher;
  * 本地文件常用工具类
  * 
  * @author zollty
- * @since 2013年6月2日
+ * @since 2013-6-02
  */
 public class FileTools {
 
