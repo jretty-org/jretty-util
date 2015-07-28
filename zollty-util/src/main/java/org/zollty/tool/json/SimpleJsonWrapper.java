@@ -18,7 +18,9 @@ import java.util.Map;
 /**
  * @author zollty 
  * @since 2013-12-10
+ * @deprecated use JSONUtils replace
  */
+@Deprecated
 public class SimpleJsonWrapper {
 
 	private Map<String, String> map;

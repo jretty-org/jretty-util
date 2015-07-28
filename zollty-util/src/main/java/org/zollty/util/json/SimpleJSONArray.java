@@ -8,16 +8,24 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by ZollTy on 2014-6-12 (http://blog.zollty.com/, zollty@163.com)
+ * Create by ZollTy on 2014-5-07 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util;
-
+package org.zollty.util.json;
 
 /**
  * @author zollty
- * @since 2014-6-12
+ * @since 2014-5-7
  */
-public class ConvertUtilsTest {
-    
+public class SimpleJSONArray {
 
+    private String jsonArray;
+
+    public SimpleJSONArray(String jsonArray) {
+        this.jsonArray = jsonArray;
+    }
+
+    @Override
+    public String toString() {
+        return jsonArray;
+    }
 }

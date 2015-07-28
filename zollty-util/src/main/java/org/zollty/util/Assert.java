@@ -49,6 +49,32 @@ import java.util.Map;
  * @since 2013-6-27
  */
 public abstract class Assert {
+    
+    /**
+     * 改造堆栈信息，remove第一个堆栈，即Assert内部的堆栈，便于外部调用程序直接定位到自己的调用出处。
+     * 例如，改造后堆栈信息为：
+     * <pre>
+     * java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+        at org.zollty.util.AssertTest.doService(AssertTest.java:25)
+        
+     * </pre>
+     * 改造前堆栈信息为：
+     * <pre>
+     * java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+        at org.zollty.util.AssertTest.notNull(AssertTest.java:123)
+        at org.zollty.util.AssertTest.notNull(AssertTest.java:110)
+        at org.zollty.util.AssertTest.hasText(AssertTest.java:91)
+        at org.zollty.util.AssertTest.hasLength(AssertTest.java:51)
+        at org.zollty.util.AssertTest.doService(AssertTest.java:25)
+        
+     * </pre>
+     */
+    private static RuntimeException changeIAE(RuntimeException e){
+        StackTraceElement[] st = e.getStackTrace();
+        st = ArrayUtils.remove(st, 0);
+        e.setStackTrace(st);
+        return e;
+    }
 
 	/**
 	 * Assert a boolean expression, throwing <code>IllegalArgumentException</code>
@@ -60,7 +86,7 @@ public abstract class Assert {
 	 */
 	public static void isTrue(boolean expression, String message) {
 		if (!expression) {
-			throw new IllegalArgumentException(message);
+		    throw changeIAE(new IllegalArgumentException(message));
 		}
 	}
 
@@ -72,7 +98,9 @@ public abstract class Assert {
 	 * @throws IllegalArgumentException if expression is <code>false</code>
 	 */
 	public static void isTrue(boolean expression) {
-		isTrue(expression, "[Assertion failed] - this expression must be true");
+		if (!expression) {
+            throw changeIAE(new IllegalArgumentException("[Assertion failed] - this expression must be true"));
+        }
 	}
 
 	/**
@@ -84,7 +112,7 @@ public abstract class Assert {
 	 */
 	public static void isNull(Object object, String message) {
 		if (object != null) {
-			throw new IllegalArgumentException(message);
+		    throw changeIAE(new IllegalArgumentException(message));
 		}
 	}
 
@@ -95,7 +123,9 @@ public abstract class Assert {
 	 * @throws IllegalArgumentException if the object is not <code>null</code>
 	 */
 	public static void isNull(Object object) {
-		isNull(object, "[Assertion failed] - the object argument must be null");
+		if (object != null) {
+            throw changeIAE(new IllegalArgumentException("[Assertion failed] - the object argument must be null"));
+        }
 	}
 
 	/**
@@ -107,7 +137,7 @@ public abstract class Assert {
 	 */
 	public static void notNull(Object object, String message) {
 		if (object == null) {
-			throw new IllegalArgumentException(message);
+		    throw changeIAE(new IllegalArgumentException(message));
 		}
 	}
 
@@ -118,7 +148,9 @@ public abstract class Assert {
 	 * @throws IllegalArgumentException if the object is <code>null</code>
 	 */
 	public static void notNull(Object object) {
-		notNull(object, "[Assertion failed] - this argument is required; it must not be null");
+		if (object == null) {
+            throw changeIAE(new IllegalArgumentException("[Assertion failed] - this argument is required; it must not be null"));
+        }
 	}
 
 	/**
@@ -131,7 +163,7 @@ public abstract class Assert {
 	 */
 	public static void hasLength(String text, String message) {
 		if (StringUtils.isNullOrEmpty(text)) {
-			throw new IllegalArgumentException(message);
+			throw changeIAE(new IllegalArgumentException(message));
 		}
 	}
 
@@ -143,8 +175,10 @@ public abstract class Assert {
 	 * @see StringUtils#hasLength
 	 */
 	public static void hasLength(String text) {
-		hasLength(text,
-				"[Assertion failed] - this String argument must have length; it must not be null or empty");
+		if (StringUtils.isNullOrEmpty(text)) {
+            throw changeIAE(new IllegalArgumentException(
+                    "[Assertion failed] - this String argument must have length; it must not be null or empty"));
+        }
 	}
 
 	/**
@@ -157,7 +191,7 @@ public abstract class Assert {
 	 */
 	public static void hasText(String text, String message) {
 		if (StringUtils.isBlank(text)) {
-			throw new IllegalArgumentException(message);
+			throw changeIAE(new IllegalArgumentException(message));
 		}
 	}
 
@@ -169,8 +203,10 @@ public abstract class Assert {
 	 * @see StringUtils#hasText
 	 */
 	public static void hasText(String text) {
-		hasText(text,
-				"[Assertion failed] - this String argument must have text; it must not be null, empty, or blank");
+	    if (StringUtils.isBlank(text)) {
+            throw changeIAE(new IllegalArgumentException(
+                    "[Assertion failed] - this String argument must have text; it must not be null, empty, or blank"));
+        }
 	}
 
 	/**
@@ -183,7 +219,7 @@ public abstract class Assert {
 	public static void doesNotContain(String textToSearch, String substring, String message) {
 		if (StringUtils.isNotEmpty(textToSearch) && StringUtils.isNotEmpty(substring) &&
 				textToSearch.indexOf(substring) != -1) {
-			throw new IllegalArgumentException(message);
+			throw changeIAE(new IllegalArgumentException(message));
 		}
 	}
 
@@ -194,8 +230,11 @@ public abstract class Assert {
 	 * @param substring the substring to find within the text
 	 */
 	public static void doesNotContain(String textToSearch, String substring) {
-		doesNotContain(textToSearch, substring,
-				"[Assertion failed] - this String argument must not contain the substring [" + substring + "]");
+	    if (StringUtils.isNotEmpty(textToSearch) && StringUtils.isNotEmpty(substring) &&
+                textToSearch.indexOf(substring) != -1) {
+            throw changeIAE(new IllegalArgumentException(
+                    "[Assertion failed] - this String argument must not contain the substring [" + substring + "]"));
+        }
 	}
 
 
@@ -209,7 +248,7 @@ public abstract class Assert {
 	 */
 	public static void notEmpty(Object[] array, String message) {
 		if (array==null || array.length==0) {
-			throw new IllegalArgumentException(message);
+			throw changeIAE(new IllegalArgumentException(message));
 		}
 	}
 
@@ -221,7 +260,10 @@ public abstract class Assert {
 	 * @throws IllegalArgumentException if the object array is <code>null</code> or has no elements
 	 */
 	public static void notEmpty(Object[] array) {
-		notEmpty(array, "[Assertion failed] - this array must not be empty: it must contain at least 1 element");
+	    if (array==null || array.length==0) {
+            throw changeIAE(new IllegalArgumentException(
+                    "[Assertion failed] - this array must not be empty: it must contain at least 1 element"));
+        }
 	}
 
 	/**
@@ -236,7 +278,7 @@ public abstract class Assert {
 		if (array != null) {
 			for (int i = 0; i < array.length; i++) {
 				if (array[i] == null) {
-					throw new IllegalArgumentException(message);
+					throw changeIAE(new IllegalArgumentException(message));
 				}
 			}
 		}
@@ -250,7 +292,14 @@ public abstract class Assert {
 	 * @throws IllegalArgumentException if the object array contains a <code>null</code> element
 	 */
 	public static void noNullElements(Object[] array) {
-		noNullElements(array, "[Assertion failed] - this array must not contain any null elements");
+	    if (array != null) {
+            for (int i = 0; i < array.length; i++) {
+                if (array[i] == null) {
+                    throw changeIAE(new IllegalArgumentException(
+                            "[Assertion failed] - this array must not contain any null elements"));
+                }
+            }
+        }
 	}
 
 	/**
@@ -264,7 +313,7 @@ public abstract class Assert {
 	@SuppressWarnings("rawtypes")
     public static void notEmpty(Collection collection, String message) {
 		if (collection==null || collection.isEmpty()) {
-			throw new IllegalArgumentException(message);
+			throw changeIAE(new IllegalArgumentException(message));
 		}
 	}
 
@@ -277,8 +326,10 @@ public abstract class Assert {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static void notEmpty(Collection collection) {
-		notEmpty(collection,
-				"[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
+	    if (collection==null || collection.isEmpty()) {
+            throw changeIAE(new IllegalArgumentException(
+                    "[Assertion failed] - this collection must not be empty: it must contain at least 1 element"));
+        }
 	}
 
 	/**
@@ -292,7 +343,7 @@ public abstract class Assert {
 	@SuppressWarnings("rawtypes")
 	public static void notEmpty(Map map, String message) {
 		if (map==null || map.isEmpty()) {
-			throw new IllegalArgumentException(message);
+			throw changeIAE(new IllegalArgumentException(message));
 		}
 	}
 
@@ -305,7 +356,10 @@ public abstract class Assert {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static void notEmpty(Map map) {
-		notEmpty(map, "[Assertion failed] - this map must not be empty; it must contain at least one entry");
+	    if (map==null || map.isEmpty()) {
+            throw changeIAE(new IllegalArgumentException(
+                    "[Assertion failed] - this map must not be empty; it must contain at least one entry"));
+        }
 	}
 
 
@@ -318,8 +372,15 @@ public abstract class Assert {
 	 * @see Class#isInstance
 	 */
 	@SuppressWarnings("rawtypes")
-	public static void isInstanceOf(Class clazz, Object obj) {
-		isInstanceOf(clazz, obj, "");
+	public static void isInstanceOf(Class type, Object obj) {
+		if (type == null) {
+            throw changeIAE(new IllegalArgumentException("Type to check against must not be null"));
+        }
+        if (!type.isInstance(obj)) {
+            throw new IllegalArgumentException(
+                    "Object of class [" + (obj != null ? obj.getClass().getName() : "null") +
+                    "] must be an instance of " + type);
+        }
 	}
 
 	/**
@@ -336,7 +397,9 @@ public abstract class Assert {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static void isInstanceOf(Class type, Object obj, String message) {
-		notNull(type, "Type to check against must not be null");
+		if (type == null) {
+            throw changeIAE(new IllegalArgumentException("Type to check against must not be null"));
+        }
 		if (!type.isInstance(obj)) {
 			throw new IllegalArgumentException(message +
 					"Object of class [" + (obj != null ? obj.getClass().getName() : "null") +
@@ -351,9 +414,14 @@ public abstract class Assert {
 	 * @param subType the sub type to check
 	 * @throws IllegalArgumentException if the classes are not assignable
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void isAssignable(Class superType, Class subType) {
-		isAssignable(superType, subType, "");
+		if (superType == null) {
+            throw changeIAE(new IllegalArgumentException("Type to check against must not be null"));
+        }
+        if (subType == null || !superType.isAssignableFrom(subType)) {
+            throw new IllegalArgumentException(subType + " is not assignable to " + superType);
+        }
 	}
 
 	/**
@@ -369,7 +437,9 @@ public abstract class Assert {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void isAssignable(Class superType, Class subType, String message) {
-		notNull(superType, "Type to check against must not be null");
+		if (superType == null) {
+            throw changeIAE(new IllegalArgumentException("Type to check against must not be null"));
+        }
 		if (subType == null || !superType.isAssignableFrom(subType)) {
 			throw new IllegalArgumentException(message + subType + " is not assignable to " + superType);
 		}
@@ -387,7 +457,7 @@ public abstract class Assert {
 	 */
 	public static void state(boolean expression, String message) {
 		if (!expression) {
-			throw new IllegalStateException(message);
+		    throw changeIAE(new IllegalStateException(message));
 		}
 	}
 
@@ -401,7 +471,10 @@ public abstract class Assert {
 	 * @throws IllegalStateException if the supplied expression is <code>false</code>
 	 */
 	public static void state(boolean expression) {
-		state(expression, "[Assertion failed] - this state invariant must be true");
+		if (!expression) {
+            throw changeIAE(new IllegalStateException(
+                    "[Assertion failed] - this state invariant must be true"));
+        }
 	}
 
 }

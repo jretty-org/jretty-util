@@ -8,16 +8,24 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * Create by ZollTy on 2014-6-12 (http://blog.zollty.com/, zollty@163.com)
+ * Create by ZollTy on 2014-5-17 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util;
+package org.zollty.util.json;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
+ * 
  * @author zollty
- * @since 2014-6-12
+ * @since 2014-5-17
  */
-public class ConvertUtilsTest {
-    
+public interface JSONParser {
 
+    Object parse();
+    
+    List<Object> parseArray();
+    
+    Map<String, Object> parseMap();
 }

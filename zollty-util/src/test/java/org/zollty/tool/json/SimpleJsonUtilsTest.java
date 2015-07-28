@@ -24,7 +24,9 @@ import org.zollty.tesper.TestTools;
  * @author zollty
  * @since 2015-3-17
  */
+@SuppressWarnings("deprecation")
 public class SimpleJsonUtilsTest {
+    
     
     @Test
     public void testMapToJson() {

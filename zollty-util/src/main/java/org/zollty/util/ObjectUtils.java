@@ -21,7 +21,10 @@ import java.util.Date;
 public class ObjectUtils {
 
     /**
-     * 判断是否相等，允许为null，两个都为null会返回false
+     * 判断是否相等，允许为null，两个都为null会返回true
+     * Consequently, if both arguments are null, true is returned and if exactly one argument is null, false is returned.
+     * @deprecated this method has been replaced by {@code java.util.Objects.equals(Object, Object)} in Java 7 and will
+     * be removed from future releases.
      */
     public static boolean safeEqual(Object obj1, Object obj2) {
         if (obj1 != null) {
@@ -30,11 +33,11 @@ public class ObjectUtils {
         if (obj2 == null) {
             return true;
         }
-        return false;
+        return true;
     }
-
+    
     /**
-     * 将参数Object数组，转换成字符串显示
+     * 将参数Object数组，转换成字符串显示，仅供“显示”用途，比如记录sql参数。
      */
     public static String arrayToString(Object[] params) {
         if (params == null) {

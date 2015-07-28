@@ -22,7 +22,9 @@ import java.util.Map.Entry;
 /**
  * @author zollty
  * @since 2013-12-10
+ * @deprecated use JSONUtils replace
  */
+@Deprecated
 public class SimpleJsonUtils {
 
     private SimpleJsonUtils() {

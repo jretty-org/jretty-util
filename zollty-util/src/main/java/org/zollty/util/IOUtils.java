@@ -253,7 +253,7 @@ public class IOUtils {
                 out.flush();
             }
             catch (IOException e) {
-                if (LogFactory.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.warn("flush error", e);
                 }
             }
@@ -261,7 +261,7 @@ public class IOUtils {
                 out.close();
             }
             catch (Exception e) {
-                if (LogFactory.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.warn("close error", e);
                 }
             }
@@ -274,7 +274,7 @@ public class IOUtils {
                 out.flush();
             }
             catch (IOException e) {
-                if (LogFactory.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.warn("flush error", e);
                 }
             }
@@ -282,7 +282,7 @@ public class IOUtils {
                 out.close();
             }
             catch (Exception e) {
-                if (LogFactory.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.warn("close error", e);
                 }
             }
@@ -298,7 +298,7 @@ public class IOUtils {
                 in.close();
             }
             catch (Exception e) {
-                if (LogFactory.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.warn("close error", e);
                 }
             }
@@ -311,7 +311,7 @@ public class IOUtils {
                 in.close();
             }
             catch (Exception e) {
-                if (LogFactory.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.warn("close error", e);
                 }
             }
@@ -324,7 +324,7 @@ public class IOUtils {
                 clo.close();
             }
             catch (Exception e) {
-                if (LogFactory.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.warn("close error", e);
                 }
             }

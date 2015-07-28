@@ -424,7 +424,7 @@ public class StringUtils {
             pathElements.add(0, Const.TOP_PATH);
         }
 
-        return prefix + ConvertUtils.collectionToString(pathElements, Const.FOLDER_SEPARATOR);
+        return prefix + CollectionUtils.toString(pathElements, Const.FOLDER_SEPARATOR);
     }
 
     private static final String REPLACE_LABEL = "{}";

@@ -23,7 +23,7 @@
   </parent>
   <artifactId>zollty-util-web</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.1</version>
   <name>zollty-util-web</name>
   <description>Java utils use under web servlet environment. See the parent pom for more infomation.</description>
 

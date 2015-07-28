@@ -87,7 +87,7 @@ public class ServletFileUpload {
             if (position != -1) { // 第一行不为空
                 breakStr = new String(buffer, 0, 28, CHARSET);
                 // objRef = new String(buffer, 29, position);
-                if (LogFactory.isTraceEnabled()) {
+                if (LOG.isTraceEnabled()) {
                     LOG.trace("终止字符串：" + breakStr);
                     // LOG.trace("分隔符：" + objRef);
                 }
@@ -96,7 +96,7 @@ public class ServletFileUpload {
             position = inputStream.readLine(buffer, 0, buffer.length);
             if (position != -1) {
                 String head = new String(buffer, 0, position, CHARSET);
-                if (LogFactory.isTraceEnabled())
+                if (LOG.isTraceEnabled())
                     LOG.trace("头信息：" + head);
                 int fileNamePosition = 0;
                 if ((fileNamePosition = head.indexOf("filename=\"")) != -1) {
@@ -107,7 +107,7 @@ public class ServletFileUpload {
                     if (!checkFileType(uploadFileName)) {
                         throw new BasicRuntimeException("The file type is prohibited uploaded: " + uploadFileName);
                     }
-                    if (LogFactory.isDebugEnabled())
+                    if (LOG.isDebugEnabled())
                         LOG.debug("源文件名（含扩展名）：" + uploadFileName);
                     if (StringUtils.isNotBlank(reName)) {
                         uploadFileName = reName; // 重命名
@@ -128,10 +128,10 @@ public class ServletFileUpload {
             String type = "";
             if (position != -1) {
                 type = new String(buffer, 0, position, CHARSET);
-                if (LogFactory.isTraceEnabled())
+                if (LOG.isTraceEnabled())
                     LOG.trace("文件类型：" + type);// Content-Type: application/x-compress
                 String mimeType = (String) type.subSequence(type.indexOf("Content-Type:") + 14, type.length());
-                if (LogFactory.isTraceEnabled())
+                if (LOG.isTraceEnabled())
                     LOG.trace("MIME类型：" + mimeType);
 
             }
@@ -165,11 +165,11 @@ public class ServletFileUpload {
                     totalSize = totalSize - 2;
                 }
             }
-            if (LogFactory.isDebugEnabled())
+            if (LOG.isDebugEnabled())
                 LOG.debug("文件大小 = " + totalSize + "(Byte) = " + (float) totalSize / 1024 / 1024 + "(MB)");
 
             long finishUploadTime = System.currentTimeMillis();
-            if (LogFactory.isDebugEnabled())
+            if (LOG.isDebugEnabled())
                 LOG.debug("文件上传成功，耗时：" + (finishUploadTime - startUploadTime) + " 毫秒");
 
         } finally {
@@ -186,7 +186,7 @@ public class ServletFileUpload {
     private void checkSize() {
         int len = request.getContentLength();
         float len2 = (float) len / 1024; // b--kb
-        if (LogFactory.isTraceEnabled())
+        if (LOG.isTraceEnabled())
             LOG.trace("文件近似大小 = " + len + "(Byte) = " + len2 + "(KB)");
         // float len3 = (float) (Math.round(len2 * 100)) / 100;
         if (MAX_POST_SIZE < len2) { // 文件大小不可超过 30 M

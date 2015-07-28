@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.zollty.log.LogFactory;
 import org.zollty.log.Logger;
-import org.zollty.util.CollectionUtils;
+import org.zollty.util.ArrayUtils;
 import org.zollty.util.Const;
 
 /**
@@ -31,7 +31,7 @@ import org.zollty.util.Const;
  */
 public class ZolltyPathMatcher {
 
-    private static Logger LOG = LogFactory.getLogger(ZolltyPathMatcher.class);
+    private static final Logger LOG = LogFactory.getLogger(ZolltyPathMatcher.class);
 
     private final String pattern;
     private final List<MatchInfo> miList = new ArrayList<MatchInfo>();
@@ -100,12 +100,12 @@ public class ZolltyPathMatcher {
         }
 
         if (!this.isMatch(src, tempMfList, tempValueList)) {
-            if (LogFactory.isTraceEnabled()) {
+            if (LOG.isTraceEnabled()) {
                 LOG.trace("Matched Failure. Pattern={}, Src={}", pattern, src);
             }
             return null;
         }
-        if (LogFactory.isTraceEnabled()) {
+        if (LOG.isTraceEnabled()) {
             LOG.trace("Matched Success. Pattern={}, Src={}", pattern, src);
         }
         this.handleValue(valueList, tempValueList);
@@ -123,7 +123,7 @@ public class ZolltyPathMatcher {
             inx = src.indexOf(mf.ma.matchStr, b[i]);
             while (inx != -1) {
                 tempStr = src.substring(b[i], inx);
-                if (LogFactory.isTraceEnabled()) {
+                if (LOG.isTraceEnabled()) {
                     LOG.trace(mf.ma.matchStr + "[" + tempStr + "]");
                 }
                 tempValueList.add(new TempMatchValue(mf, tempStr));
@@ -226,7 +226,7 @@ public class ZolltyPathMatcher {
         if (pattern.endsWith("*") || pattern.endsWith("**")) {
             valueList.add(tempValueList.get(tempValueList.size() - 1).value);
         }
-        if (LogFactory.isTraceEnabled()) {
+        if (LOG.isTraceEnabled()) {
             LOG.trace("ValueList={}", valueList.toString());
         }
     }
@@ -247,11 +247,11 @@ public class ZolltyPathMatcher {
     }
 
     private final void check() {
-        if (LogFactory.isTraceEnabled()) {
+        if (LOG.isTraceEnabled()) {
             LOG.trace("begin init pattern[{}]", pattern);
         }
         char[] pchar = pattern.toCharArray();
-        pchar = CollectionUtils.arrayAdd(pchar, '$');
+        pchar = ArrayUtils.add(pchar, '$');
         int p1 = -1, p2 = -1;
         String val1;
         int mf = -1; // mf标记，1代表“**匹配”, 0代表“*匹配”
@@ -324,7 +324,7 @@ public class ZolltyPathMatcher {
             miList.add(new MatchInfo(mf, val1));
             p1 = -1;
         }
-        if (LogFactory.isTraceEnabled()) {
+        if (LOG.isTraceEnabled()) {
             LOG.trace("MatchInfo List = {}", miList.toString());
         }
     }
@@ -362,13 +362,13 @@ public class ZolltyPathMatcher {
     /**
      * 判断两个URL Pattern 是否有包含或重叠。
      * <p>
-     * 注意： 当两个Pattern存在交集时，该方法并不能全面检测出URI的重复匹配。 
+     * 注意： 当两个Pattern存在交集时，该方法并不能全面检测出URI的重复匹配。  <br>
      * 
-     * 例如： 
+     * 例如：  <br>
      * 
-     * Pattern1: \a**c\*\*\b Pattern2: \a\*bc\**\b
+     * Pattern1: \a**c\*\*\b Pattern2: \a\*bc\**\b <br>
      * 
-     * URI: \a\bc\k\k\b - ALL \acc\k\k\b - 1 \a\bc\k\k\k\b - 2
+     * URI: \a\bc\k\k\b - ALL \acc\k\k\b - 1 \a\bc\k\k\k\b - 2 <br>
      * 
      * 这种情况很难检测出来。
      */

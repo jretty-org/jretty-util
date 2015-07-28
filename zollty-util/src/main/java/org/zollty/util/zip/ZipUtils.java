@@ -75,14 +75,16 @@ public class ZipUtils {
     /**
      * 压缩文件
      */
-    public static void zipFile(String fullOutputZipFileName, String fullInputFileOrFolderName) throws ZipException {
+    public static void zipFile(String fullOutputZipFileName, String fullInputFileOrFolderName) 
+            throws ZipException {
         zipFile(fullOutputZipFileName, fullInputFileOrFolderName, null);
     }
 
     /**
      * 压缩文件
      */
-    public static void zipFile(String fullOutputZipFileName, String fullInputFileOrFolderName, String charSet) throws ZipException {
+    public static void zipFile(String fullOutputZipFileName, String fullInputFileOrFolderName, String charSet)
+            throws ZipException {
         ZipOutputStream out = null;
         try {
             if (null == charSet || charSet.length() == 0) {
@@ -121,7 +123,7 @@ public class ZipUtils {
                 }
             }
             catch (IOException e) {
-                if (LogFactory.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.warn(e);
                 }
             }
@@ -132,7 +134,7 @@ public class ZipUtils {
         }
         else {
             zipOut.putNextEntry(new ZipEntry(itemName));
-            if (LogFactory.isTraceEnabled()) {
+            if (LOG.isTraceEnabled()) {
                 LOG.trace(itemName);
             }
             FileInputStream in = null;
@@ -141,7 +143,7 @@ public class ZipUtils {
                 IOUtils.clone(in, sourceFile.length(), zipOut);
             }
             catch (IOException e) {
-                if (LogFactory.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.warn(e);
                 }
             } finally {
@@ -163,7 +165,8 @@ public class ZipUtils {
     /**
      * 解压ZIP文件
      */
-    public static void unzipFile(String directory, String fullIutputZipFileName, String charSet) throws ZipException {
+    public static void unzipFile(String directory, String fullIutputZipFileName, String charSet) 
+            throws ZipException {
         ZipInputStream in = null;
         try {
             if (null == charSet || charSet.length() == 0) {
@@ -218,8 +221,9 @@ public class ZipUtils {
         }
         while ((ze = in.getNextEntry()) != null) {
             String name = ze.getName();
-            if (LogFactory.isTraceEnabled())
+            if (LOG.isTraceEnabled()) {
                 LOG.trace(name);
+            }
             File child = new File(directory + Const.FOLDER_SEPARATOR + name);
             if (name.endsWith(Const.FOLDER_SEPARATOR)) { // directory name.lastIndexOf("/") == (name.length() - 1)
                 if (!child.exists() && !child.mkdirs()) {
@@ -233,8 +237,9 @@ public class ZipUtils {
                 IOUtils.clone(in, child.length(), output);
             }
             catch (IOException e) {
-                if (LogFactory.isDebugEnabled())
+                if (LOG.isDebugEnabled()) {
                     LOG.warn(e);
+                }
             } finally {
                 IOUtils.closeIO(output);
             }

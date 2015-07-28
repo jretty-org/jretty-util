@@ -33,7 +33,9 @@ public class ThreadUtils {
 		try {
 			Thread.sleep(sleepTime);
 		} catch (InterruptedException e) {
-			if(LogFactory.isDebugEnabled()) LOG.info("Thread "+Thread.currentThread().getName()+" sleep be interrupted.");
+			if(LOG.isDebugEnabled()) {
+			    LOG.info("Thread "+Thread.currentThread().getName()+" sleep be interrupted.");
+			}
 		}
 	}
 	
@@ -48,7 +50,9 @@ public class ThreadUtils {
 			thread.stop();
 			thread.destroy();
 		} catch (Throwable e) {
-			if(LogFactory.isDebugEnabled()) LOG.info("stop thread ["+thread.getName()+"]...");
+			if(LOG.isDebugEnabled()) {
+			    LOG.info("stop thread ["+thread.getName()+"]...");
+			}
 		}
 	}
 

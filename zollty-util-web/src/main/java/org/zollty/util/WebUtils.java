@@ -15,6 +15,7 @@ package org.zollty.util;
 import java.io.FileNotFoundException;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author zollty
@@ -48,6 +49,17 @@ public class WebUtils {
                     "web application archive not expanded?");
         }
         return realPath;
+    }
+    
+    /**
+     * 判断是否为Ajax类型的请求（支持jquery，其他方式未测试过）
+     */
+    public static boolean isAjaxRequest(HttpServletRequest request) {
+        String header = request.getHeader("X-Requested-With");
+        if (header != null && "XMLHttpRequest".equals(header)) {
+            return true;
+        }
+        return false;
     }
 
 }
