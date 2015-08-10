@@ -1,12 +1,11 @@
 org.zollty.tool
 org.zollty.tool.file
 org.zollty.tool.json
-org.zollty.tool.web
-org.zollty.tool.web.fileupload
 org.zollty.util
+org.zollty.util.json
+org.zollty.util.json.support
 org.zollty.util.match
 org.zollty.util.resource
 org.zollty.util.resource.support
-org.zollty.util.resource.web
 org.zollty.util.support
 org.zollty.util.zip
