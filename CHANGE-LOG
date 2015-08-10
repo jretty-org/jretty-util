@@ -9,7 +9,7 @@ Create this project. It's a simple Java util's library, shared by almost all pro
 
 Changes in version 1.7 (2014-09-22)
 -------------------------------------
-Add org.zollty.util.match.* for Path (or URL) Matching. 
+Add org.zollty.util.match.* for Path (or URL) Matching.
 ZolltyPathMatcher is a very powerful tool for path matching, is better than the well-known AntPathMatcher.
 See its test case class "org.zollty.util.match.ZolltyPathMatcherTest" for usage.
 
@@ -23,5 +23,10 @@ ZolltyPathMatcher optimization. Add "isTwoPatternSimilar" method to check wether
 
 Changes in version 2.0 (2015-05-26)
 -------------------------------------
-1. Add org.zollty.util.resource.* for all resources( FileSystemResource, InputStreamSource, ClassPathResource, ServletContextResource, ...  ) operation. 
-2. Divide zollty-util project into zollty-util and zollty-util-web, zollty-util does not dependency servlet-api anymore.  
+1. Add org.zollty.util.resource.* for all resources( FileSystemResource, InputStreamSource, ClassPathResource, ServletContextResource, ...  ) operation.
+2. Divide zollty-util project into zollty-util and zollty-util-web, zollty-util does not dependency servlet-api anymore.
+
+Changes in version 2.1.0 (2015-07-12)
+-------------------------------------
+1. Add org.zollty.util.json.* for simple json parse or write, it is not stronger than GSON or FastJSON lib, but at some place it's more efficient and flexible.
+2. Some API optimization. Change version format a.b (2.0) to standard a.b.c (2.1.0).

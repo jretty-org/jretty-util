@@ -3,7 +3,7 @@ zollty-util
 
 A simple Java util's library.
 
-### Utils in version 2.0
+### Utils in version 2.1.0
  See: <a href="http://www.zollty.com/zollty-util/apidocs/" target="_blank">API DOCS</a>
 
 <table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="程序包表, 列表程序包和解释">
