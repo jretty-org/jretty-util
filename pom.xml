@@ -42,8 +42,8 @@
         <groupId>org.zollty</groupId>
         <artifactId>zollty-log</artifactId>
         <version>1.3.0</version>
-        <!-- <scope>system</scope>
-        <systemPath>${basedir}/../lib/zollty-log-1.2.jar</systemPath> -->
+        <scope>system</scope>
+        <systemPath>${basedir}/../lib/zollty-log-1.3.0.jar</systemPath>
       </dependency>
 
       <dependency>
