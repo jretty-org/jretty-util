@@ -89,7 +89,7 @@ public class NestedRuntimeException extends BasicRuntimeException implements Nes
         if (null != exception) {
             return exception.getStackTrace();
         }
-        return super.getStackTrace();
+        return new StackTraceElement[0];
     }
 
     @Override

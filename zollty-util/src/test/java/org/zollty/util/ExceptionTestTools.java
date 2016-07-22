@@ -16,7 +16,7 @@ package org.zollty.util;
  * @author zollty
  * @since 2015-3-17
  */
-public class TestTools {
+public class ExceptionTestTools {
 
     public static final String CONTROLLER_ALERT = "Sorry ~~ An Unexcepted Exception Occured!";
     public static final String SERVICE_ALERT = "Order.doService() has an exception, userId=zhangsan.";

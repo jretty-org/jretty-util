@@ -12,9 +12,9 @@
  */
 package org.zollty.util;
 
-import static org.zollty.util.TestTools.CONTROLLER_ALERT;
-import static org.zollty.util.TestTools.SERVICE_ALERT;
-import static org.zollty.util.TestTools.UNDER_UNKNOWN_EXCEPTION;
+import static org.zollty.util.ExceptionTestTools.CONTROLLER_ALERT;
+import static org.zollty.util.ExceptionTestTools.SERVICE_ALERT;
+import static org.zollty.util.ExceptionTestTools.UNDER_UNKNOWN_EXCEPTION;
 
 import java.io.IOException;
 

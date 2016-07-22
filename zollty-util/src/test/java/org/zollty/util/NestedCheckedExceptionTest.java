@@ -12,9 +12,9 @@
  */
 package org.zollty.util;
 
-import static org.zollty.util.TestTools.CONTROLLER_ALERT;
-import static org.zollty.util.TestTools.SERVICE_ALERT;
-import static org.zollty.util.TestTools.UNDER_UNKNOWN_EXCEPTION;
+import static org.zollty.util.ExceptionTestTools.CONTROLLER_ALERT;
+import static org.zollty.util.ExceptionTestTools.SERVICE_ALERT;
+import static org.zollty.util.ExceptionTestTools.UNDER_UNKNOWN_EXCEPTION;
 
 import java.io.IOException;
 
@@ -69,6 +69,18 @@ public class NestedCheckedExceptionTest {
 
         }
     }
+    
+    @Test
+    public void testGetStackTrace2() {
+        try {
+            throw new NestedCheckedException(CONTROLLER_ALERT);
+        }
+        catch (Exception ne) {
+        	// org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger("log.info");
+        	Assert.assertEquals(ne.getStackTrace().length, 0);
+        }
+    }
+    
 
     @Test
     public void testGetStackTraceStr() {
