@@ -125,20 +125,19 @@ public class CollectionUtils {
      * Check List Element Duplication
      * @return return -1 if no duplication
      */
-    public static int checkDuplication(List<?> array) {
-        int size = array.size();
-        if(array!=null && size>0)
-        {
-            for(int i=0;i<size;i++){
-                for(int j=i+1;j<size;j++){
-                    if( safeEqual(array.get(j), array.get(i)) ) {
-                        return i;
-                    }
-                }
-            }
-        }
-        return -1;
-    }
+	public static int checkDuplication(List<?> array) {
+		if (array != null && !array.isEmpty()) {
+			int size = array.size();
+			for (int i = 0; i < size; i++) {
+				for (int j = i + 1; j < size; j++) {
+					if (safeEqual(array.get(j), array.get(i))) {
+						return i;
+					}
+				}
+			}
+		}
+		return -1;
+	}
     
     
     /**
