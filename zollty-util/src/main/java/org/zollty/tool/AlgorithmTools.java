@@ -28,13 +28,13 @@ import org.zollty.util.StringUtils;
 public class AlgorithmTools {
 	
 	
-	/**
-	 * Use MD5 algorithm to encode a string 
-	 * 
-	 * @param str String to encode
-	 * @return Encoded String
-	 * @throws NoSuchAlgorithmException
-	 */
+    /**
+     * Use MD5 algorithm to encode a string 
+     * 
+     * @param str String to encode
+     * @return Encoded String
+     * @throws NoSuchAlgorithmException
+     */
     public static String md5Crypt(String str) {
         if (StringUtils.isNullOrEmpty(str)) {
             throw new IllegalArgumentException("String to encrypt cannot be null or zero length");
@@ -43,24 +43,34 @@ public class AlgorithmTools {
             MessageDigest msgdig = MessageDigest.getInstance("MD5");
             msgdig.update(str.getBytes("UTF-8"));
             byte[] hash = msgdig.digest();
-
-            StringBuilder hexString = new StringBuilder(33);
-            String stmp;
-            for (int i = 0; i < hash.length; i++) {
-                stmp = Integer.toHexString(0xFF & hash[i]);
-                if (stmp.length() == 1)
-                    hexString.append('0').append(stmp);
-                else {
-                    hexString.append(stmp);
-                }
-            }
-            return hexString.toString();
+            
+            return toHexStr(hash);
         } catch (NoSuchAlgorithmException e) {
             throw new BasicRuntimeException(e.toString());
         }
         catch (UnsupportedEncodingException e) {
             throw new BasicRuntimeException(e.toString());
         }
+    }
+    
+    public static String toHexStr(byte[] data) {
+        if (data == null) {
+            return null;
+        }
+        if (data.length == 0) {
+            return "";
+        }
+        StringBuilder hexString = new StringBuilder(33);
+        String stmp;
+        for (int i = 0; i < data.length; i++) {
+            stmp = Integer.toHexString(0xFF & data[i]);
+            if (stmp.length() == 1)
+                hexString.append('0').append(stmp);
+            else {
+                hexString.append(stmp);
+            }
+        }
+        return hexString.toString();
     }
 
     private static final String[] CHARS = new String[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",

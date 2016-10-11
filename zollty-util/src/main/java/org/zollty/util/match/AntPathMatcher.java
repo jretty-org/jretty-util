@@ -441,10 +441,11 @@ public class AntPathMatcher implements PathMatcher {
 		}
 
 		private int getWildCardCount(String pattern) {
-			if (pattern.endsWith(".*")) {
-				pattern = pattern.substring(0, pattern.length() - 2);
+		    String tmp = pattern;
+			if (tmp.endsWith(".*")) {
+			    tmp = tmp.substring(0, tmp.length() - 2);
 			}
-			return StringUtils.countOccurrencesOf(pattern, "*");
+			return StringUtils.countOccurrencesOf(tmp, "*");
 		}
 
 		/**

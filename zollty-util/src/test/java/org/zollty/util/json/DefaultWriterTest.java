@@ -29,7 +29,7 @@ public class DefaultWriterTest {
         writer.writeDate(new Date(1434620908674L));
         String ret = writer.toString();
         
-        Assert.assertEquals("\"2015-06-18 09:48:28\"", ret);
+        Assert.assertEquals("\"2015-06-18 17:48:28\"", ret);
     }
     
     

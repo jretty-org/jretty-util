@@ -226,8 +226,34 @@ public class ExceptionUtils {
             return errorMsg;
         }
         int front = maxLen * 8 / 11;
-        errorMsg = errorMsg.substring(0, front) + "......" + errorMsg.substring(strLen - maxLen + front, strLen);
-        return errorMsg;
+        return errorMsg.substring(0, front) + "......" + errorMsg.substring(strLen - maxLen + front, strLen);
+    }
+    
+    
+    /**
+     * 改造堆栈信息，remove第一个堆栈，便于外部调用程序直接定位到自己的调用出处。
+     * 例如，Assert内部的堆栈，用removeFirstStack改造后，堆栈信息为：
+     * <pre>
+     * java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+        at org.zollty.util.AssertTest.doService(AssertTest.java:25)
+        
+     * </pre>
+     * 改造前堆栈信息为：
+     * <pre>
+     * java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+        at org.zollty.util.AssertTest.notNull(AssertTest.java:123)
+        at org.zollty.util.AssertTest.notNull(AssertTest.java:110)
+        at org.zollty.util.AssertTest.hasText(AssertTest.java:91)
+        at org.zollty.util.AssertTest.hasLength(AssertTest.java:51)
+        at org.zollty.util.AssertTest.doService(AssertTest.java:25)
+        
+     * </pre>
+     */
+    public static <T extends Throwable> T removeFirstStack(T e){
+        StackTraceElement[] st = e.getStackTrace();
+        st = (StackTraceElement[]) ArrayUtils.remove(st, 0);
+        e.setStackTrace(st);
+        return e;
     }
 
     /**

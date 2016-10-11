@@ -415,11 +415,12 @@ public class ClassUtils {
      */
     private static String getQualifiedNameForArray(Class<?> clazz) {
         StringBuilder result = new StringBuilder();
-        while (clazz.isArray()) {
-            clazz = clazz.getComponentType();
+        Class<?> tmp = clazz;
+        while (tmp.isArray()) {
+            tmp = tmp.getComponentType();
             result.append(ClassUtils.ARRAY_SUFFIX);
         }
-        result.insert(0, clazz.getName());
+        result.insert(0, tmp.getName());
         return result.toString();
     }
 
@@ -993,12 +994,13 @@ public class ClassUtils {
             return Collections.singleton(clazz);
         }
         Set<Class> interfaces = new LinkedHashSet<Class>();
-        while (clazz != null) {
-            Class<?>[] ifcs = clazz.getInterfaces();
+        Class tmp = clazz;
+        while (tmp != null) {
+            Class<?>[] ifcs = tmp.getInterfaces();
             for (Class<?> ifc : ifcs) {
                 interfaces.addAll(getAllInterfacesForClassAsSet(ifc, classLoader));
             }
-            clazz = clazz.getSuperclass();
+            tmp = tmp.getSuperclass();
         }
         return interfaces;
     }

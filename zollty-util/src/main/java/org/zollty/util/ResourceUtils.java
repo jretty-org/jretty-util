@@ -323,7 +323,9 @@ public class ResourceUtils {
     
     /**
      * 将Properties资源转换成Map类型
+     * @deprecated use CollectionUtils instand of
      */
+    @Deprecated
     public static Map<String, String> covertProperties2Map(Properties props) {
         if (props == null) {
             throw new IllegalArgumentException("props==null");

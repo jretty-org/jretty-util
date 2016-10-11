@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
@@ -254,6 +256,66 @@ public class CollectionUtils {
         System.arraycopy(array, 0, result, 0, size);
         return result;
     }
+    
+    
+    /**
+     * 将Properties资源转换成Map类型
+     */
+    @SuppressWarnings("unchecked")
+    public static Map<String, String> covertPropertiesToMap(Properties props) {
+        if (props == null) {
+            throw new IllegalArgumentException("props=null");
+        }
+        
+        if (props.isEmpty()) {
+            return Collections.EMPTY_MAP;
+        }
+
+        Set<Map.Entry<Object, Object>> set = props.entrySet();
+
+        Map<String, String> mymap = new HashMap<String, String>(set.size());
+        for (Map.Entry<Object, Object> entry : set) {
+            mymap.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+        return mymap;
+    }
+    
+    
+    /**
+     * 使用 Map按key进行排序
+     */
+    @SuppressWarnings("unchecked")
+    public static Map<String, String> sortMapByKey(Properties props, final boolean asc) {
+        if (props == null) {
+            return null;
+        }
+        
+        if (props.isEmpty()) {
+            return Collections.EMPTY_MAP;
+        }
+        
+        Map<String, String> map = CollectionUtils.covertPropertiesToMap(props);
+        
+        Map<String, String> sortMap = new TreeMap<String, String>(newComparator(asc));
+        sortMap.putAll(map);
+        return sortMap;
+    }
+    
+    /**
+     * 使用 Map按key进行排序
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Map<String, T> sortMapByKey(Map<String, T> map, final boolean asc) {
+        if (map == null) {
+            return null;
+        }
+        if (map.isEmpty()) {
+            return map;
+        }
+        Map<String, Object> sortMap = new TreeMap<String, Object>(newComparator(asc));
+        sortMap.putAll(map);
+        return (Map<String, T>) sortMap;
+    }
 
     
     // helper method ~~~
@@ -266,6 +328,15 @@ public class CollectionUtils {
             return true;
         }
         return true;
+    }
+    
+    private static Comparator<String> newComparator(final boolean asc) {
+        return new Comparator<String>() {
+            @Override
+            public int compare(String str1, String str2) {
+                return asc ? str1.compareTo(str2) : str2.compareTo(str1);
+            }
+        };
     }
 
 }

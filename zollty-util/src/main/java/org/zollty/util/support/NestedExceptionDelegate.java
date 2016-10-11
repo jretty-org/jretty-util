@@ -14,6 +14,7 @@ package org.zollty.util.support;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringWriter;
 
 import org.zollty.util.StringUtils;
@@ -25,8 +26,9 @@ import org.zollty.util.StringUtils;
  * @version 1.0
  * @since 2014-12-13
  */
-public class NestedExceptionDelegate {
+public class NestedExceptionDelegate implements Serializable {
     
+    private static final long serialVersionUID = -2100639812838514912L;
     public static final String MSG_SPLIT = " |- ";
     public static final String CAUSED_BY = "\nCaused by: ";
     public static final String EXCEPTION_PRIFIX = "org.zollty.NestedException: ";

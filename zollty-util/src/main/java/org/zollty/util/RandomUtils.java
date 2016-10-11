@@ -52,7 +52,7 @@ public class RandomUtils {
      */
     public static final String getRadomStr(int start, int end, int len) {
         if (start > -1 && end < 10 && start < end) {
-            StringBuffer bstr = new StringBuffer(len);
+            StringBuilder bstr = new StringBuilder(len);
             int num = end + 1 - start;
             for (int i = 0; i < len; i++) {
                 bstr.append(nextInt(num) + start);
@@ -61,7 +61,7 @@ public class RandomUtils {
         }
 
         if (start > 64 && end < 91 && start < end) {
-            StringBuffer bstr = new StringBuffer(len);
+            StringBuilder bstr = new StringBuilder(len);
             int num = end + 1 - start;
             int n;
             for (int i = 0; i < len; i++) {
@@ -72,7 +72,7 @@ public class RandomUtils {
         }
 
         if (start > 96 && end < 123 && start < end) {
-            StringBuffer bstr = new StringBuffer(len);
+            StringBuilder bstr = new StringBuilder(len);
             int num = end + 1 - start;
             int n;
             for (int i = 0; i < len; i++) {
@@ -94,7 +94,7 @@ public class RandomUtils {
     }
 
     public static final String getRadomStr09(int len) {
-        StringBuffer bstr = new StringBuffer(len);
+        StringBuilder bstr = new StringBuilder(len);
         for (int i = 0; i < len; i++) {
             bstr.append(nextInt(10));
         }
@@ -102,7 +102,7 @@ public class RandomUtils {
     }
 
     public static final String getRadomStr09AZ(int len) {
-        StringBuffer bstr = new StringBuffer(len);
+        StringBuilder bstr = new StringBuilder(len);
         int n;
         for (int i = 0; i < len; i++) {
             n = 48 + nextInt(36);
@@ -115,7 +115,7 @@ public class RandomUtils {
     }
 
     public static final String getRadomStr09az(int len) {
-        StringBuffer bstr = new StringBuffer(len);
+        StringBuilder bstr = new StringBuilder(len);
         int n;
         for (int i = 0; i < len; i++) {
             n = 48 + nextInt(36);
@@ -139,7 +139,7 @@ public class RandomUtils {
      *            随机字符串的长度
      */
     public static final String getRadomStrAZaz(int len) {
-        StringBuffer bstr = new StringBuffer(len);
+        StringBuilder bstr = new StringBuilder(len);
         int n;
         for (int i = 0; i < len; i++) {
             n = 65 + nextInt(52); // 65-116（122-5）
@@ -158,7 +158,7 @@ public class RandomUtils {
      *            随机字符串的长度
      */
     public static final String getRadomStr09AZaz(int len) {
-        StringBuffer bstr = new StringBuffer(len);
+        StringBuilder bstr = new StringBuilder(len);
         int n;
         for (int i = 0; i < len; i++) {
             n = 48 + nextInt(62);
