@@ -153,6 +153,7 @@
             <excludes>
               <exclude>**/*.keep</exclude>
               <exclude>**/*.bak</exclude>
+              <exclude>**/placeholder</exclude>
             </excludes>
           </configuration>
           <executions>
