@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 日期格式化工具类
+ * 日期格式化工具类（高效的、线程安全的）
  * <br>
  * 1、可以直接用静态方法format，原生底层算法实现，参见 {@link #format()}
  * <br>
@@ -27,7 +27,8 @@ import java.util.Date;
  * new的时候可指定格式，后面就可以随时调用format和parse方法，线程安全.
  * <br>
  * 3、附带了一个[获取唯一时间字符串]的方法, 参见 {@link #getUniqueDatePattern_TimeMillis()}
- * 
+ * <br>
+ *  NO SONAR！
  * @author zollty 高效的算法保证
  * @since 2013-6-13
  */

@@ -1,3 +1,15 @@
+/* 
+ * Copyright (C) 2016-2017 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * Create by ZollTy on 2016-3-20 (http://blog.zollty.com/, zollty@163.com)
+ */
 package org.zollty.util.msg;
 
 import java.util.List;
@@ -11,7 +23,7 @@ import java.util.Properties;
  * <br>
  * 配置示例：
  * <bean id="keyValueMsg" class="org.zollty.util.msg.KeyValueMsgProperties">
-    <property name="moduleName" value="config/properties/ErrorMessage_zh_CN" />
+    <property name="modulePath" value="config/properties/ErrorMessage_zh_CN" />
     <property name="defaultFile">
       <list>
         <value>global_error_message.properties</value>
@@ -28,19 +40,19 @@ public class KeyValueMsgProperties implements KeyValueMsg {
     
     private I18nMsgProperties i18nMsg;
     
-    private String moduleName;
+    private String modulePath;
     
     private List<String> defaultFile;
     
     public KeyValueMsgProperties() {
-    	this.setModuleName(null);
+    	this.setModulePath(null);
     }
 
     /**
-     * @param moduleName properties的文件名（全路径）
+     * @param modulePath properties的文件名（全路径）
      */
-    public KeyValueMsgProperties(String moduleName) {
-        this.setModuleName(moduleName);
+    public KeyValueMsgProperties(String modulePath) {
+        this.setModulePath(modulePath);
     }
     
     /**
@@ -59,12 +71,12 @@ public class KeyValueMsgProperties implements KeyValueMsg {
     }
 	
     /**
-     * 设置moduleName（即文件名去掉properties后缀），配置不会立即加载，第一次用到时获取
-     * @param moduleName properties的文件名（去掉properties后缀）
+     * 设置modulePath（即文件名去掉properties后缀），配置不会立即加载，第一次用到时获取
+     * @param modulePath properties的文件名（去掉properties后缀）
      */
-	public void setModuleName(String moduleName) {
-		this.moduleName = moduleName;
-		this.i18nMsg = new I18nMsgProperties(moduleName);
+	public void setModulePath(String modulePath) {
+		this.modulePath = modulePath;
+		this.i18nMsg = new I18nMsgProperties(modulePath);
 	}
 	
 	/**
@@ -112,8 +124,8 @@ public class KeyValueMsgProperties implements KeyValueMsg {
         return this.i18nMsg.getByte(key, DEFAULT_LOCALE);
     }
 
-    public String getModuleName() {
-        return moduleName;
+    public String getModulePath() {
+        return modulePath;
     }
 
 	public List<String> getDefaultFile() {
