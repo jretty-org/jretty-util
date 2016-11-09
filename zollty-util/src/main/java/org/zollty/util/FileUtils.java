@@ -119,6 +119,38 @@ public class FileUtils {
             IOUtils.closeIO(in, out);
         }
     }
+    
+    /**
+     * 获取 目录以及子目录中的所有无子目录的目录文件（也就是说不包含目录的父级目录）
+     * @param file 最外层的目录
+     */
+    public static List<File> loopFolders(File file) {
+        return loopFolders(file, false);
+    }
+    
+    /**
+     * 获取 目录以及子目录中的所有（无子目录的）目录文件
+     * @param file 最外层的目录
+     * @param includeInterFolder 是否包含中间目录，如果为false则获取“所有无子目录的目录文件“
+     */
+    public static List<File> loopFolders(File file, boolean includeInterFolder) {
+        ArrayList<File> result = new ArrayList<File>();
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            boolean finalDir = true;
+            for (File filePath : files) {
+                if (filePath.isFile()) {
+                    continue;
+                }
+                finalDir = false;
+                result.addAll(loopFolders(filePath, includeInterFolder));
+            }
+            if (includeInterFolder || finalDir) {
+                result.add(file);
+            }
+        }
+        return result;
+    }
 
     /** 获取 目录以及子目录中的所有文件 */
     public static List<File> loopFiles(File file) {
