@@ -12,6 +12,8 @@
  */
 package org.zollty.tool.file;
 
+import org.zollty.util.FileUtils.TextFileParse;
+
 /**
  * @author zollty
  * @date 2013-8-13

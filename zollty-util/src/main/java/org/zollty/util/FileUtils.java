@@ -12,12 +12,18 @@
  */
 package org.zollty.util;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -171,6 +177,96 @@ public class FileUtils {
         }
         return result;
     }
+    
+    public static void appendStr2File(String fileFullPath, String str, String charSet) {
+        BufferedWriter out = null;
+        try {
+            out = IOUtils.getBufferedWriter(fileFullPath, true, charSet);
+            out.write(str);
+            out.flush();
+        }
+        catch (Exception e) {
+            LOG.error(e);
+        }
+        finally {
+            IOUtils.closeIO(out);
+        }
+    }
+    
+    /**
+     * 按行解析文本文件
+     */
+    public static List<String> getTextFileContent(InputStream in) {
+        return getTextFileContent(in, null);
+    }
+
+    /**
+     * 按行解析文本文件
+     */
+    public static List<String> getTextFileContent(InputStream in, String charSet) {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(in, StringUtils.decideCharSet(charSet)));
+            String buf = null;
+            List<String> ret = new ArrayList<String>();
+            while (null != (buf = br.readLine())) {
+                ret.add(buf);
+            }
+            return ret;
+        }
+        catch (Exception e) {
+            LOG.error(e);
+            return new ArrayList<String>();
+        }
+        finally {
+            IOUtils.closeIO(br);
+        }
+    }
+
+    /**
+     * 按行解析文本文件
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> parseTextFile(String fileFullPath, TextFileParse<T> parser, String charSet) {
+        InputStream in;
+        try {
+            in = new FileInputStream(fileFullPath);
+        }
+        catch (FileNotFoundException e) {
+            return Collections.EMPTY_LIST;
+        }
+        return parseTextFile(in, parser, charSet);
+    }
+
+    /**
+     * 按行解析文本文件
+     */
+    public static <T> List<T> parseTextFile(InputStream in, TextFileParse<T> parser, String charSet) {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(in, StringUtils.decideCharSet(charSet)));
+            T o;
+            String lineStr;
+            List<T> list = new ArrayList<T>();
+            while ((lineStr = br.readLine()) != null) {
+                if (StringUtils.isNotEmpty(lineStr)) {
+                    // 读出文件中一行的数据
+                    o = parser.parseOneLine(lineStr);
+                    if (o != null) {
+                        list.add(o);
+                    }
+                }
+            }
+            return list;
+        }
+        catch (Exception e) {
+            LOG.error(e);
+            return null;
+        }
+        finally {
+            IOUtils.closeIO(in);
+        }
+    }
 
     private static boolean checkFileType(File file, String inludeType[]) {
         if (inludeType == null) {
@@ -200,6 +296,18 @@ public class FileUtils {
                 return -1;
             }
         }
+    }
+    
+    /**
+     * 将文本文件内容解析、封装成相应的对象。
+     * 
+     * @author zollty
+     * @date 2013-8-02
+     */
+    public interface TextFileParse<T> {
+
+        T parseOneLine(String line);
+
     }
 
 }

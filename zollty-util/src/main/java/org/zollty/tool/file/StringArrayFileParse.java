@@ -12,6 +12,8 @@
  */
 package org.zollty.tool.file;
 
+import org.zollty.util.FileUtils.TextFileParse;
+
 /**
  * 将文本文件内容解析成字符数组
  * 
