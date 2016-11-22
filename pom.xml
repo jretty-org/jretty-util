@@ -15,17 +15,16 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.zollty</groupId>
-  <artifactId>zollty-util-parent</artifactId>
+  <groupId>org.jretty</groupId>
+  <artifactId>jretty-util-parent</artifactId>
   <version>1.0.0-RELEASE</version>
   <packaging>pom</packaging>
-  <name>zollty-util-parent</name>
-  <url>http://www.zollty.com/zollty-util/</url>
+  <name>jretty-util-parent</name>
   <description>A simple Java util's libraries. See the sub modules.</description>
 
   <modules>
-    <module>zollty-util</module>
-    <module>zollty-util-web</module>
+    <module>jretty-util</module>
+    <module>jretty-util-web</module>
   </modules>
 
   <!-- CONST -->
@@ -39,17 +38,17 @@
     <dependencies>
 
       <dependency>
-        <groupId>org.zollty</groupId>
-        <artifactId>zollty-log</artifactId>
-        <version>1.3.1</version>
+        <groupId>org.jretty</groupId>
+        <artifactId>jretty-log</artifactId>
+        <version>1.2.0</version>
         <scope>system</scope>
-        <systemPath>${basedir}/../lib/zollty-log-1.3.1.jar</systemPath>
+        <systemPath>${basedir}/../lib/jretty-log-1.2.0.jar</systemPath>
       </dependency>
 
       <dependency>
-        <groupId>org.zollty</groupId>
-        <artifactId>zollty-util</artifactId>
-        <version>2.1.0</version>
+        <groupId>org.jretty</groupId>
+        <artifactId>jretty-util</artifactId>
+        <version>1.2.0</version>
       </dependency>
 
       <!-- Servlet -->
@@ -69,8 +68,8 @@
       </dependency>
 
       <dependency>
-        <groupId>org.zollty</groupId>
-        <artifactId>zollty-tesper</artifactId>
+        <groupId>org.jretty</groupId>
+        <artifactId>jretty-tesper</artifactId>
         <version>1.0</version>
         <scope>test</scope>
       </dependency>
@@ -235,8 +234,8 @@
         <role>Project Manager</role>
         <role>Architect</role>
       </roles>
-      <organization>zollty-org</organization>
-      <organizationUrl>http://www.zollty.org</organizationUrl>
+      <organization>jretty-org</organization>
+      <organizationUrl>http://www.jretty.org</organizationUrl>
     </developer>
   </developers>
 
@@ -249,8 +248,8 @@
   </licenses>
 
   <organization>
-    <name>zollty-org</name>
-    <url>http://www.zollty.org</url>
+    <name>jretty-org</name>
+    <url>http://www.jretty.org</url>
   </organization>
 
 </project>
