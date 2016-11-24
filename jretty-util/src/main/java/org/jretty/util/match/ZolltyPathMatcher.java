@@ -10,15 +10,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-6-02 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.match;
+package org.jretty.util.match;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
-import org.zollty.util.ArrayUtils;
-import org.zollty.util.Const;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
+import org.jretty.util.ArrayUtils;
+import org.jretty.util.Const;
 
 /**
  * A high-performance path matching algorithm. (10 times faster than AntPathMather) 

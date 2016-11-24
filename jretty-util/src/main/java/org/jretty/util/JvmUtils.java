@@ -10,13 +10,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-2-15 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util;
+package org.jretty.util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
 
 /**
  * JVM 工具类

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
-import org.zollty.util.ResourceUtils;
+import org.jretty.util.ResourceUtils;
 
 /**
  * Strategy interface for loading resources (e.. class path or file system

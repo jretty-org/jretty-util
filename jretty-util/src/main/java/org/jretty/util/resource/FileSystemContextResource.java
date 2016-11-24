@@ -1,4 +1,4 @@
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 /**
  * FileSystemResource that explicitly expresses a context-relative path

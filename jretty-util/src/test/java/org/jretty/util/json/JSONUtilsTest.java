@@ -5,7 +5,7 @@
  * Zollty Tsou (http://blog.csdn.net/zollty, zouty@travelsky.com)
  * Copyright (C) 2014-2015 Travelsky Technology. All rights reserved.
  */
-package org.zollty.util.json;
+package org.jretty.util.json;
 
 import java.util.ArrayList;
 import java.util.Date;

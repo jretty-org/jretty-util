@@ -9,7 +9,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  */
-package org.zollty.util.resource.support;
+package org.jretty.util.resource.support;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.zollty.util.resource.Resource;
+import org.jretty.util.resource.Resource;
 
 public class PathMatchingResourcePatternResolverTest {
 

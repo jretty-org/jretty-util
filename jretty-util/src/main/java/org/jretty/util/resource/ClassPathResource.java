@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.zollty.util.Assert;
-import org.zollty.util.ClassUtils;
-import org.zollty.util.StringUtils;
+import org.jretty.util.Assert;
+import org.jretty.util.ClassUtils;
+import org.jretty.util.StringUtils;
 
 /**
  * {@link Resource} implementation for class path resources.

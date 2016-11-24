@@ -1,4 +1,4 @@
-package org.zollty.util.json;
+package org.jretty.util.json;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.zollty.util.json.support.DateWriter;
-import org.zollty.util.json.support.ObjectWriter;
+import org.jretty.util.json.support.DateWriter;
+import org.jretty.util.json.support.ObjectWriter;
 
 import com.alibaba.fastjson.JSON;
 

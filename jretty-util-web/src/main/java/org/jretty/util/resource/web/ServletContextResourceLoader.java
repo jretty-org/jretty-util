@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource.web;
+package org.jretty.util.resource.web;
 
 import javax.servlet.ServletContext;
 
-import org.zollty.util.ResourceUtils;
-import org.zollty.util.resource.DefaultResourceLoader;
-import org.zollty.util.resource.FileSystemResourceLoader;
-import org.zollty.util.resource.Resource;
+import org.jretty.util.ResourceUtils;
+import org.jretty.util.resource.DefaultResourceLoader;
+import org.jretty.util.resource.FileSystemResourceLoader;
+import org.jretty.util.resource.Resource;
 
 
 /**

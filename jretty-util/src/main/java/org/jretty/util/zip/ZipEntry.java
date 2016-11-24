@@ -28,7 +28,7 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-package org.zollty.util.zip;
+package org.jretty.util.zip;
 
 import java.util.Calendar;
 import java.util.Date;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.zollty.util.UrlUtils;
+import org.jretty.util.UrlUtils;
 
 /**
  * Abstract base class for resources which resolve URLs into File references,

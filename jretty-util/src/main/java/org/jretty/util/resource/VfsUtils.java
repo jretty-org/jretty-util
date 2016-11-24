@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,9 +25,9 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
-import org.zollty.util.ReflectionUtils;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
+import org.jretty.util.ReflectionUtils;
 
 /**
  * Utility for detecting the JBoss VFS version available in the classpath.

@@ -1,13 +1,13 @@
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
-import org.zollty.util.resource.support.PathMatchingResourcePatternResolver;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
+import org.jretty.util.resource.support.PathMatchingResourcePatternResolver;
 
 public class DefaultResourceLoaderTest {
     

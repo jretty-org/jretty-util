@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 /**
  * Extended interface for a resource that is loaded from an enclosing

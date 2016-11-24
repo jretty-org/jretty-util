@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2013-6-07 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.zip;
+package org.jretty.util.zip;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,10 +22,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
-import org.zollty.util.Const;
-import org.zollty.util.IOUtils;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
+import org.jretty.util.Const;
+import org.jretty.util.IOUtils;
 
 /**
  * ZIP 压缩/解压 工具类

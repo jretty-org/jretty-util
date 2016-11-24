@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2015-3-17 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util;
+package org.jretty.util;
 
 import java.io.IOException;
 
@@ -19,11 +19,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
-import org.zollty.util.resource.ClassPathResource;
-import org.zollty.util.resource.FileSystemContextResource;
-import org.zollty.util.resource.Resource;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
+import org.jretty.util.resource.ClassPathResource;
+import org.jretty.util.resource.FileSystemContextResource;
+import org.jretty.util.resource.Resource;
 
 /**
  * @author zollty

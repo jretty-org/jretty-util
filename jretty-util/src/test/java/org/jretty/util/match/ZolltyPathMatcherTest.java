@@ -10,15 +10,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-6-03 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.match;
+package org.jretty.util.match;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
 
 /**
  * @author zollty

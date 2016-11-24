@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -10,15 +10,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-5-17 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.json;
+package org.jretty.util.json;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.zollty.util.json.support.ObjectWriter;
-import org.zollty.util.json.support.StringWriter;
+import org.jretty.util.json.support.ObjectWriter;
+import org.jretty.util.json.support.StringWriter;
 
 /**
  * Simple JSON工具类

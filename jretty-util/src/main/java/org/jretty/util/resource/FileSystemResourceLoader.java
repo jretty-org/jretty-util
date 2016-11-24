@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 /**
  * {@link ResourceLoader} implementation that resolves plain paths as

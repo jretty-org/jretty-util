@@ -10,10 +10,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-5-17 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.json.support;
+package org.jretty.util.json.support;
 
-import org.zollty.util.ExceptionUtils;
-import org.zollty.util.json.DefaultWriter;
+import org.jretty.util.ExceptionUtils;
+import org.jretty.util.json.DefaultWriter;
 
 /**
  * 

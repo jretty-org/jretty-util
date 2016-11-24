@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-6-22 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util;
+package org.jretty.util;
 
 import java.lang.reflect.Array;
 import java.util.ArrayDeque;

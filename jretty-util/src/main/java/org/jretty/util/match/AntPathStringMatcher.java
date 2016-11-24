@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.match;
+package org.jretty.util.match;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.zollty.util.Assert;
+import org.jretty.util.Assert;
 
 /**
  * Package-protected helper class for {@link AntPathMatcher}. Tests whether or not a string matches against a pattern

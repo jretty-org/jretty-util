@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource.web;
+package org.jretty.util.resource.web;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -25,15 +25,15 @@ import java.util.jar.JarFile;
 
 import javax.servlet.ServletContext;
 
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
-import org.zollty.util.IOUtils;
-import org.zollty.util.UrlUtils;
-import org.zollty.util.StringUtils;
-import org.zollty.util.resource.Resource;
-import org.zollty.util.resource.ResourceLoader;
-import org.zollty.util.resource.UrlResource;
-import org.zollty.util.resource.support.PathMatchingResourcePatternResolver;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
+import org.jretty.util.IOUtils;
+import org.jretty.util.UrlUtils;
+import org.jretty.util.StringUtils;
+import org.jretty.util.resource.Resource;
+import org.jretty.util.resource.ResourceLoader;
+import org.jretty.util.resource.UrlResource;
+import org.jretty.util.resource.support.PathMatchingResourcePatternResolver;
 
 /**
  * ServletContext-aware subclass of {@link PathMatchingResourcePatternResolver},

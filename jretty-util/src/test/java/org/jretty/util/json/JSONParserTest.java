@@ -1,4 +1,4 @@
-package org.zollty.util.json;
+package org.jretty.util.json;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
-import org.zollty.util.Assert;
-import org.zollty.util.StringUtils;
+import org.jretty.util.Assert;
+import org.jretty.util.StringUtils;
 
 /**
  * {@link ResourceLoader} implementation that interprets plain resource paths

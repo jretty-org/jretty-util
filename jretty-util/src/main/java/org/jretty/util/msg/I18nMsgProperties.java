@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2016-3-20 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.msg;
+package org.jretty.util.msg;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,13 +20,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
-import org.zollty.util.CollectionUtils;
-import org.zollty.util.LocaleUtils;
-import org.zollty.util.NestedRuntimeException;
-import org.zollty.util.ResourceUtils;
-import org.zollty.util.resource.Resource;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
+import org.jretty.util.CollectionUtils;
+import org.jretty.util.LocaleUtils;
+import org.jretty.util.NestedRuntimeException;
+import org.jretty.util.ResourceUtils;
+import org.jretty.util.resource.Resource;
 
 /**
  * 基于Properties文件的I18nMsg的实现。

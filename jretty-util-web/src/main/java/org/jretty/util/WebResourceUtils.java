@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2015-3-17 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util;
+package org.jretty.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,11 +18,11 @@ import java.io.InputStream;
 
 import javax.servlet.ServletContext;
 
-import org.zollty.util.resource.Resource;
-import org.zollty.util.resource.support.ResourcePatternResolver;
-import org.zollty.util.resource.web.ServletContextResource;
-import org.zollty.util.resource.web.ServletContextResourceLoader;
-import org.zollty.util.resource.web.ServletContextResourcePatternResolver;
+import org.jretty.util.resource.Resource;
+import org.jretty.util.resource.support.ResourcePatternResolver;
+import org.jretty.util.resource.web.ServletContextResource;
+import org.jretty.util.resource.web.ServletContextResourceLoader;
+import org.jretty.util.resource.web.ServletContextResourcePatternResolver;
 
 /**
  * @author zollty

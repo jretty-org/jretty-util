@@ -10,19 +10,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2015-3-17 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util;
+package org.jretty.util;
 
-import static org.zollty.util.ExceptionTestTools.CONTROLLER_ALERT;
-import static org.zollty.util.ExceptionTestTools.MSG_SPLIT;
-import static org.zollty.util.ExceptionTestTools.SERVICE_ALERT;
-import static org.zollty.util.ExceptionTestTools.UNDER_UNKNOWN_EXCEPTION;
+import static org.jretty.util.ExceptionTestTools.CONTROLLER_ALERT;
+import static org.jretty.util.ExceptionTestTools.MSG_SPLIT;
+import static org.jretty.util.ExceptionTestTools.SERVICE_ALERT;
+import static org.jretty.util.ExceptionTestTools.UNDER_UNKNOWN_EXCEPTION;
 
 import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
 
 /**
  * @author zollty

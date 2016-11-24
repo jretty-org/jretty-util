@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource.support;
+package org.jretty.util.resource.support;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 
-import org.zollty.util.resource.VfsUtils;
+import org.jretty.util.resource.VfsUtils;
 
 
 /**

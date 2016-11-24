@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource.support;
+package org.jretty.util.resource.support;
 
 import java.io.IOException;
 
-import org.zollty.util.ResourceUtils;
-import org.zollty.util.resource.Resource;
-import org.zollty.util.resource.ResourceLoader;
+import org.jretty.util.ResourceUtils;
+import org.jretty.util.resource.Resource;
+import org.jretty.util.resource.ResourceLoader;
 
 /**
  * Strategy interface for resolving a location pattern (for example,

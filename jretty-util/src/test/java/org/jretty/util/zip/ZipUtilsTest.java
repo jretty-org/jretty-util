@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-7-11 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.zip;
+package org.jretty.util.zip;
 
 import org.junit.Ignore;
 import org.junit.Test;

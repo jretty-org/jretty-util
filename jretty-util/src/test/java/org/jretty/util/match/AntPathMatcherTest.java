@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-6-03 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.match;
+package org.jretty.util.match;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-12-13 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.support;
+package org.jretty.util.support;
 
 /**
  * 支持Exception Delegate接口

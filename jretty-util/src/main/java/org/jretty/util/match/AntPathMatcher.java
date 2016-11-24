@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.match;
+package org.jretty.util.match;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.zollty.util.Assert;
-import org.zollty.util.StringSplitUtils;
-import org.zollty.util.StringUtils;
+import org.jretty.util.Assert;
+import org.jretty.util.StringSplitUtils;
+import org.jretty.util.StringUtils;
 
 /**
  * PathMatcher implementation for Ant-style path patterns. Examples are provided below.

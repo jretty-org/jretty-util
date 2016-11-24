@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource.support;
+package org.jretty.util.resource.support;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,20 +31,20 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
-import org.zollty.util.Assert;
-import org.zollty.util.ReflectionUtils;
-import org.zollty.util.StringUtils;
-import org.zollty.util.UrlUtils;
-import org.zollty.util.match.AntPathMatcher;
-import org.zollty.util.match.PathMatcher;
-import org.zollty.util.resource.DefaultResourceLoader;
-import org.zollty.util.resource.FileSystemResource;
-import org.zollty.util.resource.Resource;
-import org.zollty.util.resource.ResourceLoader;
-import org.zollty.util.resource.UrlResource;
-import org.zollty.util.resource.VfsResource;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
+import org.jretty.util.Assert;
+import org.jretty.util.ReflectionUtils;
+import org.jretty.util.StringUtils;
+import org.jretty.util.UrlUtils;
+import org.jretty.util.match.AntPathMatcher;
+import org.jretty.util.match.PathMatcher;
+import org.jretty.util.resource.DefaultResourceLoader;
+import org.jretty.util.resource.FileSystemResource;
+import org.jretty.util.resource.Resource;
+import org.jretty.util.resource.ResourceLoader;
+import org.jretty.util.resource.UrlResource;
+import org.jretty.util.resource.VfsResource;
 
 /**
  * A {@link ResourcePatternResolver} implementation that is able to resolve a

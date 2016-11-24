@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2013-6-23 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util;
+package org.jretty.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -27,8 +27,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
 
 /**
  * file utils best practice 

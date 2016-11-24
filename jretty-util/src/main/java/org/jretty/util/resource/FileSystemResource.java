@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,8 +25,8 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.zollty.util.Assert;
-import org.zollty.util.StringUtils;
+import org.jretty.util.Assert;
+import org.jretty.util.StringUtils;
 
 /**
  * {@link Resource} implementation for {@code java.io.File} handles.

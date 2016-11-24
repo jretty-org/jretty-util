@@ -10,12 +10,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-5-17 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.json.support;
+package org.jretty.util.json.support;
 
 import java.util.Date;
 
-import org.zollty.util.DateFormatUtils;
-import org.zollty.util.json.DefaultWriter;
+import org.jretty.util.DateFormatUtils;
+import org.jretty.util.json.DefaultWriter;
 
 /**
  * 默认为 yyyy-MM-dd HH:mm:ss 格式

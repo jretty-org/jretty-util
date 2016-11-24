@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2013-6-07 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util;
+package org.jretty.util;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -27,16 +27,16 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.zollty.log.LogFactory;
-import org.zollty.log.Logger;
-import org.zollty.util.resource.ClassPathResource;
-import org.zollty.util.resource.DefaultResourceLoader;
-import org.zollty.util.resource.FileSystemResource;
-import org.zollty.util.resource.Resource;
-import org.zollty.util.resource.ResourceLoader;
-import org.zollty.util.resource.UrlResource;
-import org.zollty.util.resource.support.PathMatchingResourcePatternResolver;
-import org.zollty.util.resource.support.ResourcePatternResolver;
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
+import org.jretty.util.resource.ClassPathResource;
+import org.jretty.util.resource.DefaultResourceLoader;
+import org.jretty.util.resource.FileSystemResource;
+import org.jretty.util.resource.Resource;
+import org.jretty.util.resource.ResourceLoader;
+import org.jretty.util.resource.UrlResource;
+import org.jretty.util.resource.support.PathMatchingResourcePatternResolver;
+import org.jretty.util.resource.support.ResourcePatternResolver;
 
 /**
  * 资源文件工具类

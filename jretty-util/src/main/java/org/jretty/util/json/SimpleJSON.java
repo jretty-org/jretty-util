@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2014-5-07 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.json;
+package org.jretty.util.json;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

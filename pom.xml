@@ -69,9 +69,10 @@
 
       <dependency>
         <groupId>org.jretty</groupId>
-        <artifactId>jretty-tesper</artifactId>
-        <version>1.0</version>
-        <scope>test</scope>
+        <artifactId>tesper</artifactId>
+        <version>1.0.0</version>
+        <scope>system</scope>
+        <systemPath>${basedir}/../lib/tesper-1.0.0.jar</systemPath>
       </dependency>
 
     </dependencies>

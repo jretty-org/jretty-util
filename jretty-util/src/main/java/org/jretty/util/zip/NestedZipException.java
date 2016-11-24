@@ -10,14 +10,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2013-7-03 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.zip;
+package org.jretty.util.zip;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-import org.zollty.util.NestedException;
-import org.zollty.util.support.ExceptionDelegateSupport;
-import org.zollty.util.support.NestedExceptionDelegate;
+import org.jretty.util.NestedException;
+import org.jretty.util.support.ExceptionDelegateSupport;
+import org.jretty.util.support.NestedExceptionDelegate;
 
 /**
  * @author zollty 

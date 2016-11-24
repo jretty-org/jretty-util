@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.match;
+package org.jretty.util.match;
 
 import java.util.Comparator;
 import java.util.Map;

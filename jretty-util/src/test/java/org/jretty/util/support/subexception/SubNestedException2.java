@@ -10,9 +10,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2015-3-17 (http://blog.zollty.com/, zollty@163.com)
  */
-package org.zollty.util.support.subexception;
+package org.jretty.util.support.subexception;
 
-import org.zollty.util.NestedCheckedException;
+import org.jretty.util.NestedCheckedException;
 
 /**
  * @author zollty

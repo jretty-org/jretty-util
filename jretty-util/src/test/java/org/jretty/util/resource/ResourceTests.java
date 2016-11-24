@@ -1,4 +1,4 @@
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -17,7 +17,7 @@ import java.util.HashSet;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.zollty.util.IOUtils;
+import org.jretty.util.IOUtils;
 
 /**
  * @author Juergen Hoeller

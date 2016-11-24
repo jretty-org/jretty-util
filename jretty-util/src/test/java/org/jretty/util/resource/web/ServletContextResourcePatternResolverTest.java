@@ -1,4 +1,4 @@
-package org.zollty.util.resource.web;
+package org.jretty.util.resource.web;
 
 public class ServletContextResourcePatternResolverTest {
 

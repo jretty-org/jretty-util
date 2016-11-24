@@ -1,4 +1,4 @@
-package org.zollty.util;
+package org.jretty.util;
 
 import org.junit.Test;
 

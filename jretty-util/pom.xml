@@ -16,23 +16,23 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.zollty</groupId>
-    <artifactId>zollty-util-parent</artifactId>
+    <groupId>org.jretty</groupId>
+    <artifactId>jretty-util-parent</artifactId>
     <version>1.0.0-RELEASE</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>zollty-util</artifactId>
+  <artifactId>jretty-util</artifactId>
   <packaging>jar</packaging>
-  <version>2.2.0-SNAPSHOT</version>
-  <name>zollty-util</name>
+  <version>1.2.0</version>
+  <name>jretty-util</name>
   <description>A simple Java util's library. See the parent pom for more infomation.</description>
 
 
   <dependencies>
 
     <dependency>
-      <groupId>org.zollty</groupId>
-      <artifactId>zollty-log</artifactId>
+      <groupId>org.jretty</groupId>
+      <artifactId>jretty-log</artifactId>
     </dependency>
 
     <!-- For Test -->
@@ -43,9 +43,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.zollty</groupId>
-      <artifactId>zollty-tesper</artifactId>
-      <scope>test</scope>
+      <groupId>org.jretty</groupId>
+      <artifactId>tesper</artifactId>
     </dependency>
     
     <dependency>

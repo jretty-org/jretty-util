@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource.web;
+package org.jretty.util.resource.web;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,13 +25,13 @@ import java.net.URL;
 
 import javax.servlet.ServletContext;
 
-import org.zollty.util.Assert;
-import org.zollty.util.StringUtils;
-import org.zollty.util.UrlUtils;
-import org.zollty.util.WebUtils;
-import org.zollty.util.resource.AbstractFileResolvingResource;
-import org.zollty.util.resource.ContextResource;
-import org.zollty.util.resource.Resource;
+import org.jretty.util.Assert;
+import org.jretty.util.StringUtils;
+import org.jretty.util.UrlUtils;
+import org.jretty.util.WebUtils;
+import org.jretty.util.resource.AbstractFileResolvingResource;
+import org.jretty.util.resource.ContextResource;
+import org.jretty.util.resource.Resource;
 
 /**
  * {@link org.springframework.core.io.Resource} implementation for

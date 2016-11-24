@@ -28,7 +28,7 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-package org.zollty.util.zip;
+package org.jretty.util.zip;
 
 /*
  * This interface defines the constants that are used by the classes

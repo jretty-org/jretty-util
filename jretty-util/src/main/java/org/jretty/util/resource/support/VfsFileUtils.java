@@ -1,4 +1,4 @@
-package org.zollty.util.resource.support;
+package org.jretty.util.resource.support;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;

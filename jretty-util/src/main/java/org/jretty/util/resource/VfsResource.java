@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import org.zollty.util.Assert;
+import org.jretty.util.Assert;
 
 /**
  * VFS based {@link Resource} implementation.

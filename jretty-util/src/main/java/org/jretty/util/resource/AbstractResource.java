@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,9 +24,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.zollty.util.Assert;
-import org.zollty.util.NestedIOException;
-import org.zollty.util.UrlUtils;
+import org.jretty.util.Assert;
+import org.jretty.util.NestedIOException;
+import org.jretty.util.UrlUtils;
 
 /**
  * Convenience base class for {@link Resource} implementations,

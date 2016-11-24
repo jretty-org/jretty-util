@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.zollty.util.resource;
+package org.jretty.util.resource;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.zollty.util.Assert;
-import org.zollty.util.ClassUtils;
-import org.zollty.util.StringUtils;
+import org.jretty.util.Assert;
+import org.jretty.util.ClassUtils;
+import org.jretty.util.StringUtils;
 
 /**
  * Default implementation of the {@link ResourceLoader} interface.
