@@ -33,16 +33,16 @@
       <groupId>org.jretty</groupId>
       <artifactId>jretty-log</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.jretty</groupId>
+      <artifactId>jretty-util</artifactId>
+    </dependency>
 
     <!-- Servlet -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jretty</groupId>
-      <artifactId>jretty-util</artifactId>
     </dependency>
 
     <!-- For Test -->

@@ -106,8 +106,8 @@ public class ResourceUtilsTest {
      */
     @Test
     public void testGetInputStreamFromJar(){
-        getInputStreamFromJar(Logger.class, "org/zollty/log/Logger.class");
-        getInputStreamFromJar(Logger.class, "org/zollty/log/");
+        getInputStreamFromJar(Logger.class, "org/jretty/log/Logger.class");
+        getInputStreamFromJar(Logger.class, "org/jretty/log/");
         
         noInputStreamFromJar(Logger.class, "zollty-log0.properties");
     }
@@ -117,8 +117,8 @@ public class ResourceUtilsTest {
      */
     @Test
     public void testGetInputStreamFromClassPath(){
-        getInputStreamFromClassPath(getClass().getClassLoader(), "org/zollty/util/StringUtils.class");
-        noInputStreamFromClassPath(getClass().getClassLoader(), "org/zollty/util/StringUtils222.class");
+        getInputStreamFromClassPath(getClass().getClassLoader(), "org/jretty/util/StringUtils.class");
+        noInputStreamFromClassPath(getClass().getClassLoader(), "org/jretty/util/StringUtils222.class");
     }
     
     /**
@@ -128,13 +128,13 @@ public class ResourceUtilsTest {
      */
     @Test
     public void testGetInputStreamFromClassLoader(){
-        getInputStreamFromClassLoader(getClass(), "org/zollty/util/StringUtils.class");
-        noInputStreamFromClassLoader(getClass(), "org/zollty/util/StringUtils222.class");
+        getInputStreamFromClassLoader(getClass(), "org/jretty/util/StringUtils.class");
+        noInputStreamFromClassLoader(getClass(), "org/jretty/util/StringUtils222.class");
     }
     
     @Test
     public void testGetResource(){
-        Resource resource = ResourceUtils.getResource("classpath:org/zollty/util/StringUtils.class");
+        Resource resource = ResourceUtils.getResource("classpath:org/jretty/util/StringUtils.class");
         Assert.assertTrue(resource.exists());
         try {
             LOG.info(resource.contentLength());
@@ -143,7 +143,7 @@ public class ResourceUtilsTest {
             e.printStackTrace();
         }
         
-        resource = ResourceUtils.getResource("classpath:org/zollty/log/Logger.class");
+        resource = ResourceUtils.getResource("classpath:org/jretty/log/Logger.class");
         Assert.assertTrue(resource.exists());
         try {
             LOG.info(resource.contentLength());
@@ -152,7 +152,7 @@ public class ResourceUtilsTest {
             e.printStackTrace();
         }
         
-        resource = ResourceUtils.getResource("classpath:org/zollty/log/");
+        resource = ResourceUtils.getResource("classpath:org/jretty/log/");
         Assert.assertTrue(resource.exists());
         try {
             LOG.info(resource.contentLength());
@@ -161,7 +161,7 @@ public class ResourceUtilsTest {
             e.printStackTrace();
         }
         
-        resource = ResourceUtils.getResource("classpath:org/zollty/util/StringUtils222.class");
+        resource = ResourceUtils.getResource("classpath:org/jretty/util/StringUtils222.class");
         Assert.assertFalse(resource.exists());
     }
     

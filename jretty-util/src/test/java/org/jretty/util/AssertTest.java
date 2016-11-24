@@ -13,9 +13,9 @@ public class AssertTest {
             doService(null, "assert it's true but false....");
         } catch(Exception e) {
             StackTraceElement[] st = e.getStackTrace();
-            e.printStackTrace();
+            // e.printStackTrace();
             org.junit.Assert.assertEquals(
-                    "org.zollty.util.AssertTest.doService(AssertTest.java:"+line+")",
+                    "org.jretty.util.AssertTest.doService(AssertTest.java:"+line+")",
                     st[0].toString());
         }
     }
@@ -52,7 +52,7 @@ public class AssertTest {
     public static void hasLength(String text) {
 //        try {
         hasText(text,
-                "[Assertion failed] - this String argument must have length; it must not be null or empty");
+                "this exception is just for unit test. [Assertion failed] - this String argument must have length; it must not be null or empty");
 //        } catch(IllegalArgumentException e) {
 //            throw changeIAE(e);
 //        }

@@ -60,7 +60,7 @@ public class WebResourceUtilsTest {
             LOG.error(e);
         }
 
-        String path4 = "org/zollty/util/resource/Resource.class";
+        String path4 = "org/jretty/util/resource/Resource.class";
         String path5 = ResourceUtils.CLASSPATH_URL_PREFIX + path4;
         String path6 = ResourceUtils.CLASSPATH_URL_PREFIX + "orgggg";
         resource = new ClassPathResource(path4);
@@ -68,11 +68,11 @@ public class WebResourceUtilsTest {
 
         resource = WebResourceUtils.getResource(path5, null, null);
         Assert.assertTrue(resource.exists());
-        Assert.assertEquals("org.zollty.util.resource.ClassPathResource", resource.getClass().getName());
+        Assert.assertEquals("org.jretty.util.resource.ClassPathResource", resource.getClass().getName());
 
         resource = WebResourceUtils.getResource(path6, null, null);
         Assert.assertFalse(resource.exists());
-        Assert.assertEquals("org.zollty.util.resource.ClassPathResource", resource.getClass().getName());
+        Assert.assertEquals("org.jretty.util.resource.ClassPathResource", resource.getClass().getName());
 
     }
 

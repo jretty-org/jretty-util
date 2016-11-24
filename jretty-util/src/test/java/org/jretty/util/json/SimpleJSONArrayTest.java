@@ -21,7 +21,7 @@ public class SimpleJSONArrayTest {
             .addItem("list", SimpleJSON.toSimpleJSONArray(list));
         
         Assert.assertEquals(
-                "{\"name\":\"org.zollty.util.json.SimpleJSONArrayTest\",\"list\":[{\"xxxa\":1234},{\"bbbx\":0.34}]}"
+                "{\"name\":\"org.jretty.util.json.SimpleJSONArrayTest\",\"list\":[{\"xxxa\":1234},{\"bbbx\":0.34}]}"
                 , ret.toString());
     }
     
@@ -34,7 +34,7 @@ public class SimpleJSONArrayTest {
             .addItem("list", SimpleJSON.toSimpleJSONArray(null));
         
         Assert.assertEquals(
-                "{\"name\":\"org.zollty.util.json.SimpleJSONArrayTest\",\"list\":null}"
+                "{\"name\":\"org.jretty.util.json.SimpleJSONArrayTest\",\"list\":null}"
                 , ret.toString());
         
         
@@ -43,7 +43,7 @@ public class SimpleJSONArrayTest {
                 .addItem("list", SimpleJSON.toSimpleJSONArray(new ArrayList<SimpleJSON>()));
             
         Assert.assertEquals(
-                "{\"name\":\"org.zollty.util.json.SimpleJSONArrayTest\",\"list\":[]}"
+                "{\"name\":\"org.jretty.util.json.SimpleJSONArrayTest\",\"list\":[]}"
                 , ret.toString());
     }
 

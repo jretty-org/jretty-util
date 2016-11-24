@@ -68,7 +68,7 @@ public class WebResourceUtils extends ResourceUtils {
      *     
      *   </pre>
      *   @see ServletContextResourceLoader#getResource(String)
-     *   @see org.zollty.util.resource.DefaultResourceLoader#getResource(String)
+     *   @see org.jretty.util.resource.DefaultResourceLoader#getResource(String)
      *   
      * @param path the path to resolve
      * @param classLoader the ClassLoader to load class path resources with.
@@ -110,7 +110,7 @@ public class WebResourceUtils extends ResourceUtils {
     /**
      * See {@link #getResources(String, ClassLoader, ServletContext) }
      * @see #getResources(String, ClassLoader, ServletContext)
-     * @see org.zollty.util.resource.DefaultResourceLoader#getResource(String)
+     * @see org.jretty.util.resource.DefaultResourceLoader#getResource(String)
      */
     public static InputStream getResourceInputStream(String resourceLocation, ClassLoader classLoader, ServletContext servletContext) throws IOException {
         Resource resource = getResource(resourceLocation, classLoader, servletContext);

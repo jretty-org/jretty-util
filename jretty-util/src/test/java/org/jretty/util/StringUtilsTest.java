@@ -38,8 +38,8 @@ public class StringUtilsTest {
     
     @Test
     public void testApplyRelativePath(){
-        String path = StringUtils.applyRelativePath("org/zollty/util/resource/Resource.class", "ClassPathResource.class");
-        org.junit.Assert.assertEquals("org/zollty/util/resource/ClassPathResource.class", path);
+        String path = StringUtils.applyRelativePath("org/jretty/util/resource/Resource.class", "ClassPathResource.class");
+        org.junit.Assert.assertEquals("org/jretty/util/resource/ClassPathResource.class", path);
     }
     
     @Test

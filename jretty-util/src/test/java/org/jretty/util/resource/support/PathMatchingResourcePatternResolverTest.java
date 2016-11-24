@@ -56,7 +56,7 @@ public class PathMatchingResourcePatternResolverTest {
     @Test
     public void testSingleResourceOnFileSystem() throws IOException {
         Resource[] resources =
-                resolver.getResources("org/zollty/util/resource/support/PathMatchingResourcePatternResolverTest.class");
+                resolver.getResources("org/jretty/util/resource/support/PathMatchingResourcePatternResolverTest.class");
         assertEquals(1, resources.length);
         assertProtocolAndFilename(resources[0], "file", "PathMatchingResourcePatternResolverTest.class");
     }
@@ -71,7 +71,7 @@ public class PathMatchingResourcePatternResolverTest {
     @Ignore // passes under eclipse, fails under ant
     @Test
     public void testClasspathStarWithPatternOnFileSystem() throws IOException {
-        Resource[] resources = resolver.getResources("classpath*:org/zollty/util/resource/sup*/*.class");
+        Resource[] resources = resolver.getResources("classpath*:org/jretty/util/resource/sup*/*.class");
         // Have to exclude Clover-generated class files here,
         // as we might be running as part of a Clover test run.
         List<Resource> noCloverResources = new ArrayList<Resource>();
