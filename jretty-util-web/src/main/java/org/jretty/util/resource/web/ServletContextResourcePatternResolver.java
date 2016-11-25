@@ -27,9 +27,8 @@ import javax.servlet.ServletContext;
 
 import org.jretty.log.LogFactory;
 import org.jretty.log.Logger;
-import org.jretty.util.IOUtils;
-import org.jretty.util.UrlUtils;
 import org.jretty.util.StringUtils;
+import org.jretty.util.UrlUtils;
 import org.jretty.util.resource.Resource;
 import org.jretty.util.resource.ResourceLoader;
 import org.jretty.util.resource.UrlResource;
@@ -181,7 +180,16 @@ public class ServletContextResourcePatternResolver extends PathMatchingResourceP
 				logger.warn(ex, "Cannot search for matching resources in jar file [" + jarFilePath +
 						"] because the jar cannot be opened through the file system");
 		} finally {
-		    IOUtils.close(jarFile);
+		        if (jarFile != null) {
+		            try {
+		                jarFile.close();
+		            }
+		            catch (Exception e) {
+		                if (logger.isDebugEnabled()) {
+		                    logger.warn("close error", e);
+		                }
+		            }
+		        }
 		}
 	}
 

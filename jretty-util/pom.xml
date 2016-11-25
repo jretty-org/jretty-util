@@ -34,8 +34,10 @@
       <groupId>org.jretty</groupId>
       <artifactId>jretty-log</artifactId>
     </dependency>
+    
 
-    <!-- For Test -->
+    <!-- below jars for Test use -->
+    
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -45,6 +47,7 @@
     <dependency>
       <groupId>org.jretty</groupId>
       <artifactId>tesper</artifactId>
+      <!-- <scope>test</scope> -->
     </dependency>
     
     <dependency>
@@ -63,33 +66,5 @@
 
   </dependencies>
 
-  <build>
-
-    <plugins>
-
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-      </plugin>
-
-      <!-- 生成javadoc-绑定到install阶段
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin> -->
-
-      <!-- 打包源代码-绑定到install阶段 -->
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-      </plugin>
-
-    </plugins>
-  </build>
 
 </project>
