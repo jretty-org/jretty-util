@@ -127,13 +127,17 @@ public class BatchTakeBlockQueue<T> {
             }
         }
     }
+    
+    public int drainToMayWait(Collection<? super T> c) {
+        return drainToMayWait(c, 0);
+    }
 
-    public void drainToMayWait(Collection<? super T> c) {
+    public int drainToMayWait(Collection<? super T> c, int maxElements) {
         try {
             T t = dataCache.take();
             c.add(t);
         } catch (InterruptedException e) {
-            return;
+            return 0;
         }
 
         final ReentrantLock takeLock = this.takeLock;
@@ -155,13 +159,17 @@ public class BatchTakeBlockQueue<T> {
             // ignore...
         }
 
-        dataCache.drainTo(c);
+        if (maxElements > 1) {
+            dataCache.drainTo(c, maxElements - 1);
+        } else {
+            dataCache.drainTo(c);
+        }
 
         int size = c.size();
         for (; size-- > 0;) {
             tmpCount.decrementAndGet();
         }
-
+        return size;
     }
 
     public int size() {
