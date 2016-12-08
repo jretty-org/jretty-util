@@ -29,7 +29,9 @@ public class BatchTakeBlockQueue<T> {
     /**
      * 最大缓存的数据条数
      */
-    private int maxCacheSize = 102400;
+    private final int maxCacheSize;
+    
+    private final static int DEFAULT_MAX_CACHE_SIZE = 102400;
 
     /**
      * 每次批量取数据的最小条数
@@ -49,8 +51,24 @@ public class BatchTakeBlockQueue<T> {
     private AtomicLong tmpCount;
 
     public BatchTakeBlockQueue() {
+        maxCacheSize = DEFAULT_MAX_CACHE_SIZE;
         dataCache = new LinkedBlockingQueue<T>(maxCacheSize);
         tmpCount = new AtomicLong(0);
+    }
+    
+    public BatchTakeBlockQueue(int maxCacheSize) {
+        this.maxCacheSize = maxCacheSize > 0 ? maxCacheSize : DEFAULT_MAX_CACHE_SIZE;
+        dataCache = new LinkedBlockingQueue<T>(this.maxCacheSize);
+        tmpCount = new AtomicLong(0);
+    }
+
+    public BatchTakeBlockQueue(int maxCacheSize, int batchMinSize) {
+        this.maxCacheSize = maxCacheSize > 0 ? maxCacheSize : DEFAULT_MAX_CACHE_SIZE;
+        dataCache = new LinkedBlockingQueue<T>(this.maxCacheSize);
+        tmpCount = new AtomicLong(0);
+        if (batchMinSize > 0) {
+            this.batchMinSize = batchMinSize;
+        }
     }
 
     public boolean offer(T src) throws InterruptedException {
@@ -164,10 +182,6 @@ public class BatchTakeBlockQueue<T> {
 
     public int getMaxCacheSize() {
         return maxCacheSize;
-    }
-
-    public void setMaxCacheSize(int maxCacheSize) {
-        this.maxCacheSize = maxCacheSize;
     }
 
     public Long getOfferTimeoutMs() {

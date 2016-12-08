@@ -1,5 +1,7 @@
 package org.jretty.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -10,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class BatchTakeBlockQueueTest {
     
     
- // 队列最大容量
+    // 队列最大容量
     public static final int Q_SIZE = 10240;
     // 生产者/消费者线程数
     public static final int THREAD_NUM = 1;
@@ -22,7 +24,101 @@ public class BatchTakeBlockQueueTest {
     
     
     public static void main(String[] args) throws InterruptedException {
-        test1();
+        testInterruptedException();
+    }
+    
+    
+    static boolean running = true;
+    
+    /**
+     * 关闭BatchTakeBlockQueue的方法如下：
+     *  running = false; 
+     *  arrConsumerThread.interrupt();
+        latch.await();
+        System.out.println("remain size = " + dp.size());
+        if (dp.size() > 0) {
+            LinkedList<Object> pollList = new LinkedList<Object>();
+            dp.drainToMayWait(pollList);
+            count.addAndGet(pollList.size());
+        }
+     * 
+     */
+    public static void testInterruptedException() {
+
+        final BatchTakeBlockQueue<String> dp = new BatchTakeBlockQueue<String>();
+        final AtomicLong count = new AtomicLong();
+        final AtomicLong countP = new AtomicLong();
+        final CountDownLatch latch = new CountDownLatch(1);
+        // 消费者线程
+        class Consumer implements Runnable {
+            @Override
+            public void run() {
+                LinkedList<String> pollList = new LinkedList<String>();
+                while (running) {
+                    
+                    try {
+                        dp.drainToMayWait(pollList);
+                        count.addAndGet(pollList.size());
+                        handleData(pollList);
+                    } catch (Exception e) {
+                        System.out.println(e.toString());
+                    }
+                    
+                    
+                }
+                latch.countDown();
+            }
+        }
+        // 创建生产者
+        // 创建消费者
+        Thread arrConsumerThread = new Thread(new Consumer());
+        // go!
+        long t1 = System.currentTimeMillis();
+
+        for (int i = 0; i < dp.getBatchMinSize() - 1; i++) {
+            try {
+                dp.offer("s");
+                countP.incrementAndGet();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        arrConsumerThread.start();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+
+        System.out.println("produce size = " + countP.get());
+        running = false;
+//        try {
+//            if (!latch.await(5000, TimeUnit.MILLISECONDS)) {
+//                System.out.println("-----not finish....------------------------");
+//            }
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        arrConsumerThread.interrupt();
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("remain size = " + dp.size());
+        if (dp.size() > 0) {
+            LinkedList<Object> pollList = new LinkedList<Object>();
+            dp.drainToMayWait(pollList);
+            count.addAndGet(pollList.size());
+        }
+
+        System.out.println("consumer shutdown.");
+        System.out.println("consumer size = " + count.get());
+
+        long t2 = System.currentTimeMillis();
+        System.out.println(" cost : " + (t2 - t1));
+
     }
     
     public static void test1() throws InterruptedException {
@@ -124,10 +220,10 @@ public class BatchTakeBlockQueueTest {
     }
     
     public static void handleData(List<String> data) {
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        //System.out.println(sdf.format(new Date()) + " - drainTo one times. size = " + data.size());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        System.out.println(sdf.format(new Date()) + " - drainTo one times. size = " + data.size());
         try {
-            Thread.sleep(200);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
