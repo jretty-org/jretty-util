@@ -89,8 +89,8 @@ public class IpUtils {
 	}
 	
 	/**
-     * 获取HostName
-     * @return String HostName or null
+     * 获取HostName，并转换成大写 (toUpperCase)
+     * @return String HostName (toUpperCase) or null
      */
     public static String getHostName() {
         String hostName = null;
@@ -111,6 +111,35 @@ public class IpUtils {
         }
         // 转换成大写，以避免大小写问题
         return hostName != null ? hostName.toUpperCase() : null;
+    }
+    
+    /**
+     * 获取本机hostname对应的IP地址（hostname映射的IP地址可以在hosts文件中配置） <br>
+     * 如果没有配置hostname，则以“localhost”为默认hostname。<br>
+     * 例如本机hostname配置为lightning-push-tomcat，hosts文件如下：
+     * <br>127.0.0.1       localhost
+     * <br>172.16.1.41     lightning-push-tomcat
+     * <br>那么取出来的地址为：172.16.1.41。假如没配置hostname，则取出来的是“localhost”对应的地址，即127.0.0.1（也可以修改）
+     */
+    public static String getDefaultHostAddress() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            return null;
+        }
+    }
+    
+    /**
+     * 可以读取在hosts文件中映射的IP地址，和ping hostName的结果相同
+     * @param hostName host名称，忽略大小写
+     * @return host对应的IP地址
+     */
+    public static String getSpecialHostAddress(String hostName) {
+        try {
+            return InetAddress.getByName(hostName).getHostAddress();
+        } catch (UnknownHostException e) {
+            return null;
+        }
     }
     
     /**
