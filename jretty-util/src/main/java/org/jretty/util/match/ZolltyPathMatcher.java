@@ -21,11 +21,11 @@ import org.jretty.util.ArrayUtils;
 import org.jretty.util.Const;
 
 /**
- * A high-performance path matching algorithm. (10 times faster than AntPathMather) 
+ * A high-performance path matching algorithm. (10 times faster than AntPathMather)
  * <p>
  * 路径匹配算法 （URL路径、文件路径均可，但必须以'/'分割路径）
  * 
- * @author zollty
+ * @author zollty 高效的算法保证
  * @since 2014-6-02
  * @see ZolltyPathMatcherTest 单元测试类
  */
@@ -36,58 +36,61 @@ public class ZolltyPathMatcher {
     private final String pattern;
     private final List<MatchInfo> miList = new ArrayList<MatchInfo>();
     private final boolean notStartWithWildcard;
-    
+
     private boolean notPattern;
-    
+
+    /**
+     * @param pattern
+     *            the pattern to match, such as "/api/*"
+     */
     public ZolltyPathMatcher(final String pattern) {
-        
+
         this.pattern = pattern.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        this.notPattern = ! isPattern(pattern);
+        this.notPattern = !isPattern(pattern);
         this.check();
-        
-        if ( pattern.startsWith("*") || pattern.startsWith("**")) {
+
+        if (pattern.startsWith("*") || pattern.startsWith("**")) {
             this.notStartWithWildcard = false;
         } else {
             this.notStartWithWildcard = true;
         }
-         
+
     }
-    
-    
+
     /**
-     * Match the given <code>path</code> against the given <code>pattern</code>, 
-     * test whether it matched.
-     * @param path the path String to test (must split by '/')
+     * Match the given <code>path</code> against the given <code>pattern</code>, test whether it matched.
+     * 
+     * @param path
+     *            the path String to test (must split by '/')
      * @return <code>true</code> if the supplied <code>path</code> matched
      */
     public boolean isMatch(String path) {
-        
-        return null!=match(path);
+
+        return null != match(path);
     }
 
-
     /**
-     * Match the given <code>path</code> against the given <code>pattern</code>,
-     * return the matched values.
+     * Match the given <code>path</code> against the given <code>pattern</code>, return the matched values.
      * 
-     * @param path the path String to test (must split by '/')
+     * @param path
+     *            the path String to test (must split by '/')
      * @return matched values in array
      */
     public List<String> match(String path) {
 
         if (null == path)
             return null;
-        
-        if(notPattern){
-            if(pattern.equals(path)) {
+
+        if (notPattern) {
+            if (pattern.equals(path)) {
                 return new ArrayList<String>(0);
             }
             return null;
         }
-        
+
         String src = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        
-        if ( notStartWithWildcard && !path.startsWith(miList.get(0).matchStr) ) {
+
+        if (notStartWithWildcard && !path.startsWith(miList.get(0).matchStr)) {
             return null;
         }
 
@@ -100,14 +103,10 @@ public class ZolltyPathMatcher {
         }
 
         if (!this.isMatch(src, tempMfList, tempValueList)) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Matched Failure. Pattern={}, Src={}", pattern, src);
-            }
+            LOG.trace("Matched Failure. Pattern={}, Src={}", pattern, src);
             return null;
         }
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("Matched Success. Pattern={}, Src={}", pattern, src);
-        }
+        LOG.trace("Matched Success. Pattern={}, Src={}", pattern, src);
         this.handleValue(valueList, tempValueList);
         return valueList;
     }
@@ -123,9 +122,7 @@ public class ZolltyPathMatcher {
             inx = src.indexOf(mf.ma.matchStr, b[i]);
             while (inx != -1) {
                 tempStr = src.substring(b[i], inx);
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace(mf.ma.matchStr + "[" + tempStr + "]");
-                }
+                // LOG.trace("{}[{}]", mf.ma.matchStr, tempStr);
                 tempValueList.add(new TempMatchValue(mf, tempStr));
                 if (mf.ma.matchType == 0 && tempStr.indexOf("/") != -1) { // 没匹配到，继续变换上一个index尝试，如果没有匹配则return
                     b[i + 1] = inx + mf.ma.matchStr.length();
@@ -149,16 +146,13 @@ public class ZolltyPathMatcher {
                 continue;
             }
         }
-        
-        
+
         if (pattern.endsWith("**")) {
-        }
-        else if (pattern.endsWith("*")) {
+        } else if (pattern.endsWith("*")) {
             if (src.indexOf("/", b[i]) != -1) {
                 return false;
             }
-        }
-        else if (tempValueList.get(tempValueList.size() - 1).value.length() != 0) {
+        } else if (tempValueList.get(tempValueList.size() - 1).value.length() != 0) {
             return false;
         }
         return true;
@@ -198,15 +192,13 @@ public class ZolltyPathMatcher {
                 }
                 if (!t1.mf.append) {
                     valueList.add(tv.get(tv.size() - 1).value);
-                }
-                else {
+                } else {
                     StringBuilder val = new StringBuilder();
                     String mstr = t1.mf.ma.matchStr;
                     for (int k = 0; k < tv.size(); k++) {
                         if (k != tv.size() - 1) {
                             val.append(tv.get(k).value).append(mstr);
-                        }
-                        else {
+                        } else {
                             val.append(tv.get(k).value);
                         }
                     }
@@ -216,19 +208,17 @@ public class ZolltyPathMatcher {
             }
         }
 
-//        if (!pattern.startsWith("*") && !pattern.startsWith("**")) {
-//            valueList.remove(0);
-//        }
-        if( notStartWithWildcard ) {
+        // if (!pattern.startsWith("*") && !pattern.startsWith("**")) {
+        // valueList.remove(0);
+        // }
+        if (notStartWithWildcard) {
             valueList.remove(0);
         }
-        
+
         if (pattern.endsWith("*") || pattern.endsWith("**")) {
             valueList.add(tempValueList.get(tempValueList.size() - 1).value);
         }
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("ValueList={}", valueList.toString());
-        }
+        LOG.trace("ValueList={}", valueList);
     }
 
     private boolean canAppend(MatchFlag mf, List<TempMatchValue> tempValueList) {
@@ -247,9 +237,7 @@ public class ZolltyPathMatcher {
     }
 
     private final void check() {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("begin init pattern[{}]", pattern);
-        }
+        LOG.trace("begin init pattern[{}]", pattern);
         char[] pchar = pattern.toCharArray();
         pchar = ArrayUtils.add(pchar, '$');
         int p1 = -1, p2 = -1;
@@ -260,14 +248,12 @@ public class ZolltyPathMatcher {
                 if (p1 == -1) {
                     p1 = i + 2; // System.out.println(p1+"---p1");
                     i++;
-                }
-                else {
+                } else {
                     p2 = i;
                     val1 = pattern.substring(p1, p2);
                     if (p1 > 1 && pchar[p1 - 2] == '*' && pchar[p1 - 1] == '*') {
                         mf = 1;
-                    }
-                    else {
+                    } else {
                         mf = 0;
                     }
                     // System.out.println(new MatchFlag(mf, val1));
@@ -275,39 +261,33 @@ public class ZolltyPathMatcher {
                     p1 = -1;
                     i++;
                 }
-            }
-            else if (pchar[i] == '*' && pchar[i + 1] != '*') {
+            } else if (pchar[i] == '*' && pchar[i + 1] != '*') {
                 if (p1 == -1) {
                     p1 = i + 1; // System.out.println(p1+"---p1");
-                }
-                else {
+                } else {
                     p2 = i;
                     val1 = pattern.substring(p1, p2);
                     if (p1 > 1 && pchar[p1 - 2] == '*' && pchar[p1 - 1] == '*') {
                         mf = 1;
-                    }
-                    else {
+                    } else {
                         mf = 0;
                     }
                     // System.out.println(new MatchFlag(mf, val1));
                     miList.add(new MatchInfo(mf, val1));
                     p1 = -1;
                 }
-            }
-            else if (pchar[i + 1] == '$' && p1 != -1) { // !a
+            } else if (pchar[i + 1] == '$' && p1 != -1) { // !a
                 p2 = i;
                 val1 = pattern.substring(p1, p2 + 1);
                 if (p1 > 1 && pchar[p1 - 2] == '*' && pchar[p1 - 1] == '*') {
                     mf = 1;
-                }
-                else {
+                } else {
                     mf = 0;
                 }
                 // System.out.println(new MatchFlag(mf, val1));
                 miList.add(new MatchInfo(mf, val1));
                 p1 = -1;
-            }
-            else if (p1 == -1) {
+            } else if (p1 == -1) {
                 p1 = i;
             }
         }
@@ -316,20 +296,16 @@ public class ZolltyPathMatcher {
             val1 = pattern.substring(p1, p2);
             if (p1 > 1 && pchar[p1 - 2] == '*' && pchar[p1 - 1] == '*') {
                 mf = 1;
-            }
-            else {
+            } else {
                 mf = 0;
             }
             // System.out.println(new MatchFlag(mf, val1));
             miList.add(new MatchInfo(mf, val1));
             p1 = -1;
         }
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("MatchInfo List = {}", miList.toString());
-        }
+        LOG.trace("MatchInfo List = {}", miList);
     }
-    
-    
+
     /**
      * 判断<code>pattern</code>是否为通配Pattern格式
      */
@@ -343,28 +319,26 @@ public class ZolltyPathMatcher {
     public static boolean isTwoPatternSimilar(String pattern1, String pattern2) {
         return isTwoPatternSimilar(new ZolltyPathMatcher(pattern1), new ZolltyPathMatcher(pattern2));
     }
-    
-    
+
     /**
-     * Match the given <code>path</code> against the given <code>pattern</code>, 
-     * test whether it matched.
+     * Match the given <code>path</code> against the given <code>pattern</code>, test whether it matched.
      * 
-     * @param pattern the pattern to match against
-     * @param path the path String to test
-     * @return <code>true</code> if the supplied <code>path</code> matched,
-     * <code>false</code> if it didn't
+     * @param pattern
+     *            the pattern to match against
+     * @param path
+     *            the path String to test
+     * @return <code>true</code> if the supplied <code>path</code> matched, <code>false</code> if it didn't
      */
-    public static boolean match(String pattern, String path){
+    public static boolean match(String pattern, String path) {
         return new ZolltyPathMatcher(pattern).isMatch(path);
     }
-    
 
     /**
      * 判断两个URL Pattern 是否有包含或重叠。
      * <p>
-     * 注意： 当两个Pattern存在交集时，该方法并不能全面检测出URI的重复匹配。  <br>
+     * 注意： 当两个Pattern存在交集时，该方法并不能全面检测出URI的重复匹配。 <br>
      * 
-     * 例如：  <br>
+     * 例如： <br>
      * 
      * Pattern1: \a**c\*\*\b Pattern2: \a\*bc\**\b <br>
      * 
@@ -431,8 +405,7 @@ public class ZolltyPathMatcher {
         public MatchFlag(MatchInfo ma) {
             if (ma != null) {
                 this.ma = new MatchInfo(ma.matchType, ma.matchStr);
-            }
-            else {
+            } else {
                 this.ma = null;
             }
         }
@@ -457,5 +430,5 @@ public class ZolltyPathMatcher {
     public String toString() {
         return this.getClass().getName() + " - " + pattern;
     }
-    
+
 }

@@ -89,16 +89,18 @@ public class NestedExceptionDelegate implements Serializable {
     public String getStackTraceStr(String message) {
         if (null == exception) {
             if (message != null && message.length() != 0) {
-                return getExceptionName() + message + MSG_SPLIT + StringUtils.replaceParams(errorMsg, params);
+                return getExceptionName() + message + MSG_SPLIT
+                            + StringUtils.replaceParams(errorMsg, params);
             }
             return getExceptionName() + StringUtils.replaceParams(errorMsg, params);
         }
         if (ExceptionDelegateSupport.class.isInstance(exception)) {
             if (message != null && message.length() != 0) {
-                return ((ExceptionDelegateSupport) exception).getDelegate().getStackTraceStr(message + MSG_SPLIT
-                        + StringUtils.replaceParams(errorMsg, params));
+                return ((ExceptionDelegateSupport) exception).getDelegate().getStackTraceStr(
+                            message + MSG_SPLIT + StringUtils.replaceParams(errorMsg, params));
             }
-            return ((ExceptionDelegateSupport) exception).getDelegate().getStackTraceStr(StringUtils.replaceParams(errorMsg, params));
+            return ((ExceptionDelegateSupport) exception).getDelegate()
+                        .getStackTraceStr(StringUtils.replaceParams(errorMsg, params));
         }
 
         if (message != null && message.length() != 0) {
@@ -160,7 +162,7 @@ public class NestedExceptionDelegate implements Serializable {
     }
     
     /**
-     * 异常的前缀名 默认为"org.zollty.NestedException: " 子类可以重载此方法，自定义前缀
+     * 异常的前缀名 默认为"org.jretty.NestedException: " 子类可以重载此方法，自定义前缀
      */
     public String getExceptionPrefix() {
         return prefix==null? EXCEPTION_PRIFIX : prefix;
