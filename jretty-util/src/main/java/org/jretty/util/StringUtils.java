@@ -432,9 +432,10 @@ public class StringUtils {
     /**
      * 用objs[]的值去替换字符串s中的{}符号
      */
-    public static String replaceParams(String s, Object... objs) {
-        if (s == null)
-            return s;
+    public static String replaceParams(Object msg, Object... objs) {
+        if (msg == null)
+            return null;
+        String s = msg.toString();
         if (objs == null || objs.length == 0)
             return s;
         if (s.indexOf(REPLACE_LABEL) == -1) {

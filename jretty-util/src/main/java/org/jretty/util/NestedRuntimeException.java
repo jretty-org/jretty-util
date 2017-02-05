@@ -36,7 +36,7 @@ public class NestedRuntimeException extends BasicRuntimeException implements Nes
      * @param message 自定义错误信息
      * @param args 占位符参数--[ 变长参数，用于替换message字符串里面的占位符"{}" ]
      */
-    public NestedRuntimeException(String message, String... args) {
+    public NestedRuntimeException(Object message, Object... args) {
         this.exception = null;
         this.delegate = new NestedExceptionDelegate(null, message, args);
     }
@@ -46,7 +46,7 @@ public class NestedRuntimeException extends BasicRuntimeException implements Nes
      */
     public NestedRuntimeException(Throwable e) {
         this.exception = e;
-        this.delegate = new NestedExceptionDelegate(null, e);
+        this.delegate = new NestedExceptionDelegate(null, exception);
     }
     
     /**
@@ -54,9 +54,9 @@ public class NestedRuntimeException extends BasicRuntimeException implements Nes
      * @param message 自定义错误信息
      * @param args 占位符参数--[ 变长参数，用于替换message字符串里面的占位符"{}" ]
      */
-    public NestedRuntimeException(Throwable e, String message, String... args) {
+    public NestedRuntimeException(Throwable e, Object message, Object... args) {
         this.exception = e;
-        this.delegate = new NestedExceptionDelegate(null, e, message, args);
+        this.delegate = new NestedExceptionDelegate(null, exception, message, args);
     }
     
     @Override
@@ -89,6 +89,7 @@ public class NestedRuntimeException extends BasicRuntimeException implements Nes
         if (null != exception) {
             return exception.getStackTrace();
         }
+        // 丢弃原始堆栈信息，如果要保留，则应为：return super.getStackTrace();
         return new StackTraceElement[0];
     }
 

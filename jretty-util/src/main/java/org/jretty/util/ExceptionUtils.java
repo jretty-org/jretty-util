@@ -278,5 +278,16 @@ public class ExceptionUtils {
             throw new NestedCheckedException(t);
         }
     }
+    
+    /**
+     * Handle {@code InvocationTargetException, ExceptionInInitializerError, 
+     *   RuntimeErrorException, SAXException, MBeanException}, 
+     * get its nested cause exception in the wrap of NestedRuntimeException.
+     * @param e the nested exception (Probably InvocationTargetException, ExceptionInInitializerError...) to handle
+     * @return a NestedRuntimeException
+     */
+    public static NestedRuntimeException causeException(Throwable e) {
+        return new NestedRuntimeException(e.getCause());
+    }
 
 }

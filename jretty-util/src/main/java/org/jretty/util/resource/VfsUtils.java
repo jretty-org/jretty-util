@@ -16,6 +16,8 @@
 
 package org.jretty.util.resource;
 
+import static org.jretty.util.ReflectionUtils.findMethod;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +29,8 @@ import java.net.URL;
 
 import org.jretty.log.LogFactory;
 import org.jretty.log.Logger;
+import org.jretty.util.ExceptionUtils;
+import org.jretty.util.NestedRuntimeException;
 import org.jretty.util.ReflectionUtils;
 
 /**
@@ -112,33 +116,33 @@ public abstract class VfsUtils {
 		try {
 			String methodName = (VFS_VER.V3.equals(version) ? "getChild" : "getRoot");
 
-			VFS_METHOD_GET_ROOT_URL = ReflectionUtils.findMethod(vfsClass, methodName, URL.class);
-			VFS_METHOD_GET_ROOT_URI = ReflectionUtils.findMethod(vfsClass, methodName, URI.class);
+			VFS_METHOD_GET_ROOT_URL = findMethod(vfsClass, methodName, URL.class);
+			VFS_METHOD_GET_ROOT_URI = findMethod(vfsClass, methodName, URI.class);
 
 			Class<?> virtualFile = loader.loadClass(pkg + "VirtualFile");
 
-			VIRTUAL_FILE_METHOD_EXISTS = ReflectionUtils.findMethod(virtualFile, "exists");
-			VIRTUAL_FILE_METHOD_GET_INPUT_STREAM = ReflectionUtils.findMethod(virtualFile, "openStream");
-			VIRTUAL_FILE_METHOD_GET_SIZE = ReflectionUtils.findMethod(virtualFile, "getSize");
-			VIRTUAL_FILE_METHOD_GET_LAST_MODIFIED = ReflectionUtils.findMethod(virtualFile, "getLastModified");
-			VIRTUAL_FILE_METHOD_TO_URI = ReflectionUtils.findMethod(virtualFile, "toURI");
-			VIRTUAL_FILE_METHOD_TO_URL = ReflectionUtils.findMethod(virtualFile, "toURL");
-			VIRTUAL_FILE_METHOD_GET_NAME = ReflectionUtils.findMethod(virtualFile, "getName");
-			VIRTUAL_FILE_METHOD_GET_PATH_NAME = ReflectionUtils.findMethod(virtualFile, "getPathName");
-			GET_PHYSICAL_FILE = ReflectionUtils.findMethod(virtualFile, "getPhysicalFile");
+			VIRTUAL_FILE_METHOD_EXISTS = findMethod(virtualFile, "exists");
+			VIRTUAL_FILE_METHOD_GET_INPUT_STREAM = findMethod(virtualFile, "openStream");
+			VIRTUAL_FILE_METHOD_GET_SIZE = findMethod(virtualFile, "getSize");
+			VIRTUAL_FILE_METHOD_GET_LAST_MODIFIED = findMethod(virtualFile, "getLastModified");
+			VIRTUAL_FILE_METHOD_TO_URI = findMethod(virtualFile, "toURI");
+			VIRTUAL_FILE_METHOD_TO_URL = findMethod(virtualFile, "toURL");
+			VIRTUAL_FILE_METHOD_GET_NAME = findMethod(virtualFile, "getName");
+			VIRTUAL_FILE_METHOD_GET_PATH_NAME = findMethod(virtualFile, "getPathName");
+			GET_PHYSICAL_FILE = findMethod(virtualFile, "getPhysicalFile");
 
 			methodName = (VFS_VER.V3.equals(version) ? "getChild" : "findChild");
 
-			VIRTUAL_FILE_METHOD_GET_CHILD = ReflectionUtils.findMethod(virtualFile, methodName, String.class);
+			VIRTUAL_FILE_METHOD_GET_CHILD = findMethod(virtualFile, methodName, String.class);
 
 			Class<?> utilsClass = loader.loadClass(pkg + "VFSUtils");
 
-			VFS_UTILS_METHOD_GET_COMPATIBLE_URI = ReflectionUtils.findMethod(utilsClass, "getCompatibleURI",
+			VFS_UTILS_METHOD_GET_COMPATIBLE_URI = findMethod(utilsClass, "getCompatibleURI",
 					virtualFile);
-			VFS_UTILS_METHOD_IS_NESTED_FILE = ReflectionUtils.findMethod(utilsClass, "isNestedFile", virtualFile);
+			VFS_UTILS_METHOD_IS_NESTED_FILE = findMethod(utilsClass, "isNestedFile", virtualFile);
 
 			VIRTUAL_FILE_VISITOR_INTERFACE = loader.loadClass(pkg + "VirtualFileVisitor");
-			VIRTUAL_FILE_METHOD_VISIT = ReflectionUtils.findMethod(virtualFile, "visit", VIRTUAL_FILE_VISITOR_INTERFACE);
+			VIRTUAL_FILE_METHOD_VISIT = findMethod(virtualFile, "visit", VIRTUAL_FILE_VISITOR_INTERFACE);
 
 			Class<?> visitorAttributesClass = loader.loadClass(pkg + "VisitorAttributes");
 			VISITOR_ATTRIBUTES_FIELD_RECURSE = ReflectionUtils.findField(visitorAttributesClass, "RECURSE");
@@ -157,13 +161,11 @@ public abstract class VfsUtils {
 			if (targetEx instanceof IOException) {
 				throw (IOException) targetEx;
 			}
-			ReflectionUtils.handleInvocationTargetException(ex);
+			throw ExceptionUtils.causeException(ex);
 		}
 		catch (Exception ex) {
-			ReflectionUtils.handleReflectionException(ex);
+			throw new NestedRuntimeException(ex);
 		}
-
-		throw new IllegalStateException("Invalid code path reached");
 	}
 
 	static boolean exists(Object vfsResource) {

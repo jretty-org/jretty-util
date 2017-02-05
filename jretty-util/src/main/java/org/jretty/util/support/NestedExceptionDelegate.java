@@ -31,10 +31,10 @@ public class NestedExceptionDelegate implements Serializable {
     private static final long serialVersionUID = -2100639812838514912L;
     public static final String MSG_SPLIT = " |- ";
     public static final String CAUSED_BY = "\nCaused by: ";
-    public static final String EXCEPTION_PRIFIX = "org.zollty.NestedException: ";
+    public static final String EXCEPTION_PRIFIX = "org.jretty.NestedException: ";
     
-    private final String errorMsg;
-    private final String[] params;
+    private final Object errorMsg;
+    private final Object[] params;
     private final Throwable exception;
     private String prefix;
 
@@ -42,7 +42,7 @@ public class NestedExceptionDelegate implements Serializable {
      * @param message 自定义错误信息
      * @param args 占位符参数--[ 变长参数，用于替换message字符串里面的占位符"{}" ]
      */
-    public NestedExceptionDelegate(String prefix, String message, String... args) {
+    public NestedExceptionDelegate(String prefix, Object message, Object... args) {
         this.errorMsg = message;
         this.params = args;
         this.exception = null;
@@ -64,7 +64,7 @@ public class NestedExceptionDelegate implements Serializable {
      * @param message 自定义错误信息
      * @param args 占位符参数--[ 变长参数，用于替换message字符串里面的占位符"{}" ]
      */
-    public NestedExceptionDelegate(String prefix, Throwable e, String message, String... args) {
+    public NestedExceptionDelegate(String prefix, Throwable e, Object message, Object... args) {
         this.errorMsg = message;
         this.params = args;
         this.exception = e;
@@ -76,7 +76,7 @@ public class NestedExceptionDelegate implements Serializable {
         if (null == exception) {
             return StringUtils.replaceParams(errorMsg, params);
         }
-        if (errorMsg == null || errorMsg.length() < 1) {
+        if (errorMsg == null || errorMsg.toString().length() < 1) {
             return exception.getMessage();
         }
         return StringUtils.replaceParams(errorMsg, params) + MSG_SPLIT + exception.getMessage();
@@ -102,13 +102,13 @@ public class NestedExceptionDelegate implements Serializable {
         }
 
         if (message != null && message.length() != 0) {
-            if (errorMsg != null && errorMsg.length() != 0) {
+            if (errorMsg != null && errorMsg.toString().length() != 0) {
                 return message + MSG_SPLIT + StringUtils.replaceParams(errorMsg, params) + CAUSED_BY
                         + appendStackTrace(exception);
             }
             return message + CAUSED_BY + appendStackTrace(exception);
         }
-        if (errorMsg != null && errorMsg.length() != 0) {
+        if (errorMsg != null && errorMsg.toString().length() != 0) {
             return StringUtils.replaceParams(errorMsg, params) + CAUSED_BY + appendStackTrace(exception);
         }
         return appendStackTrace(exception);

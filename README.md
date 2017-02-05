@@ -3,7 +3,7 @@ jretty-util
 
 A simple Java util's library.
 
-### Utils in version 2.1.0
+### Utils in version 1.3.0
  See: <a href="http://www.jretty.com/jretty-util/apidocs/" target="_blank">API DOCS</a>
 
 <table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="程序包表, 列表程序包和解释">
@@ -24,7 +24,7 @@ IOUtils
 StringUtils
 ClassUtils
 CollectionUtils
-ConvertUtils
+ArrayUtils
 DateFormatUtils
 ExceptionUtils
 JvmUtils
@@ -50,7 +50,7 @@ WebResourceUtils
 <td>
 <pre>
 AntPathMatcher
-jrettyPathMatcher
+ZolltyPathMatcher
 </pre>
 </td>
 </tr>

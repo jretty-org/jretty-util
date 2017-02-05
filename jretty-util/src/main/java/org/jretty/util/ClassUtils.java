@@ -13,18 +13,14 @@ package org.jretty.util;
 
 import java.beans.Introspector;
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
-import java.security.AccessControlException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,7 +80,6 @@ public class ClassUtils {
      */
     private static final Map<String, Class<?>> commonClassCache = new HashMap<String, Class<?>>(32);
     
-    
     static {
         primitiveWrapperTypeMap.put(Boolean.class, boolean.class);
         primitiveWrapperTypeMap.put(Byte.class, byte.class);
@@ -118,7 +113,6 @@ public class ClassUtils {
                 Error.class, StackTraceElement.class, StackTraceElement[].class);
     }
 
-
     /**
      * Register the given common classes with the ClassUtils cache.
      */
@@ -127,7 +121,6 @@ public class ClassUtils {
             commonClassCache.put(clazz.getName(), clazz);
         }
     }
-    
     
     /**
      * Return the default ClassLoader to use: typically the thread context
@@ -325,7 +318,6 @@ public class ClassUtils {
         return false;
     }
 
-
     /**
      * Get the class name without the qualified package name.
      * @param className the className to get the short name for
@@ -425,17 +417,6 @@ public class ClassUtils {
     }
 
     /**
-     * Return the qualified name of the given method, consisting of
-     * fully qualified interface/class name + "." + method name.
-     * @param method the method
-     * @return the qualified name of the method
-     */
-    public static String getQualifiedMethodName(Method method) {
-        Assert.notNull(method, "Method must not be null");
-        return method.getDeclaringClass().getName() + "." + method.getName();
-    }
-
-    /**
      * Return a descriptive name for the given object's type: usually simply
      * the class name, but component type class name + "[]" for arrays,
      * and an appended list of implemented interfaces for JDK proxies.
@@ -477,218 +458,6 @@ public class ClassUtils {
                 (typeName.equals(clazz.getName()) || typeName.equals(clazz.getSimpleName()) ||
                 (clazz.isArray() && typeName.equals(getQualifiedNameForArray(clazz)))));
     }
-
-
-    /**
-     * Determine whether the given class has a public constructor with the given signature.
-     * <p>Essentially translates <code>NoSuchMethodException</code> to "false".
-     * @param clazz the clazz to analyze
-     * @param paramTypes the parameter types of the method
-     * @return whether the class has a corresponding constructor
-     * @see java.lang.Class#getMethod
-     */
-    public static boolean hasConstructor(Class<?> clazz, Class<?>... paramTypes) {
-        return (getConstructorIfAvailable(clazz, paramTypes) != null);
-    }
-
-    /**
-     * Determine whether the given class has a public constructor with the given signature,
-     * and return it if available (else return <code>null</code>).
-     * <p>Essentially translates <code>NoSuchMethodException</code> to <code>null</code>.
-     * @param clazz the clazz to analyze
-     * @param paramTypes the parameter types of the method
-     * @return the constructor, or <code>null</code> if not found
-     * @see java.lang.Class#getConstructor
-     */
-    public static <T> Constructor<T> getConstructorIfAvailable(Class<T> clazz, Class<?>... paramTypes) {
-        Assert.notNull(clazz, "Class must not be null");
-        try {
-            return clazz.getConstructor(paramTypes);
-        }
-        catch (NoSuchMethodException ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Determine whether the given class has a method with the given signature.
-     * <p>Essentially translates <code>NoSuchMethodException</code> to "false".
-     * @param clazz the clazz to analyze
-     * @param methodName the name of the method
-     * @param paramTypes the parameter types of the method
-     * @return whether the class has a corresponding method
-     * @see java.lang.Class#getMethod
-     */
-    public static boolean hasMethod(Class<?> clazz, String methodName, Class<?>... paramTypes) {
-        return (getMethodIfAvailable(clazz, methodName, paramTypes) != null);
-    }
-
-    /**
-     * Determine whether the given class has a method with the given signature,
-     * and return it if available (else throws an <code>IllegalStateException</code>).
-     * <p>Essentially translates <code>NoSuchMethodException</code> to <code>IllegalStateException</code>.
-     * @param clazz the clazz to analyze
-     * @param methodName the name of the method
-     * @param paramTypes the parameter types of the method
-     * @return the method (never <code>null</code>)
-     * @throws IllegalStateException if the method has not been found
-     * @see java.lang.Class#getMethod
-     */
-    public static Method getMethod(Class<?> clazz, String methodName, Class<?>... paramTypes) {
-        Assert.notNull(clazz, "Class must not be null");
-        Assert.notNull(methodName, "Method name must not be null");
-        try {
-            return clazz.getMethod(methodName, paramTypes);
-        }
-        catch (NoSuchMethodException ex) {
-            throw new IllegalStateException("Expected method not found: " + ex);
-        }
-    }
-
-    /**
-     * Determine whether the given class has a method with the given signature,
-     * and return it if available (else return <code>null</code>).
-     * <p>Essentially translates <code>NoSuchMethodException</code> to <code>null</code>.
-     * @param clazz the clazz to analyze
-     * @param methodName the name of the method
-     * @param paramTypes the parameter types of the method
-     * @return the method, or <code>null</code> if not found
-     * @see java.lang.Class#getMethod
-     */
-    public static Method getMethodIfAvailable(Class<?> clazz, String methodName, Class<?>... paramTypes) {
-        Assert.notNull(clazz, "Class must not be null");
-        Assert.notNull(methodName, "Method name must not be null");
-        try {
-            return clazz.getMethod(methodName, paramTypes);
-        }
-        catch (NoSuchMethodException ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Return the number of methods with a given name (with any argument types),
-     * for the given class and/or its superclasses. Includes non-public methods.
-     * @param clazz the clazz to check
-     * @param methodName the name of the method
-     * @return the number of methods with the given name
-     */
-    public static int getMethodCountForName(Class<?> clazz, String methodName) {
-        Assert.notNull(clazz, "Class must not be null");
-        Assert.notNull(methodName, "Method name must not be null");
-        int count = 0;
-        Method[] declaredMethods = clazz.getDeclaredMethods();
-        for (Method method : declaredMethods) {
-            if (methodName.equals(method.getName())) {
-                count++;
-            }
-        }
-        Class<?>[] ifcs = clazz.getInterfaces();
-        for (Class<?> ifc : ifcs) {
-            count += getMethodCountForName(ifc, methodName);
-        }
-        if (clazz.getSuperclass() != null) {
-            count += getMethodCountForName(clazz.getSuperclass(), methodName);
-        }
-        return count;
-    }
-
-    /**
-     * Does the given class or one of its superclasses at least have one or more
-     * methods with the supplied name (with any argument types)?
-     * Includes non-public methods.
-     * @param clazz the clazz to check
-     * @param methodName the name of the method
-     * @return whether there is at least one method with the given name
-     */
-    public static boolean hasAtLeastOneMethodWithName(Class<?> clazz, String methodName) {
-        Assert.notNull(clazz, "Class must not be null");
-        Assert.notNull(methodName, "Method name must not be null");
-        Method[] declaredMethods = clazz.getDeclaredMethods();
-        for (Method method : declaredMethods) {
-            if (method.getName().equals(methodName)) {
-                return true;
-            }
-        }
-        Class<?>[] ifcs = clazz.getInterfaces();
-        for (Class<?> ifc : ifcs) {
-            if (hasAtLeastOneMethodWithName(ifc, methodName)) {
-                return true;
-            }
-        }
-        return (clazz.getSuperclass() != null && hasAtLeastOneMethodWithName(clazz.getSuperclass(), methodName));
-    }
-
-    /**
-     * Given a method, which may come from an interface, and a target class used
-     * in the current reflective invocation, find the corresponding target method
-     * if there is one. E.g. the method may be <code>IFoo.bar()</code> and the
-     * target class may be <code>DefaultFoo</code>. In this case, the method may be
-     * <code>DefaultFoo.bar()</code>. This enables attributes on that method to be found.
-     * <p><b>NOTE:</b> In contrast to {@link org.springframework.aop.support.AopUtils#getMostSpecificMethod},
-     * this method does <i>not</i> resolve Java 5 bridge methods automatically.
-     * Call {@link org.springframework.core.BridgeMethodResolver#findBridgedMethod}
-     * if bridge method resolution is desirable (e.g. for obtaining metadata from
-     * the original method definition).
-     * <p><b>NOTE:</b>Since Spring 3.1.1, if java security settings disallow reflective
-     * access (e.g. calls to {@code Class#getDeclaredMethods} etc, this implementation
-     * will fall back to returning the originally provided method.
-     * @param method the method to be invoked, which may come from an interface
-     * @param targetClass the target class for the current invocation.
-     * May be <code>null</code> or may not even implement the method.
-     * @return the specific target method, or the original method if the
-     * <code>targetClass</code> doesn't implement it or is <code>null</code>
-     */
-    public static Method getMostSpecificMethod(Method method, Class<?> targetClass) {
-        Method specificMethod = null;
-        if (method != null && isOverridable(method, targetClass) &&
-                targetClass != null && !targetClass.equals(method.getDeclaringClass())) {
-            try {
-                specificMethod = ReflectionUtils.findMethod(targetClass, method.getName(), method.getParameterTypes());
-            } catch (AccessControlException ex) {
-                // security settings are disallowing reflective access; leave
-                // 'specificMethod' null and fall back to 'method' below
-            }
-        }
-        return (specificMethod != null ? specificMethod : method);
-    }
-
-    /**
-     * Determine whether the given method is overridable in the given target class.
-     * @param method the method to check
-     * @param targetClass the target class to check against
-     */
-    @SuppressWarnings("rawtypes")
-    private static boolean isOverridable(Method method, Class targetClass) {
-        if (Modifier.isPrivate(method.getModifiers())) {
-            return false;
-        }
-        if (Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())) {
-            return true;
-        }
-        return getPackageName(method.getDeclaringClass()).equals(getPackageName(targetClass));
-    }
-
-    /**
-     * Return a public static method of a class.
-     * @param methodName the static method name
-     * @param clazz the class which defines the method
-     * @param args the parameter types to the method
-     * @return the static method, or <code>null</code> if no static method was found
-     * @throws IllegalArgumentException if the method name is blank or the clazz is null
-     */
-    public static Method getStaticMethod(Class<?> clazz, String methodName, Class<?>... args) {
-        Assert.notNull(clazz, "Class must not be null");
-        Assert.notNull(methodName, "Method name must not be null");
-        try {
-            Method method = clazz.getMethod(methodName, args);
-            return Modifier.isStatic(method.getModifiers()) ? method : null;
-        }
-        catch (NoSuchMethodException ex) {
-            return null;
-        }
-    }
-
 
     /**
      * Check if the given class represents a primitive wrapper,
@@ -743,7 +512,7 @@ public class ClassUtils {
      */
     public static Class<?> resolvePrimitiveIfNecessary(Class<?> clazz) {
         Assert.notNull(clazz, "Class must not be null");
-        return (clazz.isPrimitive() && clazz != void.class? primitiveTypeToWrapperMap.get(clazz) : clazz);
+        return (clazz.isPrimitive() && clazz != void.class ? primitiveTypeToWrapperMap.get(clazz) : clazz);
     }
 
     /**
@@ -753,7 +522,6 @@ public class ClassUtils {
      * @param lhsType the target type
      * @param rhsType the value type that should be assigned to the target type
      * @return if the target type is assignable from the value type
-     * @see TypeUtils#isAssignable
      */
     @SuppressWarnings("rawtypes")
     public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
@@ -788,27 +556,6 @@ public class ClassUtils {
     public static boolean isAssignableValue(Class<?> type, Object value) {
         Assert.notNull(type, "Type must not be null");
         return (value != null ? isAssignable(type, value.getClass()) : !type.isPrimitive());
-    }
-
-
-    /**
-     * Convert a "/"-based resource path to a "."-based fully qualified class name.
-     * @param resourcePath the resource path pointing to a class
-     * @return the corresponding fully qualified class name
-     */
-    public static String convertResourcePathToClassName(String resourcePath) {
-        Assert.notNull(resourcePath, "Resource path must not be null");
-        return resourcePath.replace('/', '.');
-    }
-
-    /**
-     * Convert a "."-based fully qualified class name to a "/"-based resource path.
-     * @param className the fully qualified class name
-     * @return the corresponding resource path, pointing to the class
-     */
-    public static String convertClassNameToResourcePath(String className) {
-        Assert.notNull(className, "Class name must not be null");
-        return className.replace('.', '/');
     }
 
     /**
@@ -863,113 +610,11 @@ public class ClassUtils {
     }
 
     /**
-     * Build a String that consists of the names of the classes/interfaces
-     * in the given array.
-     * <p>Basically like <code>AbstractCollection.toString()</code>, but stripping
-     * the "class "/"interface " prefix before every class name.
-     * @param classes a Collection of Class objects (may be <code>null</code>)
-     * @return a String of form "[com.foo.Bar, com.foo.Baz]"
-     * @see java.util.AbstractCollection#toString()
-     */
-    @SuppressWarnings("rawtypes")
-    public static String classNamesToString(Class... classes) {
-        return classNamesToString(Arrays.asList(classes));
-    }
-
-    /**
-     * Build a String that consists of the names of the classes/interfaces
-     * in the given collection.
-     * <p>Basically like <code>AbstractCollection.toString()</code>, but stripping
-     * the "class "/"interface " prefix before every class name.
-     * @param classes a Collection of Class objects (may be <code>null</code>)
-     * @return a String of form "[com.foo.Bar, com.foo.Baz]"
-     * @see java.util.AbstractCollection#toString()
-     */
-    @SuppressWarnings("rawtypes")
-    public static String classNamesToString(Collection<Class> classes) {
-        if (classes==null || classes.isEmpty()) {
-            return "[]";
-        }
-        StringBuilder sb = new StringBuilder("[");
-        for (Iterator<Class> it = classes.iterator(); it.hasNext(); ) {
-            Class clazz = it.next();
-            sb.append(clazz.getName());
-            if (it.hasNext()) {
-                sb.append(", ");
-            }
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
-    /**
-     * Copy the given Collection into a Class array.
-     * The Collection must contain Class elements only.
-     * @param collection the Collection to copy
-     * @return the Class array (<code>null</code> if the passed-in
-     * Collection was <code>null</code>)
-     */
-    public static Class<?>[] toClassArray(Collection<Class<?>> collection) {
-        if (collection == null) {
-            return null;
-        }
-        return collection.toArray(new Class<?>[collection.size()]);
-    }
-
-    /**
-     * Return all interfaces that the given instance implements as array,
-     * including ones implemented by superclasses.
-     * @param instance the instance to analyze for interfaces
-     * @return all interfaces that the given instance implements as array
-     */
-    @SuppressWarnings("rawtypes")
-    public static Class[] getAllInterfaces(Object instance) {
-        Assert.notNull(instance, "Instance must not be null");
-        return getAllInterfacesForClass(instance.getClass());
-    }
-
-    /**
-     * Return all interfaces that the given class implements as array,
-     * including ones implemented by superclasses.
-     * <p>If the class itself is an interface, it gets returned as sole interface.
-     * @param clazz the class to analyze for interfaces
-     * @return all interfaces that the given object implements as array
-     */
-    public static Class<?>[] getAllInterfacesForClass(Class<?> clazz) {
-        return getAllInterfacesForClass(clazz, null);
-    }
-
-    /**
-     * Return all interfaces that the given class implements as array,
-     * including ones implemented by superclasses.
-     * <p>If the class itself is an interface, it gets returned as sole interface.
-     * @param clazz the class to analyze for interfaces
-     * @param classLoader the ClassLoader that the interfaces need to be visible in
-     * (may be <code>null</code> when accepting all declared interfaces)
-     * @return all interfaces that the given object implements as array
-     */
-    @SuppressWarnings("rawtypes")
-    public static Class<?>[] getAllInterfacesForClass(Class<?> clazz, ClassLoader classLoader) {
-        Set<Class> ifcs = getAllInterfacesForClassAsSet(clazz, classLoader);
-        return ifcs.toArray(new Class[ifcs.size()]);
-    }
-
-    /**
-     * Return all interfaces that the given instance implements as Set,
-     * including ones implemented by superclasses.
-     * @param instance the instance to analyze for interfaces
-     * @return all interfaces that the given instance implements as Set
-     */
-    @SuppressWarnings("rawtypes")
-    public static Set<Class> getAllInterfacesAsSet(Object instance) {
-        Assert.notNull(instance, "Instance must not be null");
-        return getAllInterfacesForClassAsSet(instance.getClass());
-    }
-
-    /**
      * Return all interfaces that the given class implements as Set,
      * including ones implemented by superclasses.
-     * <p>If the class itself is an interface, it gets returned as sole interface.
+     * <p>注意：If the class itself is an interface, it gets returned as sole interface.
+     * @see {@link #getAllInterfaces(Class)}
+     * 
      * @param clazz the class to analyze for interfaces
      * @return all interfaces that the given object implements as Set
      */
@@ -981,7 +626,9 @@ public class ClassUtils {
     /**
      * Return all interfaces that the given class implements as Set,
      * including ones implemented by superclasses.
-     * <p>If the class itself is an interface, it gets returned as sole interface.
+     * <p>注意：If the class itself is an interface, it gets returned as sole interface.
+     * @see {@link #getAllInterfaces(Class)}
+     * 
      * @param clazz the class to analyze for interfaces
      * @param classLoader the ClassLoader that the interfaces need to be visible in
      * (may be <code>null</code> when accepting all declared interfaces)
@@ -1025,6 +672,145 @@ public class ClassUtils {
             return false;
         }
     }
+    
+    /**
+     * Get all super classes of the class.
+     * 
+     * @param clazz
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
+    public static Set<Class> getAllSuperClass(Class<?> clazz) {
+        Set<Class> set = new LinkedHashSet<Class>();
+        Class tmp = clazz;
+        while (tmp != null) {
+            Class<?> superClass = tmp.getSuperclass();
+            if (superClass != null) {
+                set.add(superClass);
+            }
+            tmp = superClass;
+        }
+        return set;
+    }
 
+    /**
+     * @see {@link #findAllAssignableClass(Class, ClassLoader)}
+     * @param clazz
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
+    public static Set<Class> findAllAssignableClass(Class<?> clazz) {
+        return findAllAssignableClass(clazz, null);
+    }
 
+    /**
+     * Find all the classes which is either the same as, or is a superclass or superinterface of.
+     * 
+     * @param clazz
+     * @param classLoader
+     *            ClassLoader for check isVisible.
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
+    public static Set<Class> findAllAssignableClass(Class<?> clazz, ClassLoader classLoader) {
+        Set<Class> interfaces = getInterfaces0(clazz, classLoader);
+        Set<Class> supers = getAllSuperClass(clazz);
+        for (Class c : supers) {
+            if (c.equals(Object.class)) {
+                continue;
+            }
+            Set<Class> tmp = getInterfaces0(c, classLoader);
+            interfaces.addAll(tmp);
+        }
+        return interfaces;
+    }
+
+    /**
+     * Get the Set includes the class and all it's interfaces and superinterfaces.
+     */
+    @SuppressWarnings("rawtypes")
+    private static Set<Class> getInterfaces0(Class<?> c, ClassLoader classLoader) {
+        Set<Class> ifs = new LinkedHashSet<Class>();
+        if (isVisible(c, classLoader)) {
+            ifs.add(c);
+        }
+        Class<?>[] interfaces = c.getInterfaces();
+        for (Class<?> i : interfaces) {
+            ifs.addAll(getInterfaces0(i, classLoader));
+        }
+        return ifs;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static Set<Class> getAllInterfaces(Class<?> c) {
+        return getAllInterfaces(c, null);
+    }
+
+    /**
+     * get all interfaces of the class. include all ancestors of all the interfaces of the class, but not include interface from the parent or
+     * ancestors of the class.
+     * 
+     * @see {@link #isVisible(Class, ClassLoader)}
+     * 
+     * @param c
+     * @param classLoader
+     *            ClassLoader for check isVisible.
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
+    public static Set<Class> getAllInterfaces(Class<?> c, ClassLoader classLoader) {
+        Set<Class> names = getInterfaces0(c, classLoader);
+        names.remove(c);
+        return names;
+    }
+
+    
+    private static List<Class<? extends Number>> numRanges;
+    static {
+        numRanges = new LinkedList<Class<? extends Number>>();
+        numRanges.add(Double.class);
+        numRanges.add(double.class);
+        numRanges.add(Double.class);
+        
+        numRanges.add(Float.class);
+        numRanges.add(float.class);
+        numRanges.add(Float.class);
+        
+        numRanges.add(Long.class);
+        numRanges.add(long.class);
+        numRanges.add(Long.class);
+        
+        numRanges.add(Integer.class);
+        numRanges.add(int.class);
+        numRanges.add(Integer.class);
+        
+        numRanges.add(Short.class);
+        numRanges.add(short.class);
+        numRanges.add(Short.class);
+        
+        numRanges.add(Byte.class);
+        numRanges.add(byte.class);
+        numRanges.add(Byte.class);
+    }
+    
+    /**
+     * 判断 数值类型source 是否能赋值给 数值类型target， 赋值顺序： byte -> short -> int -> long -> float -> double
+     */
+    public static boolean isNumAssignableFrom(Class<?> target, Class<?> source) {
+        int tgt = numRanges.indexOf(target);
+        int src = numRanges.indexOf(source);
+        if (tgt == -1 || src == -1) {
+            return false;
+        }
+        return Math.abs(numRanges.indexOf(target) - numRanges.indexOf(source)) <= 1
+                || numRanges.indexOf(source) - numRanges.indexOf(target) > 1;
+    }
+    
+    public static boolean isAssignableFromWithNum(Class<?> target, Class<?> source) {
+        if (Number.class.isAssignableFrom(target) || target.isPrimitive()) {
+            return ClassUtils.isNumAssignableFrom(target, source);
+        }
+        return target.isAssignableFrom(source);
+    }
+    
 }

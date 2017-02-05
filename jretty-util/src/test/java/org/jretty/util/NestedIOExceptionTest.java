@@ -59,18 +59,6 @@ public class NestedIOExceptionTest {
     }
     
     @Test
-    public void testGetStackTrace() {
-        try {
-            doController();
-        }
-        catch (Exception ne) {
-            // DebugTool.printStack(ne);
-            Assert.assertTrue(ne.getStackTrace()[0].toString().startsWith(this.getClass().getName() + ".underService"));
-
-        }
-    }
-
-    @Test
     public void testGetStackTraceStr() {
         try {
             throw new NestedCheckedException(new NestedIOException(new IOException(CONTROLLER_ALERT)));
@@ -80,8 +68,42 @@ public class NestedIOExceptionTest {
         }
     }
     
+    private void throwNestedIOException() throws IOException {
+        throw new NestedIOException(UNDER_UNKNOWN_EXCEPTION);
+    }
+
+    @Test
+    public void testGetStackTrace1() {
+        try {
+            try {
+                throwNestedIOException();
+            } catch (Exception e) {
+                throw new NestedIOException(new NestedIOException(e, SERVICE_ALERT), CONTROLLER_ALERT);
+            }
+        } catch (NestedIOException ne) {
+            // ne.printStackTrace();
+            // 还原IOException，能够获取原始堆栈信息
+            // ne.getOrigException().printStackTrace();
+            Assert.assertTrue(ne.getStackTrace()[0].toString().startsWith(this.getClass().getName() + ".throwNestedIOException"));
+        }
+    }
     
-    ////////////////////////
+    @Test
+    public void testGetStackTraceStr2() {
+        try {
+            try {
+                throwNestedIOException();
+            } catch (Exception e) {
+                throw new NestedIOException(new NestedCheckedException(e, SERVICE_ALERT), CONTROLLER_ALERT);
+            }
+        } catch (NestedIOException ne) {
+            // ne.printStackTrace();
+            // 还原IOException，能够获取原始堆栈信息
+            // ne.getOrigException().printStackTrace();
+            Assert.assertTrue(ne.getStackTrace()[0].toString().startsWith(this.getClass().getName() + ".throwNestedIOException"));
+        }
+    }
+    
 
     private void doController() throws NestedCheckedException {
         try {
@@ -105,4 +127,15 @@ public class NestedIOExceptionTest {
         throw new IOException(UNDER_UNKNOWN_EXCEPTION);
     }
 
+    @Test
+    public void testGetStackTrace() {
+        try {
+            doController();
+        }
+        catch (Exception ne) {
+            // DebugTool.printStack(ne);
+            Assert.assertTrue(ne.getStackTrace()[0].toString().startsWith(this.getClass().getName() + ".underService"));
+
+        }
+    }
 }

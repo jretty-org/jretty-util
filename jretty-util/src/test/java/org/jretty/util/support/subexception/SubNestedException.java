@@ -34,7 +34,7 @@ public class SubNestedException extends NestedCheckedException {
      * @param message 自定义错误信息
      * @param args 占位符参数--[ 变长参数，用于替换message字符串里面的占位符"{}" ]
      */
-    public SubNestedException(Throwable e, String message, String... args) {
+    public SubNestedException(Throwable e, Object message, Object... args) {
         super(e, message, args);
         this.getDelegate().setExceptionPrefix(EXCEPTION_PRIFIX);
     }
@@ -43,7 +43,7 @@ public class SubNestedException extends NestedCheckedException {
      * @param message 自定义错误信息
      * @param args 占位符参数--[ 变长参数，用于替换message字符串里面的占位符"{}" ]
      */
-    public SubNestedException(String message, String... args) {
+    public SubNestedException(Object message, Object... args) {
         super(message, args);
         this.getDelegate().setExceptionPrefix(EXCEPTION_PRIFIX);
     }

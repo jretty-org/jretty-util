@@ -31,13 +31,13 @@ public class NestedZipException extends ZipException implements NestedException,
     
     private final NestedExceptionDelegate delegate;
     
-    private static final String EXCEPTION_PRIFIX = "org.zollty.ZipException: ";
+    private static final String EXCEPTION_PRIFIX = "org.jretty.ZipException: ";
 
     /**
      * @param message 自定义错误信息
      * @param args 占位符参数--[ 变长参数，用于替换message字符串里面的占位符"{}" ]
      */
-    public NestedZipException(String message, String... args) {
+    public NestedZipException(Object message, Object... args) {
         this.exception = null;
         this.delegate = new NestedExceptionDelegate(EXCEPTION_PRIFIX, message, args);
     }
@@ -55,7 +55,7 @@ public class NestedZipException extends ZipException implements NestedException,
      * @param message 自定义错误信息
      * @param args 占位符参数--[ 变长参数，用于替换message字符串里面的占位符"{}" ]
      */
-    public NestedZipException(Throwable e, String message, String... args) {
+    public NestedZipException(Throwable e, Object message, Object... args) {
         this.exception = e;
         this.delegate = new NestedExceptionDelegate(EXCEPTION_PRIFIX, e, message, args);
     }
