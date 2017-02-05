@@ -120,18 +120,7 @@ public class ResourceUtilsTest {
         getInputStreamFromClassPath(getClass().getClassLoader(), "org/jretty/util/StringUtils.class");
         noInputStreamFromClassPath(getClass().getClassLoader(), "org/jretty/util/StringUtils222.class");
     }
-    
-    /**
-     * 采用Java ClassLoader自带的getResourceAsStream获取资源。
-     * （可以读取ClassLoader下classpath/jar/zip/war/ear中的资源）
-     * 但是不支持动态更新和加载，只在ClassLoader初始化时加载一遍，以后更改，不会再次加载
-     */
-    @Test
-    public void testGetInputStreamFromClassLoader(){
-        getInputStreamFromClassLoader(getClass(), "org/jretty/util/StringUtils.class");
-        noInputStreamFromClassLoader(getClass(), "org/jretty/util/StringUtils222.class");
-    }
-    
+        
     @Test
     public void testGetResource(){
         Resource resource = ResourceUtils.getResource("classpath:org/jretty/util/StringUtils.class");
@@ -213,31 +202,6 @@ public class ResourceUtilsTest {
         }
     }
     
-    
-    @SuppressWarnings("deprecation")
-    private void getInputStreamFromClassLoader(Class<?> clazz, String resourcePath) {
-        try {
-            InputStream in = ResourceUtils.getInputStreamFromClassLoader(getClass(), resourcePath);
-            LOG.info(in.available());
-        }
-        catch (NestedCheckedException e) {
-            Assert.fail(e.toString());
-        }
-        catch (IOException e) {
-            LOG.error(e);
-        }
-    }
-    
-    @SuppressWarnings("deprecation")
-    private void noInputStreamFromClassLoader(Class<?> clazz, String resourcePath) {
-        try {
-            ResourceUtils.getInputStreamFromClassLoader(getClass(), resourcePath);
-            Assert.fail("assert no resources under "+ resourcePath);
-        }
-        catch (NestedCheckedException e) {
-            LOG.info(e);
-        }
-    }
     
     
 

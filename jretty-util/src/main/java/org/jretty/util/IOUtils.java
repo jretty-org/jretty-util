@@ -70,8 +70,11 @@ public class IOUtils {
      * @return BufferedWriter
      * @throws IOException
      */
-    public static BufferedWriter getBufferedWriter(String fileFullPath, boolean append, String charSet) throws IOException {
-        return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileFullPath, append), StringUtils.decideCharSet(charSet)));
+    public static BufferedWriter getBufferedWriter(String fileFullPath,
+            boolean append, String charSet) throws IOException {
+        
+        return new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(fileFullPath, append), StringUtils.decideCharSet(charSet)));
     }
 
     /**
@@ -84,8 +87,11 @@ public class IOUtils {
      * @return BufferedReader
      * @throws IOException
      */
-    public final static BufferedReader getBufferedReader(String fileFullPath, String charSet) throws IOException {
-        return new BufferedReader(new InputStreamReader(new FileInputStream(fileFullPath), StringUtils.decideCharSet(charSet)));
+    public final static BufferedReader getBufferedReader(String fileFullPath,
+            String charSet) throws IOException {
+        
+        return new BufferedReader(new InputStreamReader(
+                new FileInputStream(fileFullPath), StringUtils.decideCharSet(charSet)));
     }
     
     

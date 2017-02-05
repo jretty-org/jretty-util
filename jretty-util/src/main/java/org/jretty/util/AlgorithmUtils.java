@@ -29,7 +29,6 @@ public class AlgorithmUtils {
      * 
      * @param str String to encode
      * @return Encoded String
-     * @throws NoSuchAlgorithmException
      */
     public static String md5Crypt(String str) {
         if (StringUtils.isNullOrEmpty(str)) {

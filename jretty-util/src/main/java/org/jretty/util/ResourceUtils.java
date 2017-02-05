@@ -21,11 +21,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 import org.jretty.log.LogFactory;
 import org.jretty.log.Logger;
@@ -49,7 +45,8 @@ public class ResourceUtils {
     private static final Logger LOG = LogFactory.getLogger(ResourceUtils.class);
     
     /**
-     * Pseudo URL prefix for loading from the ServletContext relative file path, e.g. "contextpath:WEB-INF/test.dat",
+     * Pseudo URL prefix for loading from the ServletContext relative file path, 
+     * e.g. "contextpath:WEB-INF/test.dat",
      * 
      * @see org.zollty.util.resource.web.ServletContextResource
      * @see javax.servlet.ServletContext
@@ -128,17 +125,20 @@ public class ResourceUtils {
         return resPatternLoader.getResources(locationPattern);
     }
 
-    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern, ClassLoader classLoader) throws IOException {
+    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern,
+            ClassLoader classLoader) throws IOException {
         ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver(classLoader);
         return resPatternLoader.getResources(locationPattern);
     }
 
-    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern, ResourceLoader resourceLoader) throws IOException {
+    public static Resource[] getResourcesByPathMatchingResolver(String locationPattern,
+            ResourceLoader resourceLoader) throws IOException {
         ResourcePatternResolver resPatternLoader = new PathMatchingResourcePatternResolver(resourceLoader);
         return resPatternLoader.getResources(locationPattern);
     }
 
-    public static Resource[] getResources(String locationPattern, ResourcePatternResolver resPatternLoader) throws IOException {
+    public static Resource[] getResources(String locationPattern,
+            ResourcePatternResolver resPatternLoader) throws IOException {
         return resPatternLoader.getResources(locationPattern);
     }
     
@@ -154,7 +154,8 @@ public class ResourceUtils {
      * @param resourcePath 资源文件的相对路径（比如 FS_RQ.xsd，比如 com/zollty/config/FS_RQ.xsd）
      * @return the InputStream (may be null)
      */
-    public static InputStream getInputStreamFromJar(Class<?> jarClazz, String resourcePath) throws NestedCheckedException {
+    public static InputStream getInputStreamFromJar(Class<?> jarClazz,
+            String resourcePath) throws NestedCheckedException {
         URL url = getResourceFromJar(jarClazz, resourcePath);
         try {
             return url != null ? url.openStream() : null;
@@ -170,7 +171,8 @@ public class ResourceUtils {
      * @param classLoader
      * @param resourcePath 相对路径
      */
-    public static InputStream getInputStreamFromClassPath(ClassLoader classLoader, String resourcePath) throws NestedCheckedException {
+    public static InputStream getInputStreamFromClassPath(ClassLoader classLoader,
+            String resourcePath) throws NestedCheckedException {
         String resourcePathNew = resourcePath;
         if (resourcePathNew.startsWith("/") || resourcePathNew.startsWith(File.separator)) {
             resourcePathNew = resourcePathNew.substring(1);
@@ -189,66 +191,12 @@ public class ResourceUtils {
             }
             else {
                 // in = url.openStream();
-                throw new NestedCheckedException("Can't find [{}] under common ClassPath. it's in [{}].", resourcePathNew, fileUrl);
+                throw new NestedCheckedException("Can't find [{}] under common ClassPath. it's in [{}].",
+                        resourcePathNew, fileUrl);
             }
         }
         catch (Exception e) {
             throw new NestedCheckedException(e);
-        }
-    }
-
-
-    /**
-     * 采用Java ClassLoader自带的getResourceAsStream获取资源。 
-     * （可以读取ClassLoader下classpath/jar/zip/war/ear中的资源） 
-     * 但是不支持动态更新和加载，只在ClassLoader初始化时加载一遍，以后更改，不会再次加载
-     * @deprecated 建议使用{@link #getResource(String)}替代
-     * @param jarClazz
-     * @param resourcePath 相对路径
-     * @return the resource's InputStream
-     * @throws NestedCheckedException if can't get resource's InputStream
-     */
-    public static InputStream getInputStreamFromClassLoader(Class<?> clazz, String resourcePath) throws NestedCheckedException {
-        InputStream in = null;
-        try {
-            in = clazz.getClassLoader().getResourceAsStream(resourcePath);
-        }
-        catch (Exception e) {
-            // ignore
-        }
-        if (in != null) {
-            LOG.debug("Got [{}] through [clazz.getClassLoader().getResourceAsStream()]", resourcePath);
-            return in;
-        }
-        else {
-            try {
-                in = ResourceUtils.class.getClassLoader().getResourceAsStream(resourcePath);
-            }
-            catch (Exception e) {
-                // ignore
-            }
-        }
-        if (in != null) {
-            LOG.debug("Got [{}] through [ResourceUtils.class.getClassLoader().getResourceAsStream()]", resourcePath);
-            return in;
-        }
-        else {
-            try {
-                in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
-            }
-            catch (Exception e) {
-                // ignore
-            }
-        }
-
-        if (in != null) {
-            LOG.debug("Got [{}] through [Thread.currentThread().getContextClassLoader().getResourceAsStream()]", resourcePath);
-            return in;
-        }
-        else {
-            throw new NestedCheckedException(
-                    "Can't find [{}] through \n1.clazz.getClassLoader().getResourceAsStream() \n2.ResourceUtils.class.getClassLoader().getResourceAsStream() \n3.Thread.currentThread().getContextClassLoader().getResourceAsStream().",
-                    resourcePath);
         }
     }
     
@@ -267,7 +215,8 @@ public class ResourceUtils {
         // 先寻找class所在的jar，如果jar不存在，则执行返回null
         URL classDir = jarClazz.getProtectionDomain().getCodeSource().getLocation();
         if (classDir.getPath().endsWith(File.separator)) {
-            throw new NestedCheckedException("[{}] not in [{} jar file]. It seems under the classpath?", resourcePath, jarClazz.getName());
+            throw new NestedCheckedException("[{}] not in [{} jar file]. It seems under the classpath?",
+                    resourcePath, jarClazz.getName());
             // 不存在jar，直接返回null
             // return null;
             // return jarClazz.getResource(resource); 不存在jar文件，这个类就在ClassPath下面
@@ -320,23 +269,5 @@ public class ResourceUtils {
             IOUtils.closeIO(in);
         }
     }
-    
-    /**
-     * 将Properties资源转换成Map类型
-     * @deprecated use CollectionUtils instand of
-     */
-    @Deprecated
-    public static Map<String, String> covertProperties2Map(Properties props) {
-        if (props == null) {
-            throw new IllegalArgumentException("props==null");
-        }
-        Set<Entry<Object, Object>> set = props.entrySet();
-        Map<String, String> mymap = new HashMap<String, String>();
-        for (Entry<Object, Object> oo : set) {
-            mymap.put(oo.getKey().toString(), oo.getValue().toString());
-        }
-        return mymap;
-    }
-
 
 }

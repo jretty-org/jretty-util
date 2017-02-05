@@ -29,10 +29,6 @@ public class ObjectBean<T> implements FactoryBean<T> {
         this.object = value;
     }
 
-    /**
-     * (non-Javadoc)
-     * @see org.zollty.util.FactoryBean#getObject()
-     */
     @SuppressWarnings("unchecked")
     @Override
     public T getObject() {
@@ -44,10 +40,6 @@ public class ObjectBean<T> implements FactoryBean<T> {
         return (K) object;
     }
 
-    /**
-     * (non-Javadoc)
-     * @see org.zollty.util.FactoryBean#getType()
-     */
     @Override
     public Class<?> getType() {
         if (type == null)
@@ -60,10 +52,6 @@ public class ObjectBean<T> implements FactoryBean<T> {
         this.type = type;
     }
 
-    /**
-     * (non-Javadoc)
-     * @see org.zollty.util.FactoryBean#isSingleton()
-     */
     @Override
     public boolean isSingleton() {
         return true;

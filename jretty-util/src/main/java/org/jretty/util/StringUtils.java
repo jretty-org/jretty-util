@@ -279,7 +279,8 @@ public class StringUtils {
     private static final char EXTENSION_SEPARATOR = '.';
 
     /**
-     * 从路径（url或者目录都可以）中获取文件名称（不带后缀，形如 abc） Extract the filename without it's extension from the given path, e.g. "mypath/myfile.txt" -> "myfile".
+     * 从路径（url或者目录都可以）中获取文件名称（不带后缀，形如 abc） <br>
+     * Extract the filename without it's extension from the given path, e.g. "mypath/myfile.txt" -> "myfile".
      * 
      * @param path
      *            the file path (may be <code>null</code>)
@@ -394,7 +395,8 @@ public class StringUtils {
             pathToUse = pathToUse.substring(1);
         }
 
-        String[] pathArray = StringSplitUtils.splitByWholeSeparatorWorker(pathToUse, Const.FOLDER_SEPARATOR, true, true);
+        String[] pathArray = StringSplitUtils.splitByWholeSeparatorWorker(pathToUse,
+                Const.FOLDER_SEPARATOR, true, true);
         List<String> pathElements = new LinkedList<String>();
         int tops = 0;
 

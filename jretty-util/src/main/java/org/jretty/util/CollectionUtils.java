@@ -53,7 +53,7 @@ public class CollectionUtils {
      * @return true if is null or empty
      */
     public static boolean isNullOrEmpty(Collection<?> coll) {
-        return (coll == null || coll.isEmpty()) ? true : false;
+        return coll == null || coll.isEmpty();
     }
 
     /**
@@ -61,7 +61,7 @@ public class CollectionUtils {
      * @return true if is not null and not empty
      */
     public static boolean isNotEmpty(Collection<?> coll) {
-        return (coll != null && !coll.isEmpty()) ? true : false;
+        return coll != null && !coll.isEmpty();
     }
     
     
@@ -70,7 +70,7 @@ public class CollectionUtils {
      * @return true if is null or empty
      */
     public static boolean isNullOrEmpty(Enumeration<?> enu) {
-        return (enu == null || !enu.hasMoreElements()) ? true : false;
+        return enu == null || !enu.hasMoreElements();
     }
 
     /**
@@ -78,7 +78,7 @@ public class CollectionUtils {
      * @return true if is not null and not empty
      */
     public static boolean isNotEmpty(Enumeration<?> enu) {
-        return (enu != null && enu.hasMoreElements()) ? true : false;
+        return enu != null && enu.hasMoreElements();
     }
     
     /**

@@ -97,7 +97,7 @@ public class DateFormatUtils {
             return getFormat().parse(dateStr);
         }
         catch (ParseException e) {
-            return null;
+            throw new NestedRuntimeException(e);
         }
     }
 
@@ -349,7 +349,7 @@ public class DateFormatUtils {
     }
 
     private static long lastTime = System.currentTimeMillis();
-    private static Object synO4GUDT = new Object();
+    private static byte[] synO4GUDT = new byte[0];
 
     /**
      * 产生一个独一无二的long类型的TimeMillis，长度为13，按时间先后 依赖于系统时间的不可重复性（系统时间可以延后，但是不能提前）。
@@ -407,7 +407,7 @@ public class DateFormatUtils {
     }
 
     private static long lastTime2 = System.currentTimeMillis();
-    private static Object synO4GUDT2 = new Object();
+    private static byte[] synO4GUDT2 = new byte[0];
 
     /**
      * 产生一个独一无二的long类型的TimeMillis，长度为13，按时间先后

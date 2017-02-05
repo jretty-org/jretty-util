@@ -24,7 +24,8 @@ import org.jretty.util.support.NestedExceptionDelegate;
  * @author zollty
  * @since 2013-6-27
  */
-public class NestedRuntimeException extends BasicRuntimeException implements NestedException, ExceptionDelegateSupport {
+public class NestedRuntimeException extends BasicRuntimeException 
+    implements NestedException, ExceptionDelegateSupport {
     
     private static final long serialVersionUID = -4150549737760982517L;
 

@@ -50,14 +50,16 @@ import org.jretty.util.support.NestedExceptionDelegate;
     }
   }
  </pre>
- * 但是，对于上面这种情况，‘一般’不推荐这么做。建议 使用return false/true 来返回，或者，如果有返回值，则可以用 return Result<T>对象。
+ * 但是，对于上面这种情况，‘一般’不推荐这么做。建议 使用return false/true 来返回，或者，
+ * 如果有返回值，则可以用 return Result<T>对象。
  * 
  * @see NestedExceptionDelegate
  * 
  * @author zollty
  * @since 2014-12-13
  */
-public class NestedIOException extends IOException implements NestedException, ExceptionDelegateSupport {
+public class NestedIOException extends IOException 
+    implements NestedException, ExceptionDelegateSupport {
     
     private static final long serialVersionUID = 7246460157526737440L;
 

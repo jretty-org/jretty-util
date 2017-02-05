@@ -29,9 +29,6 @@ public class LocaleUtils {
     public static final  String SEPARATOR = "_";
 
     public static final  String EMPTY_STRING = "";
-
-    private LocaleUtils(){
-    }
     
     /**
      * String转Locale对象

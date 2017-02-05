@@ -170,7 +170,8 @@ public class ClassUtils {
      * @throws LinkageError if the class file could not be loaded
      * @see Class#forName(String, boolean, ClassLoader)
      */
-    public static Class<?> forName(String name, ClassLoader classLoader) throws ClassNotFoundException, LinkageError {
+    public static Class<?> forName(String name, ClassLoader classLoader) 
+            throws ClassNotFoundException, LinkageError {
         Assert.notNull(name, "Name must not be null");
 
         Class<?> clazz = resolvePrimitiveClassName(name);
@@ -747,8 +748,8 @@ public class ClassUtils {
     }
 
     /**
-     * get all interfaces of the class. include all ancestors of all the interfaces of the class, but not include interface from the parent or
-     * ancestors of the class.
+     * get all interfaces of the class. include all ancestors of all the interfaces of the class, 
+     * but not include interface from the parent or ancestors of the class.
      * 
      * @see {@link #isVisible(Class, ClassLoader)}
      * 

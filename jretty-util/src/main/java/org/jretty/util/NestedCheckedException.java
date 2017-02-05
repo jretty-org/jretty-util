@@ -24,7 +24,8 @@ import org.jretty.util.support.NestedExceptionDelegate;
  * @author zollty 
  * @since 2013-6-27
  */
-public class NestedCheckedException extends BasicCheckedException implements NestedException, ExceptionDelegateSupport {
+public class NestedCheckedException extends BasicCheckedException 
+    implements NestedException, ExceptionDelegateSupport {
     
     private static final long serialVersionUID = 3292637797364002279L;
 

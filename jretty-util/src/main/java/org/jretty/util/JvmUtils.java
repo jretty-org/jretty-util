@@ -12,9 +12,6 @@
  */
 package org.jretty.util;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import org.jretty.log.LogFactory;
 import org.jretty.log.Logger;
 
@@ -51,26 +48,10 @@ public class JvmUtils {
         return System.getProperty("path.separator");
     }
 
-    public static String getIPAddress() {
-        try {
-            return InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            return null;
-        }
-    }
-
-    public static String getInetHost() {
-        try {
-            return InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            return null;
-        }
-    }
-
     public static void runGC() {
         long begin = System.currentTimeMillis();
         System.gc();
-        LOG.info("gc success! cost(ms) " + (System.currentTimeMillis() - begin));
+        LOG.warn("gc success! cost(ms) " + (System.currentTimeMillis() - begin));
     }
 
     public static long getJVMFreeMemory() {
