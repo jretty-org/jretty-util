@@ -9,23 +9,23 @@
   
   <h3>Basic Exception 基础异常</h3>
   <ul>
-    <li>org.zollty.util.BasicCheckedException ( extends Exception )</li>
-    <li>org.zollty.util.BasicRuntimeException ( extends RuntimeException )</li>
+    <li>org.jretty.util.BasicCheckedException ( extends Exception )</li>
+    <li>org.jretty.util.BasicRuntimeException ( extends RuntimeException )</li>
   </ul>
   
   <h3>Nested Exception 基础嵌套异常（继承于 Basic Exception）</h3>
   <ul>
-    <li>org.zollty.util.NestedCheckedException ( extends BasicCheckedException )</li>
-    <li>org.zollty.util.NestedRuntimeException ( extends BasicRuntimeException )</li>
+    <li>org.jretty.util.NestedCheckedException ( extends BasicCheckedException )</li>
+    <li>org.jretty.util.NestedRuntimeException ( extends BasicRuntimeException )</li>
   </ul>
   
   <br>
   <h3>特殊业务异常</h3>
   <ul>
-    <li>org.zollty.util.NestedIOException ( extends IOException )</li>
+    <li>org.jretty.util.NestedIOException ( extends IOException )</li>
     <li></li>
-    <li>org.zollty.util.zip.ZipException ( extends BasicCheckedException )</li>
-    <li>org.zollty.util.zip.NestedZipException ( extends ZipException )</li>
+    <li>org.jretty.util.zip.ZipException ( extends BasicCheckedException )</li>
+    <li>org.jretty.util.zip.NestedZipException ( extends ZipException )</li>
     <li></li>
     <li>more......自行扩展，参考ZipException和NestedZipException 以及其src/test下面的 NestedIOException 单元测试类</li>
   </ul>

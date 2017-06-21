@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-class ReflectionMethodUtils {
+public class ReflectionMethodUtils {
     
     /**
      * Return the qualified name of the given method, consisting of
@@ -68,7 +68,6 @@ class ReflectionMethodUtils {
      * Invoke the specified {@link Method} against the supplied target object with the
      * supplied arguments. The target object can be <code>null</code> when invoking a
      * static {@link Method}.
-     * <p>Thrown exceptions are handled via a call to {@link #handleReflectionException}.
      * @param method the method to invoke
      * @param target the target object to invoke the method on
      * @param args the invocation arguments (may be <code>null</code>)
@@ -92,7 +91,17 @@ class ReflectionMethodUtils {
 
     public static Object invokeMethod(String methodName, Class<?>[] parameterTypes,
             Object target, Object... args) {
-        Method method = getDeclaredMethod(target.getClass(), methodName, parameterTypes);
+        
+        Assert.notNull(target, "Object must not be null");
+        Assert.notNull(methodName, "Method name must not be null");
+        Method method;
+        try {
+            method = target.getClass().getDeclaredMethod(methodName, parameterTypes);
+        }
+        catch (NoSuchMethodException ex) {
+            throw new NestedRuntimeException(ex);
+        }
+        
         ReflectionUtils.makeAccessible(method);
         return invokeMethod(method, target, args);
     }
@@ -102,8 +111,16 @@ class ReflectionMethodUtils {
     }
     
     public static Object invokeStaticMethod(String methodName, Class<?>[] parameterTypes,
-            Class<?> clazz, Object... args) {
-        Method method = getDeclaredMethod(clazz, methodName, parameterTypes);
+            Class<?> target, Object... args) {
+        Assert.notNull(target, "Object must not be null");
+        Assert.notNull(methodName, "Method name must not be null");
+        Method method;
+        try {
+            method = target.getClass().getDeclaredMethod(methodName, parameterTypes);
+        }
+        catch (NoSuchMethodException ex) {
+            throw new NestedRuntimeException(ex);
+        }
         ReflectionUtils.makeAccessible(method);
         return invokeMethod(method, null, args);
     }

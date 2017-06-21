@@ -22,7 +22,7 @@ import java.util.Properties;
  * 借助于 I18nMsgProperties （Locale.ROOT） 作为内部实现。
  * <br>
  * 配置示例：
- * <bean id="keyValueMsg" class="org.zollty.util.msg.KeyValueMsgProperties">
+ * <bean id="keyValueMsg" class="org.jretty.util.msg.KeyValueMsgProperties">
     <property name="modulePath" value="config/properties/ErrorMessage_zh_CN" />
     <property name="defaultFile">
       <list>

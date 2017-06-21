@@ -29,12 +29,21 @@ public class StringUtils {
      * Checks if a String is null or empty ("").
      * 
      * <pre>
-     * StringUtils.isNullOrEmpty(null) = true
-     * StringUtils.isNullOrEmpty("") = true
-     * StringUtils.isNullOrEmpty(" ") = false
-     * StringUtils.isNullOrEmpty("12345") = false
-     * StringUtils.isNullOrEmpty(" 12345 ") = false
+     * StringUtils.isEmpty(null) = true
+     * StringUtils.isEmpty("") = true
+     * StringUtils.isEmpty(" ") = false
+     * StringUtils.isEmpty("12345") = false
+     * StringUtils.isEmpty(" 12345 ") = false
      * </pre>
+     */
+    public static boolean isEmpty(CharSequence str) {
+        return str == null || str.length() == 0;
+    }
+    
+    /**
+     * Checks if a String is null or empty ("").
+     * 
+     * see {@link #isEmpty(CharSequence)}
      */
     public static boolean isNullOrEmpty(CharSequence str) {
         return str == null || str.length() == 0;
