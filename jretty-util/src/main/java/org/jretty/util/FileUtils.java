@@ -193,6 +193,14 @@ public class FileUtils {
         }
     }
     
+    
+    /**
+     * 解析文本内容
+     */
+    public static String getTextContent(InputStream in) {
+        return getTextContent(in, null);
+    }
+    
     /**
      * 按行解析文本文件
      */
@@ -215,8 +223,29 @@ public class FileUtils {
             return ret;
         }
         catch (Exception e) {
-            LOG.error(e);
-            return new ArrayList<String>();
+            throw new NestedRuntimeException(e);
+        }
+        finally {
+            IOUtils.closeIO(br);
+        }
+    }
+    
+    /**
+     * 解析文本内容
+     */
+    public static String getTextContent(InputStream in, String charSet) {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(in, StringUtils.decideCharSet(charSet)));
+            String buf = null;
+            StringBuilder builder = new StringBuilder();
+            while (null != (buf = br.readLine())) {
+                builder.append(buf);
+            }
+            return builder.toString();
+        }
+        catch (Exception e) {
+            throw new NestedRuntimeException(e);
         }
         finally {
             IOUtils.closeIO(br);
