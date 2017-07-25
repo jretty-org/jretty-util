@@ -240,7 +240,7 @@ public class FileUtils {
             String buf = null;
             StringBuilder builder = new StringBuilder();
             while (null != (buf = br.readLine())) {
-                builder.append(buf);
+                builder.append(buf).append("\r\n");
             }
             return builder.toString();
         }
