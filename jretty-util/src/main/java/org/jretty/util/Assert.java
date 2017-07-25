@@ -71,8 +71,9 @@ public abstract class Assert {
      */
     private static RuntimeException changeIAE(RuntimeException e){
         StackTraceElement[] st = e.getStackTrace();
-        st = ArrayUtils.remove(st, 0);
-        e.setStackTrace(st);
+        StackTraceElement[] cg = new StackTraceElement[st.length - 1];
+        System.arraycopy(st, 1, cg, 0, st.length - 1);
+        e.setStackTrace(cg);
         return e;
     }
 

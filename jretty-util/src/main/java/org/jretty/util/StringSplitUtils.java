@@ -16,8 +16,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * 高效的字符串split工具，非正则表达式，与java.lang.String#split的实现截然不同
+ * 
+ * <h3>Split 终极用法</h3>
+ * 
+ * 一、整个字符串作为分隔符：（保留分割出来的空白字符）<p>
+ *    ---使用 splitByWholeSeparator （等价于org.springframework.util.StringUtils.delimitedListToStringArray[]）
+ * <p>
+ * 二、单个字符、或者字符串的所有字符都 作为分隔符：（保留分割出来的空白字符）<p>
+ *    ---使用 split
+ * <p>
+ * 再考虑一下特殊情况：
+ * <p>
+ * 三、不保留 分割出来的空白字符：<p>
+ *    ---使用 <p>
+ *    splitIgnoreEmpty           （等价于java.util.StringTokenizer，性能上差不多）<p>
+ *    splitByWholeIgnoreEmpty
+ * <p>
+ * 四、保留非末尾的所有空白字符：<p>
+ *    ---使用 <p>
+ *    splitNolastEmpty   <p>
+ *    splitByWholeNolastEmpty    （等价于java.lang.String.split[])
+ * <p>
+ * 五、可以将取出来的值，每一个都进行trim<p>
+ *    ---使用 split??? 方法，将trimToken 参数设置为true<p>
  * 
  * @author zollty
  * @since 2013-12-11
@@ -134,7 +156,8 @@ public class StringSplitUtils {
      * @return an array of parsed Strings, <code>null</code> if null String
      *         input
      */
-    public static String[] splitWorker(String str, String separatorChars, boolean preserveAllTokens, boolean includeLastEmpty) {
+    public static String[] splitWorker(String str, String separatorChars, 
+            boolean preserveAllTokens, boolean includeLastEmpty, boolean trimToken) {
         // Performance tuned for 2.0 (JDK1.4)
         // Direct code is quicker than StringTokenizer.
         // Also, StringTokenizer uses isSpace() not isWhitespace()
@@ -151,6 +174,7 @@ public class StringSplitUtils {
         int i = 0, start = 0;
         boolean match = false;
         boolean lastMatch = false;
+        String token;
         if (separatorChars == null) {
             // Null separator means use whitespace
             while (i < len) {
@@ -161,7 +185,11 @@ public class StringSplitUtils {
 //                            i = len;
 //                            lastMatch = false;
 //                        }
-                        list.add(str.substring(start, i));
+                        token = str.substring(start, i);
+                        if (trimToken) {
+                            token = token.trim();
+                        }
+                        list.add(token);
                         match = false;
                     }
                     start = ++i;
@@ -182,7 +210,11 @@ public class StringSplitUtils {
 //                            i = len;
 //                            lastMatch = false;
 //                        }
-                        list.add(str.substring(start, i));
+                        token = str.substring(start, i);
+                        if (trimToken) {
+                            token = token.trim();
+                        }
+                        list.add(token);
                         match = false;
                     }
                     start = ++i;
@@ -202,7 +234,11 @@ public class StringSplitUtils {
 //                            i = len;
 //                            lastMatch = false;
 //                        }
-                        list.add(str.substring(start, i));
+                        token = str.substring(start, i);
+                        if (trimToken) {
+                            token = token.trim();
+                        }
+                        list.add(token);
                         match = false;
                     }
                     start = ++i;
@@ -217,15 +253,15 @@ public class StringSplitUtils {
         if (match || (preserveAllTokens && lastMatch)) {
            // list.add(str.substring(start, i));
            // Modified by zouty, change statege: e.g. make [, opt, was, ] to [, opt, was] with src = "/opt/was/" 
-            String t = str.substring(start, i);
-            if(includeLastEmpty){
-                list.add(t);
+            token = str.substring(start, i);
+            if (trimToken) {
+                token = token.trim();
             }
-            else if(!t.equals(EMPTY)){
-                list.add(t);
+            if(includeLastEmpty || !EMPTY.equals(token)){
+                list.add(token);
             }
         }
-        return (String[]) list.toArray(EMPTY_STRING_ARRAY);
+        return list.toArray(EMPTY_STRING_ARRAY);
     }
     
     
@@ -246,7 +282,7 @@ public class StringSplitUtils {
      *         input
      */
     public static String[] splitWorker(String str, char separatorChar,
-            boolean preserveAllTokens, boolean includeLastEmpty) {
+            boolean preserveAllTokens, boolean includeLastEmpty, boolean trimToken) {
         // Performance tuned for 2.0 (JDK1.4)
 
         if (str == null) {
@@ -260,10 +296,15 @@ public class StringSplitUtils {
         int i = 0, start = 0;
         boolean match = false;
         boolean lastMatch = false;
+        String token;
         while (i < len) {
             if (str.charAt(i) == separatorChar) {
                 if (match || preserveAllTokens) {
-                    list.add(str.substring(start, i));
+                    token = str.substring(start, i);
+                    if (trimToken) {
+                        token = token.trim();
+                    }
+                    list.add(token);
                     match = false;
                     lastMatch = true;
                 }
@@ -277,12 +318,12 @@ public class StringSplitUtils {
         if (match || (preserveAllTokens && lastMatch)) {
             // list.add(str.substring(start, i));
             // Modified by zouty, change statege: e.g. make [, opt, was, ] to [, opt, was] with src = "/opt/was/" 
-            String t = str.substring(start, i);
-            if(includeLastEmpty){
-                list.add(t);
+            token = str.substring(start, i);
+            if (trimToken) {
+                token = token.trim();
             }
-            else if(!t.equals(EMPTY)){
-                list.add(t);
+            if(includeLastEmpty || !EMPTY.equals(token)){
+                list.add(token);
             }
         }
         return list.toArray(EMPTY_STRING_ARRAY);
@@ -301,7 +342,7 @@ public class StringSplitUtils {
      * @return an array of parsed Strings, <code>null</code> if null String input
      */
     public static String[] splitByWholeSeparatorWorker(String str, String separator, 
-                                                        boolean preserveAllTokens, boolean includeLastEmpty)
+                  boolean preserveAllTokens, boolean includeLastEmpty, boolean trimToken)
     {
         if (str == null) {
             return null;
@@ -315,15 +356,16 @@ public class StringSplitUtils {
 
         if ((separator == null) || (EMPTY.equals(separator))) {
             // Split on whitespace.
-            return splitWorker(str, null, preserveAllTokens, includeLastEmpty);
+            return splitWorker(str, null, preserveAllTokens, includeLastEmpty, trimToken);
         }
 
         int separatorLength = separator.length();
 
-        ArrayList<String> substrings = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<String>();
 //        int numberOfSubstrings = 0;
         int beg = 0;
         int end = 0;
+        String token;
         while (end < len) {
             end = str.indexOf(separator, beg);
 
@@ -335,11 +377,14 @@ public class StringSplitUtils {
 //                        end = len;
 //                        substrings.add(str.substring(beg));
 //                    } else {
-                    
+                        token = str.substring(beg, end);
+                        if (trimToken) {
+                            token = token.trim();
+                        }
                         // The following is OK, because String.substring( beg, end ) excludes
                         // the character at the position 'end'.
                         // System.out.println("sub " + beg + "|" + end +"|" + str.substring(beg, end));
-                        substrings.add(str.substring(beg, end));
+                        list.add(token);
 
                         // Set the starting point for the next search.
                         // The following is equivalent to beg = end + (separatorLength - 1) + 1,
@@ -354,7 +399,7 @@ public class StringSplitUtils {
 //                            end = len;
 //                            substrings.add(str.substring(beg));
 //                        } else {
-                            substrings.add(EMPTY);
+                              list.add(EMPTY);
 //                        }
                     }
                     beg = end + separatorLength;
@@ -362,100 +407,187 @@ public class StringSplitUtils {
             } else {
                 // String.substring( beg ) goes from 'beg' to the end of the String.
                 // System.out.println("sub~~ " + beg + "|" + end +"|" + str.substring(beg));
-                String t = str.substring(beg);
-                
+                token = str.substring(beg);
+                if (trimToken) {
+                    token = token.trim();
+                }
                 // if(!t.equals(EMPTY))
                 //     substrings.add(str.substring(beg));
                 // Modified by zouty, bugfix: e.g. make [, opt, was] to [, opt, was, ] with src = "/opt/was/" 
                 
-                if (preserveAllTokens && includeLastEmpty) {
-                    substrings.add(t);
-                } else if(!t.equals(EMPTY)){
-                    substrings.add(t);
+                if ((preserveAllTokens && includeLastEmpty) || !EMPTY.equals(token)) {
+                    list.add(token);
                 }
                 
                 end = len;
             }
         }
 
-        return substrings.toArray(EMPTY_STRING_ARRAY);
+        return list.toArray(EMPTY_STRING_ARRAY);
     }
     
     // 以下是二次封装的一些常用方法
     
     /**
-     * 显示空值，且包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was, ]
-     * @see #splitByWholeSeparatorWorker(String, String, boolean, boolean)
+     * @see #splitByWholeSeparator(String, String, boolean)
      */
     public static String[] splitByWholeSeparator(String str, String separator) {
-        return splitByWholeSeparatorWorker(str, separator, true, true ) ;
+        return splitByWholeSeparatorWorker(str, separator, true, true, false) ;
     }
     
     /**
-     * 显示空值，且包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was, ]
-     * @see #splitWorker(String, char, boolean, boolean)
+     * @see #split(String, char, boolean)
      */
     public static String[] split(String str, String separatorChars) {
-        return splitWorker(str, separatorChars, true, true); // 显示空值
+        return splitWorker(str, separatorChars, true, true, false); // 显示空值
+    }
+    
+    /**
+     * @see #split(String, char, boolean)
+     */
+    public static String[] split(String str, char separatorChar) {
+        return splitWorker(str, separatorChar, true, true, false);  // 显示空值
+    }
+    
+    //~~~~~~~~~
+    /**
+     * 显示空值，但不包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was]
+     * @see #splitByWholeSeparatorWorker(String, String, boolean, boolean)
+     * @deprecated use {@link #splitByWholeNolastEmpty(String, String)}
+     */
+    public static String[] splitByWholeSeparatorNolastEmpty(String str, String separator) {
+        return splitByWholeSeparatorWorker(str, separator, true, false, false) ; // 显示空值
+    }
+    
+    /**
+     * @see #splitByWholeNolastEmpty(String, String, boolean)
+     */
+    public static String[] splitByWholeNolastEmpty(String str, String separator) {
+        return splitByWholeSeparatorWorker(str, separator, true, false, false) ; // 显示空值
+    }
+    
+    /**
+     * @see #splitNolastEmpty(String, char, boolean)
+     */
+    public static String[] splitNolastEmpty(String str, String separatorChars) {
+        return splitWorker(str, separatorChars, true, false, false); // 显示空值
+    }
+    
+    /**
+     * @see #splitNolastEmpty(String, char, boolean)
+     */
+    public static String[] splitNolastEmpty(String str, char separatorChar) {
+        return splitWorker(str, separatorChar, true, false, false);  // 显示空值
+    }
+    
+    //~~~~~~~~~
+    
+    /**
+     * 不显示空值，例如 src = "/opt//was/"   sep=/  result = [opt, was]
+     * @see #splitByWholeSeparatorWorker(String, String, boolean, boolean)
+     * @deprecated use {@link #splitByWholeIgnoreEmpty(String, String)}
+     */
+    public static String[] splitByWholeSeparatorIgnoreEmpty(String str, String separator) {
+        return splitByWholeSeparatorWorker(str, separator, false, false, false) ; // 显示空值
+    }
+    
+    /**
+     * @see #splitByWholeIgnoreEmpty(String, String, boolean)
+     */
+    public static String[] splitByWholeIgnoreEmpty(String str, String separator) {
+        return splitByWholeSeparatorWorker(str, separator, false, false, false) ; // 显示空值
+    }
+    
+    /**
+     * @see #splitIgnoreEmpty(String, String, boolean)
+     */
+    public static String[] splitIgnoreEmpty(String str, String separatorChars) {
+        return splitWorker(str, separatorChars, false, false, false); // 显示空值
+    }
+    
+    /**
+     * @see #splitIgnoreEmpty(String, char, boolean)
+     */
+    public static String[] splitIgnoreEmpty(String str, char separatorChar) {
+        return splitWorker(str, separatorChar, false, false, false);  // 显示空值
+    }
+    
+    
+    
+    
+    
+    // ~ -----------------可以对token进行trim---------------------
+    
+    /**
+     * 显示空值，且包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was, ]
+     * @see #splitByWholeSeparatorWorker(String, String, boolean, boolean, boolean)
+     */
+    public static String[] splitByWholeSeparator(String str, String separator, boolean trimToken) {
+        return splitByWholeSeparatorWorker(str, separator, true, true, trimToken) ;
     }
     
     /**
      * 显示空值，且包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was, ]
-     * @see #splitWorker(String, char, boolean, boolean)
+     * @see #splitWorker(String, char, boolean, boolean, boolean)
      */
-    public static String[] split(String str, char separatorChar) {
-        return splitWorker(str, separatorChar, true, true);  // 显示空值
-    }
-    
-    //~~~~~~~~~
-    /**
-     * 显示空值，但不包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was]
-     * @see #splitByWholeSeparatorWorker(String, String, boolean, boolean)
-     */
-    public static String[] splitByWholeSeparatorNolastEmpty(String str, String separator) {
-        return splitByWholeSeparatorWorker(str, separator, true, false ) ; // 显示空值
+    public static String[] split(String str, String separatorChars, boolean trimToken) {
+        return splitWorker(str, separatorChars, true, true, trimToken); // 显示空值
     }
     
     /**
-     * 显示空值，但不包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was]
-     * @see #splitWorker(String, char, boolean, boolean)
+     * 显示空值，且包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was, ]
+     * @see #splitWorker(String, char, boolean, boolean, boolean)
      */
-    public static String[] splitNolastEmpty(String str, String separatorChars) {
-        return splitWorker(str, separatorChars, true, false); // 显示空值
+    public static String[] split(String str, char separatorChar, boolean trimToken) {
+        return splitWorker(str, separatorChar, true, true, trimToken);  // 显示空值
     }
     
     /**
      * 显示空值，但不包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was]
-     * @see #splitWorker(String, char, boolean, boolean)
+     * @see #splitByWholeSeparatorWorker(String, String, boolean, boolean, boolean)
      */
-    public static String[] splitNolastEmpty(String str, char separatorChar) {
-        return splitWorker(str, separatorChar, true, false);  // 显示空值
-    }
-    
-    //~~~~~~~~~
-    
-    /**
-     * 不显示空值，例如 src = "/opt//was/"   sep=/  result = [opt, was]
-     * @see #splitByWholeSeparatorWorker(String, String, boolean, boolean)
-     */
-    public static String[] splitByWholeSeparatorIgnoreEmpty(String str, String separator) {
-        return splitByWholeSeparatorWorker(str, separator, false, false ) ; // 显示空值
+    public static String[] splitByWholeNolastEmpty(String str, String separator, boolean trimToken) {
+        return splitByWholeSeparatorWorker(str, separator, true, false, trimToken) ; // 显示空值
     }
     
     /**
-     * 不显示空值，例如 src = "/opt//was/"   sep=/  result = [opt, was]
-     * @see #splitWorker(String, String, boolean, boolean)
+     * 显示空值，但不包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was]
+     * @see #splitWorker(String, char, boolean, boolean, boolean)
      */
-    public static String[] splitIgnoreEmpty(String str, String separatorChars) {
-        return splitWorker(str, separatorChars, false, false); // 显示空值
+    public static String[] splitNolastEmpty(String str, String separatorChars, boolean trimToken) {
+        return splitWorker(str, separatorChars, true, false, trimToken); // 显示空值
+    }
+    
+    /**
+     * 显示空值，但不包含末尾的空值，例如 src = "/opt//was/"   sep=/  result = [, opt, , was]
+     * @see #splitWorker(String, char, boolean, boolean, boolean)
+     */
+    public static String[] splitNolastEmpty(String str, char separatorChar, boolean trimToken) {
+        return splitWorker(str, separatorChar, true, false, trimToken);  // 显示空值
     }
     
     /**
      * 不显示空值，例如 src = "/opt//was/"   sep=/  result = [opt, was]
-     * @see #splitWorker(String, char, boolean, boolean)
+     * @see #splitByWholeSeparatorWorker(String, String, boolean, boolean, boolean)
      */
-    public static String[] splitIgnoreEmpty(String str, char separatorChar) {
-        return splitWorker(str, separatorChar, false, false);  // 显示空值
+    public static String[] splitByWholeIgnoreEmpty(String str, String separator, boolean trimToken) {
+        return splitByWholeSeparatorWorker(str, separator, false, false, trimToken) ; // 显示空值
+    }
+    
+    /**
+     * 不显示空值，例如 src = "/opt//was/"   sep=/  result = [opt, was]
+     * @see #splitWorker(String, String, boolean, boolean, boolean)
+     */
+    public static String[] splitIgnoreEmpty(String str, String separatorChars, boolean trimToken) {
+        return splitWorker(str, separatorChars, false, false, trimToken); // 显示空值
+    }
+    
+    /**
+     * 不显示空值，例如 src = "/opt//was/"   sep=/  result = [opt, was]
+     * @see #splitWorker(String, char, boolean, boolean, boolean)
+     */
+    public static String[] splitIgnoreEmpty(String str, char separatorChar, boolean trimToken) {
+        return splitWorker(str, separatorChar, false, false, trimToken);  // 显示空值
     }
 
 }

@@ -19,6 +19,7 @@
     <groupId>org.jretty</groupId>
     <artifactId>jretty</artifactId>
     <version>1.0</version>
+    <relativePath>lib/pom-1.0.xml</relativePath>
   </parent>
   <artifactId>jretty-util-parent</artifactId>
   <version>1.0.0-RELEASE</version>
@@ -53,7 +54,7 @@
       <dependency>
         <groupId>org.jretty</groupId>
         <artifactId>jretty-util</artifactId>
-        <version>1.2.0</version>
+        <version>1.3.0</version>
       </dependency>
 
       <!-- Servlet -->

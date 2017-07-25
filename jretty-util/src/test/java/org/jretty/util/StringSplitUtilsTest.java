@@ -61,6 +61,13 @@ public class StringSplitUtilsTest {
       splitTest("app-/-opt-/-was", "-/-", "[app, , , opt, , , was]");
       splitByWholeSeparatorTest("app-/-opt-/-was", "-/-", "[app, opt, was]");
       
+      // 保留前后空白字符
+      splitTest("\n\rapp -/-opt-/- was\n\r", "-/-", "[\n\rapp , , , opt, , ,  was\n\r]");
+      splitByWholeSeparatorTest("\n\rapp -/-opt-/- was\n\r", "-/-", "[\n\rapp , opt,  was\n\r]");
+      // trim前后空白字符
+      splitTestTrim("\n\rapp -/-opt-/- was\n\r", "-/-", "[app, , , opt, , , was]");
+      splitByWholeSeparatorTestTrim("\n\rapp -/-opt-/- was\n\r", "-/-", "[app, opt, was]");
+      
       splitTest("app-/-opt-/--/-was", "-/--/-", "[app, , , opt, , , , , , was]");
       splitByWholeSeparatorTest("app-/-opt-/--/-was", "-/--/-", "[app-/-opt, was]");
       
@@ -80,6 +87,17 @@ public class StringSplitUtilsTest {
     
     }
     
+    private void splitTestTrim(String src, String splitStr, String result){
+        
+        org.junit.Assert.assertEquals(result, Arrays.toString(StringSplitUtils.split(src, splitStr, true)));
+    }
+    
+    private void splitByWholeSeparatorTestTrim(String src, String splitStr, String result){
+        
+        org.junit.Assert.assertEquals(result, Arrays.toString(StringSplitUtils.splitByWholeSeparator(src, splitStr, true)));
+    
+    }
+    
     private void splitTest2(String src, String splitStr, String result){
         
         org.junit.Assert.assertEquals(result, Arrays.toString(StringSplitUtils.splitNolastEmpty(src, splitStr)));
@@ -87,7 +105,7 @@ public class StringSplitUtilsTest {
     
     private void splitByWholeSeparatorTest2(String src, String splitStr, String result){
         
-        org.junit.Assert.assertEquals(result, Arrays.toString(StringSplitUtils.splitByWholeSeparatorNolastEmpty(src, splitStr)));
+        org.junit.Assert.assertEquals(result, Arrays.toString(StringSplitUtils.splitByWholeNolastEmpty(src, splitStr)));
     
     }
     
@@ -98,7 +116,7 @@ public class StringSplitUtilsTest {
     
     private void splitByWholeSeparatorNoEmptyTest(String src, String splitStr, String result){
         
-        org.junit.Assert.assertEquals(result, Arrays.toString(StringSplitUtils.splitByWholeSeparatorIgnoreEmpty(src, splitStr)));
+        org.junit.Assert.assertEquals(result, Arrays.toString(StringSplitUtils.splitByWholeIgnoreEmpty(src, splitStr)));
     
     }
 
