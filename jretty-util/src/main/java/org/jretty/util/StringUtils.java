@@ -382,7 +382,15 @@ public class StringUtils {
         }
         return count;
     }
-
+    
+    /**
+     * Normalize the path by suppressing sequences like "path/.." and
+     * inner simple dots.
+     * <p>The result is convenient for path comparison. For other uses,
+     * notice that Windows separators ("\") are replaced by simple slashes.
+     * @param path the original path
+     * @return the normalized path
+     */
     public static String cleanPath(String path) {
         if (path == null) {
             return null;
@@ -397,15 +405,19 @@ public class StringUtils {
         String prefix = "";
         if (prefixIndex != -1) {
             prefix = pathToUse.substring(0, prefixIndex + 1);
-            pathToUse = pathToUse.substring(prefixIndex + 1);
+            if (prefix.contains("/")) {
+                prefix = "";
+            }
+            else {
+                pathToUse = pathToUse.substring(prefixIndex + 1);
+            }
         }
         if (pathToUse.startsWith(Const.FOLDER_SEPARATOR)) {
             prefix = prefix + Const.FOLDER_SEPARATOR;
             pathToUse = pathToUse.substring(1);
         }
 
-        String[] pathArray = StringSplitUtils.splitByWholeSeparatorWorker(pathToUse,
-                Const.FOLDER_SEPARATOR, true, true);
+        String[] pathArray = StringSplitUtils.splitByWholeSeparator(pathToUse, Const.FOLDER_SEPARATOR);
         List<String> pathElements = new LinkedList<String>();
         int tops = 0;
 
