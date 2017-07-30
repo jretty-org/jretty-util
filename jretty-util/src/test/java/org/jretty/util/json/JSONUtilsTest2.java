@@ -13,16 +13,6 @@ import com.alibaba.fastjson.JSON;
 
 public class JSONUtilsTest2 {
     
-    
-    @Test
-    public void testInstanceofNumber() {
-        
-        int i = 0;
-        
-        Object o = i;
-        Assert.assertTrue(o instanceof Number);
-    }
-    
     @Test
     public void testDateWriter() throws Exception{
         
@@ -65,7 +55,7 @@ public class JSONUtilsTest2 {
         map.put("aa", new TestWriter());
         map.put("bb", innerMap);
         
-        String exp = "{\"aa\":{\"Class\":\"org.zollty.util.json.JSONUtilsTest2$TestWriter\"},\"bb\":{\"aa\":\"11\"}}";
+        String exp = "{\"aa\":{\"Class\":\"org.jretty.util.json.JSONUtilsTest2$TestWriter\"},\"bb\":{\"aa\":\"11\"}}";
         
         Assert.assertEquals(
                 exp, 

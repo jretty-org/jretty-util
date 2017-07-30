@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2013-2015 the original author or authors.
+ * Copyright (C) 2013-2017 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,8 @@ public class Const {
     
     /** 文件分隔符'/'，用于Unix等系统 */
     public static final String FOLDER_SEPARATOR = "/";
+    /** 文件分隔符'/'，用于Unix等系统 */
+    public static final String URL_SEPARATOR = FOLDER_SEPARATOR;
     /** WIN系统文件分隔符'\\'用于MS Windows系统 */
     public static final String WINDOWS_FOLDER_SEPARATOR = "\\";
     
@@ -45,5 +47,11 @@ public class Const {
     public static final String CURRENT_PATH = ".";
     /** 路径标识：上一级目录 */
     public static final String TOP_PATH = "..";
+    
+    /** 字符串："" */
+    public static final String STRING_LEN0 = "";
+    
+    /** 字符串："null" */
+    public static final String STRING_NULL = "null";
     
 }

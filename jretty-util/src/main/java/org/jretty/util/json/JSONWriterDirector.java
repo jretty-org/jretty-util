@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2013-2015 the original author or authors.
+ * Copyright (C) 2013-2017 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
  */
 package org.jretty.util.json;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -115,9 +116,14 @@ class JSONWriterDirector implements DefaultWriter {
             writeMap((Map) o);
             return this;
         }
+        
+        if (o instanceof Object[]) {
+            writeArray((Object[]) o);
+            return this;
+        }
 
         if (o.getClass().isArray()) {
-            writeArray((Object[]) o);
+            writeArray(o);
             return this;
         }
 
@@ -175,6 +181,30 @@ class JSONWriterDirector implements DefaultWriter {
                 first = false;
             }
             writeObject(array[i]);
+        }
+
+        write(']');
+        return this;
+    }
+    
+    public Object writeArray(Object array) {
+        if (array == null) {
+            writeNull();
+            return this;
+        }
+
+        write('[');
+        
+        boolean first = true;
+        int len = Array.getLength(array);
+        for (int i = 0; i < len; ++i) {
+            if (!first) {
+                write(',');
+            }
+            else {
+                first = false;
+            }
+            writeObject(Array.get(array, i));
         }
 
         write(']');

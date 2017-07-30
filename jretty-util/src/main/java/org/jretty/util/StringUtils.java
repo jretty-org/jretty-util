@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2013-2014 the original author or authors.
+ * Copyright (C) 2013-2017 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -402,11 +402,11 @@ public class StringUtils {
         // "file:core/../core/io/Resource.class", where the ".." should just
         // strip the first "core" directory while keeping the "file:" prefix.
         int prefixIndex = pathToUse.indexOf(":");
-        String prefix = "";
+        String prefix = Const.STRING_LEN0;
         if (prefixIndex != -1) {
             prefix = pathToUse.substring(0, prefixIndex + 1);
-            if (prefix.contains("/")) {
-                prefix = "";
+            if (prefix.contains(Const.FOLDER_SEPARATOR)) {
+                prefix = Const.STRING_LEN0;
             }
             else {
                 pathToUse = pathToUse.substring(prefixIndex + 1);
@@ -476,7 +476,7 @@ public class StringUtils {
             if (objs[i] != null)
                 stra[i] = objs[i].toString();
             else {
-                stra[i] = "null";
+                stra[i] = Const.STRING_NULL;
             }
             len += stra[i].length();
         }
@@ -514,7 +514,7 @@ public class StringUtils {
      */
     public static String simpleHtmlEscape(String str) {
         if (str == null)
-            return "";
+            return Const.STRING_LEN0;
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < str.length(); ++i) {
             char c = str.charAt(i);

@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2014-2015 the original author or authors.
+ * Copyright (C) 2014-2017 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import org.jretty.util.json.JSONUtils;
 
 /**
  * @author zollty
@@ -43,38 +45,11 @@ public class ObjectUtils {
     
     /**
      * 将参数Object数组，转换成字符串显示，仅供“显示”用途，比如记录sql参数。
+     * @deprecated use <code>JSONUtils.toJSONString(obj)</code> instand of
      */
     public static String arrayToString(Object[] params) {
-        if (params == null) {
-            return "null";
-        }
-        StringBuilder buff = new StringBuilder();
-        buff.append("{");
-        boolean first = true;
-        for (Object obj : params) {
-            if (first) {
-                first = false;
-            }
-            else {
-                buff.append(",");
-            }
-
-            if (obj == null) {
-                buff.append("null");
-            }
-            else {
-                if (obj instanceof Date) {
-                    buff.append("[" + DateFormatUtils.format_yyyy_MM_dd((Date) obj) + "]");
-                }
-                else {
-                    buff.append("[" + obj.toString() + "]");
-                }
-            }
-        }
-        buff.append("}");
-        return buff.toString();
+        return JSONUtils.toJSONString(params);
     }
-    
     
     /**
      * 给对象赋初始值<br>
