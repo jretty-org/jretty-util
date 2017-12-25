@@ -1,4 +1,4 @@
-package org.jretty.util;
+
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -13,21 +13,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jretty.log.LogFactory;
-import org.jretty.log.Logger;
-
-/**
- * IP utils
- * 
- * @author zollty
- * @since 2016-7-28
- */
-public class IpUtils {
+public class IpUtilsTest {
     
-    private static final Logger LOG = LogFactory.getLogger(IpUtils.class);
-    
-    private IpUtils() {}
-
     /**
      * 获取本机Local ip（内网）地址，并自动区分Windows还是linux操作系统<br>
      * 如果是Linux系统，则只取eth0网卡的ip
@@ -40,7 +27,45 @@ public class IpUtils {
     
     public static String getLocalMacHex() {
         byte[] mac = getLocalMac();
-        return toHexMac(mac);
+        if (mac == null) {
+            return null;
+        }
+        StringBuffer sb = new StringBuffer("");
+        for (int i = 0; i < mac.length; i++) {
+            if (i != 0) {
+                sb.append(":");
+            }
+            // 字节转换为整数
+            int temp = mac[i] & 0xff;
+            String str = Integer.toHexString(temp);
+            if (str.length() == 1) {
+                sb.append("0" + str);
+            } else {
+                sb.append(str);
+            }
+        }
+        return sb.toString().toUpperCase();
+    }
+    
+    private static String toHexMac(byte[] mac) {
+        if (mac == null) {
+            return null;
+        }
+        StringBuffer sb = new StringBuffer("");
+        for (int i = 0; i < mac.length; i++) {
+            if (i != 0) {
+                sb.append(":");
+            }
+            // 字节转换为整数
+            int temp = mac[i] & 0xff;
+            String str = Integer.toHexString(temp);
+            if (str.length() == 1) {
+                sb.append("0" + str);
+            } else {
+                sb.append(str);
+            }
+        }
+        return sb.toString().toUpperCase();
     }
     
     public static byte[] getLocalMac() {
@@ -53,7 +78,7 @@ public class IpUtils {
                 try {
                     ia = InetAddress.getByName(hostName);
                 } catch (UnknownHostException ue) {
-                    LOG.warn(e, "get InetAddress fail due to: ");
+                    e.printStackTrace();
                 }
             }
         }
@@ -61,18 +86,20 @@ public class IpUtils {
         if (ia != null) {
             try {
                 NetworkInterface ni = NetworkInterface.getByInetAddress(ia);
+                System.out.println(ia + " - get NetworkInterface1:  " + ni);
                 mac = ni == null ? null : ni.getHardwareAddress();
             } catch (SocketException e) {
-                LOG.warn(e, "parse Address error: " + ia);
+                e.printStackTrace();
             }
         }
         if (mac == null) {
             ia = findRealIP();
             try {
                 NetworkInterface ni = NetworkInterface.getByInetAddress(ia);
+                System.out.println(ia + " - get NetworkInterface2:  " + ni);
                 mac = ni == null ? null : ni.getHardwareAddress();
             } catch (SocketException e) {
-                LOG.warn(e, "parse Address error: " + ia);
+                e.printStackTrace();
             }
         }
         return mac;
@@ -126,7 +153,7 @@ public class IpUtils {
                 }
             }
         } catch (Exception e) {
-            LOG.warn(e, "get ip fail due to: ");
+            e.printStackTrace();
         }
 
         String sIP = null;
@@ -140,13 +167,12 @@ public class IpUtils {
     public static String getSocketIp(final String host, final int port) {
         Socket socket = null;
         try {
-            // socket = new Socket(host, port);
             socket = new Socket();
-            socket.connect(new InetSocketAddress(host, port), 500);
-            socket.setSoTimeout(1000);
+            socket.connect(new InetSocketAddress(host, port), 1000);
+            socket.setSoTimeout(3000);
             return socket.getLocalAddress().toString().substring(1);
         } catch (Exception e) {
-            LOG.warn(e, "can not get ip,");
+            e.printStackTrace();
             return null;
         } finally {
             if (socket != null) {
@@ -160,25 +186,26 @@ public class IpUtils {
     }
     
     /**
-     * 获取HostName，并转换成大写 (toUpperCase)。此方法靠谱。
+     * 获取HostName，并转换成大写 (toUpperCase)
      * @return String HostName (toUpperCase) or null
      */
     public static String getHostName() {
         String hostName = null;
         if (System.getenv("COMPUTERNAME") != null) {
             hostName = System.getenv("COMPUTERNAME");
+            System.out.println("have COMPUTERNAME: " + hostName);
         } else {
             try {
                 hostName = InetAddress.getLocalHost().getHostName();
-            } catch (UnknownHostException e) {
-                String host = e.getMessage();
+            } catch (UnknownHostException uhe) {
+                String host = uhe.getMessage();
                 if (host != null) {
                     int colon = host.indexOf(':');
                     if (colon > 0) {
                         hostName = host.substring(0, colon);
                     }
                 } else {
-                    LOG.warn(e, "get getHostName fail due to: ");
+                    uhe.printStackTrace();
                 }
             }
         }
@@ -227,10 +254,89 @@ public class IpUtils {
         }
         return isWindowsOS;
     }
+    
+    
+    /**
+     * 有关NetworkInterface等API的说明：https://www.cnblogs.com/guangshan/p/4712550.html
+     * @return
+     */
+    public static String getLocalIPs() {
+        InetAddress ip = null;
+        try {
+            // 如果是Windows操作系统
+//            if (isWindowsOS()) {
+//                ip = InetAddress.getLocalHost();
+//            }
+            // 如果是Linux操作系统
+//            else {
+                Enumeration<NetworkInterface> netInterfaces = (Enumeration<NetworkInterface>) 
+                        NetworkInterface.getNetworkInterfaces();
+                boolean bFindIP = false;
+                while (netInterfaces.hasMoreElements()) {
+                    if (bFindIP) {
+                        break;
+                    }
+                    NetworkInterface ni = (NetworkInterface) netInterfaces.nextElement();
+                    // 遍历所有ip
+                    Enumeration<InetAddress> ips = ni.getInetAddresses();
+                    InetAddress tmp;
+                    while (ips.hasMoreElements()) {
+                        tmp = (InetAddress) ips.nextElement();
+                        if (ni.isUp() && !tmp.isLoopbackAddress() // 127.开头的都是lookback地址
+                                && tmp.getHostAddress().indexOf(":") == -1) {
+                            ip = tmp;
+                            System.out.println(ni + " - " + ni.getMTU() 
+                            + " isVirtual: " + ni.isVirtual() 
+                            + " Multicast: " + ni.supportsMulticast() 
+                            + " Parent: " + ni.getParent());
+                            System.out.println(ni.getName() + " mac: " + toHexMac(ni.getHardwareAddress()) + " -find- " + ip.getHostAddress());
+                        }
+                    }
 
+                }
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String sIP = null;
+        if (null != ip) {
+            sIP = ip.getHostAddress();
+        }
+        return sIP;
+    }
+    
+    public static String getRealIP() {
+        String ip = getDefaultHostAddress();
+        if (ip != null) {
+            if (!"127.0.0.1".equals(ip)) { // 配置了host ip （/etc/hosts文件中）
+                return ip;
+            } else { // 没有配置 host ip
+                ip = null;
+            }
+        } else {
+            String hostName = getHostName();
+            if (hostName != null) {
+                ip = getSpecialHostAddress(hostName);
+            }
+        }
+
+        if (ip == null) {
+            ip = getSocketIp("www.baidu.com", 80);
+        }
+
+        if (ip == null) {
+            // 根据 findRealIP（）查找最有可能的ip
+            ip = findRealIP().getHostAddress();
+        }
+
+        return ip;
+    }
+    
     
     /**
      * 智能获取本机IP地址（针对linux/unix系统）
+     * @return
      */
     public static InetAddress findRealIP() {
         InetAddress ip = null;
@@ -248,6 +354,8 @@ public class IpUtils {
                 if (!ni.isUp()) { // 跳过没有启用的网卡
                     continue;
                 }
+                System.out.println("网卡：" + ni.getName() + " mac: " + toHexMac(ni.getHardwareAddress()));
+
                 // 遍历所有ip
                 Enumeration<InetAddress> ips = ni.getInetAddresses();
                 InetAddress tmp;
@@ -256,14 +364,25 @@ public class IpUtils {
                     if (!tmp.isLoopbackAddress() // 127.开头的都是lookback地址
                             && tmp.getHostAddress().indexOf(":") == -1) {
                         ip = tmp;
-                        
-                        if(LOG.isDebugEnabled()) {
-                            LOG.debug(ni + " - " + ni.getMTU() + " isVirtual: " + ni.isVirtual() + " Multicast: "
-                                    + ni.supportsMulticast() + " Parent: " + ni.getParent());
-                            LOG.debug(ni.getName() + " mac: "
-                                    + toHexMac(ni.getHardwareAddress()) + " -ip- "
-                                    + ip.getHostAddress());
-                        }
+                        System.out.println(ni + " - " + ni.getMTU() + " isVirtual: " + ni.isVirtual() + " Multicast: "
+                                + ni.supportsMulticast() + " Parent: " + ni.getParent());
+                        System.out.println(ni.getName() + " mac: " + toHexMac(ni.getHardwareAddress()) + " -find- "
+                                + ip.getHostAddress());
+                        System.out.println("-----------------------------------");
+                        System.out.println(ip.getHostName());
+                        System.out.println(InetAddress.getLocalHost());
+                        System.out.println(ip.getCanonicalHostName());
+                        System.out.println(ip.isSiteLocalAddress());
+                        System.out.println(ip.getHostAddress());
+                        System.out.println("+++++");
+                        System.out.println(ip.isLinkLocalAddress());
+                        System.out.println(ip.isAnyLocalAddress());
+                        System.out.println(ip.isMCGlobal());
+                        System.out.println(ip.isMCLinkLocal());
+                        System.out.println(ip.isMCNodeLocal());
+                        System.out.println(ip.isMulticastAddress());
+                        System.out.println(ip.isReachable(100));
+                        System.out.println("-----------------------------------");
 
                         map.put(ni, ip);
                         break;
@@ -317,12 +436,12 @@ public class IpUtils {
             }
 
         } catch (Exception e) {
-            LOG.error(e, "parse IP Address error..");
+            e.printStackTrace();
         }
 
         return ip;
     }
-    
+
     private static Set<NetworkInterface> findByMulticast(Set<NetworkInterface> sel) throws SocketException {
         Set<NetworkInterface> sel2 = new HashSet<NetworkInterface>();
         for (NetworkInterface ni : sel) {
@@ -332,6 +451,7 @@ public class IpUtils {
         }
         return sel2;
     }
+
     private static Set<NetworkInterface> findByMtu(Set<NetworkInterface> sel) throws SocketException {
         Set<NetworkInterface> sel2 = new HashSet<NetworkInterface>();
         for (NetworkInterface ni : sel) {
@@ -341,24 +461,80 @@ public class IpUtils {
         }
         return sel2;
     }
-    private static String toHexMac(byte[] mac) {
-        if (mac == null) {
-            return null;
-        }
-        StringBuffer sb = new StringBuffer("");
-        for (int i = 0; i < mac.length; i++) {
-            if (i != 0) {
-                sb.append(":");
-            }
-            // 字节转换为整数
-            int temp = mac[i] & 0xff;
-            String str = Integer.toHexString(temp);
-            if (str.length() == 1) {
-                sb.append("0" + str);
-            } else {
-                sb.append(str);
-            }
-        }
-        return sb.toString().toUpperCase();
+    
+    public static void main(String[] args) {
+        System.out.println(getHostName());
+        System.out.println(getLocalIP());
+        System.out.println(getLocalIP("eth0"));
+        
+        System.out.println(getDefaultHostAddress());
+        System.out.println(getSocketIp("www.baidu.com", 80));
+        System.out.println(getSocketIp("10.1.10.80", 80));
+        System.out.println(getSpecialHostAddress("localhost"));
+        
+        System.out.println(getSpecialHostAddress("127.0.0.1"));
+        
+        System.out.println("------------------------------");
+//        getLocalIPs();
+        System.out.println(",,,,,,,,,,,,,,,,,,,," + findRealIP());
+        System.out.println(getRealIP());
+        System.out.println(getLocalMacHex());
+        /**
+         * 有eth0的输出结果
+MAINGEAR
+192.168.10.194
+192.168.10.194
+192.168.10.194
+192.168.10.194
+127.0.0.1
+127.0.0.1
+34-E6-AD-94-7F-05
+         */
+        
+        /**
+         * 没有eth0的输出结果1
+LOCALHOST.LOCALDOMAIN
+null ---eth0
+null ---eth0
+127.0.0.1 ---DefaultHostAddress
+10.2.10.23 ---sockect ip比较靠谱。
+127.0.0.1 ----localhost
+127.0.0.1 ----127.0.0.1
+null ---mac
+         */
+        
+        /**
+         * 没有eth0的输出结果2
+BOGON
+null
+null
+192.168.11.242
+192.168.11.242
+127.0.0.1
+127.0.0.1
+00-50-56-8E-57-B6
+         */
+        
+        /**
+         * 没有eth0的输出结果3
+CSB-BROKER-LB
+null
+null
+10.1.10.95
+java.net.UnknownHostException: www.baidu.com
+    at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:178)
+    at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:391)
+    at java.net.Socket.connect(Socket.java:579)
+    at java.net.Socket.connect(Socket.java:528)
+    at java.net.Socket.<init>(Socket.java:425)
+    at java.net.Socket.<init>(Socket.java:208)
+    at IpUtilsTest.getSocketIp(IpUtilsTest.java:153)
+    at IpUtilsTest.main(IpUtilsTest.java:296)
+null
+127.0.0.1
+127.0.0.1
+00-50-56-8A-61-24
+         */
     }
+    
 }
