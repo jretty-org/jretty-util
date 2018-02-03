@@ -1,6 +1,8 @@
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -168,8 +170,8 @@ public class IpUtilsTest {
         Socket socket = null;
         try {
             socket = new Socket();
-            socket.connect(new InetSocketAddress(host, port), 1000);
-            socket.setSoTimeout(3000);
+            socket.connect(new InetSocketAddress(host, port), 500);
+            socket.setSoTimeout(1000);
             return socket.getLocalAddress().toString().substring(1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -235,11 +237,11 @@ public class IpUtilsTest {
      * @return host对应的IP地址
      */
     public static String getSpecialHostAddress(String hostName) {
-        try {
-            return InetAddress.getByName(hostName).getHostAddress();
-        } catch (UnknownHostException e) {
-            return null;
+        InetAddress ia = new InetAddressHelper(hostName).startJoin(1000).getInetAddress();
+        if (ia != null) {
+            return ia.getHostAddress();
         }
+        return null;
     }
     
     /**
@@ -322,7 +324,7 @@ public class IpUtilsTest {
         }
 
         if (ip == null) {
-            ip = getSocketIp("www.baidu.com", 80);
+            ip = getSocketIp("114.114.114.114", 80);
         }
 
         if (ip == null) {
@@ -368,10 +370,9 @@ public class IpUtilsTest {
                                 + ni.supportsMulticast() + " Parent: " + ni.getParent());
                         System.out.println(ni.getName() + " mac: " + toHexMac(ni.getHardwareAddress()) + " -find- "
                                 + ip.getHostAddress());
-                        System.out.println("-----------------------------------");
-                        System.out.println(ip.getHostName());
+                        System.out.println("-----------------------------------" + ip.getClass().getName());
+                        System.out.println(new InetAddressHelper(ip).startJoin(2000).getHostName()); //ip.getCanonicalHostName()
                         System.out.println(InetAddress.getLocalHost());
-                        System.out.println(ip.getCanonicalHostName());
                         System.out.println(ip.isSiteLocalAddress());
                         System.out.println(ip.getHostAddress());
                         System.out.println("+++++");
@@ -462,23 +463,87 @@ public class IpUtilsTest {
         return sel2;
     }
     
-    public static void main(String[] args) {
-        System.out.println(getHostName());
-        System.out.println(getLocalIP());
-        System.out.println(getLocalIP("eth0"));
+    public static void main(String[] args) throws IOException {
+        System.out.println("0.exit");
+        System.out.println("1.getHostName()");
+        System.out.println("2.getLocalIP()");
+        System.out.println("3.getLocalIP(\"eth0\")");
+        System.out.println("4.getDefaultHostAddress()");
+        System.out.println("5.getSocketIp(\"114.114.114.114\", 80)");
+        System.out.println("6.getSocketIp(\"10.1.10.80\", 80)");
+        System.out.println("7.getSpecialHostAddress(\"localhost\")");
+        System.out.println("8.getSpecialHostAddress(\"127.0.0.1\")");
+        System.out.println("9.findRealIP()");
+        System.out.println("10.getRealIP()");
+        System.out.println("11.getLocalMacHex()");
+        System.out.println("12.getSpecialHostAddress(\"www.baidu.com\")");
+        while (true) {
+          System.out.print("> ");
+          String input = new BufferedReader(new InputStreamReader(System.in, "UTF-8")).readLine();
+          if (input == null || input.length() == 0) {
+            continue;
+          }
+          input = input.trim();
+          Byte num = Byte.parseByte(input);
+          long start = System.currentTimeMillis();
+          switch(num) {
+              case 0: {
+                  System.exit(0);
+                  break;
+              }
+              case 1: {
+                  System.out.println("Result > " + getHostName() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 2: {
+                  System.out.println("Result > " + getLocalIP() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 3: {
+                  System.out.println("Result > " + getLocalIP("eth0") +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 4: {
+                  System.out.println("Result > " + getDefaultHostAddress() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 5: {
+                  System.out.println("Result > " + getSocketIp("114.114.114.114", 80) +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 6: {
+                  System.out.println("Result > " + getSocketIp("10.1.10.80", 80) +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 7: {
+                  System.out.println("Result > " + getSpecialHostAddress("localhost") +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 8: {
+                  System.out.println("Result > " + getSpecialHostAddress("127.0.0.1") +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 9: {
+                  System.out.println("Result > " + findRealIP() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 10: {
+                  System.out.println("Result > " + getRealIP() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 11: {
+                  System.out.println("Result > " + getLocalMacHex() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 12: {
+                  System.out.println("Result > " + getSpecialHostAddress("www.baidu.com") +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+          }
+        }
         
-        System.out.println(getDefaultHostAddress());
-        System.out.println(getSocketIp("www.baidu.com", 80));
-        System.out.println(getSocketIp("10.1.10.80", 80));
-        System.out.println(getSpecialHostAddress("localhost"));
         
-        System.out.println(getSpecialHostAddress("127.0.0.1"));
         
-        System.out.println("------------------------------");
-//        getLocalIPs();
-        System.out.println(",,,,,,,,,,,,,,,,,,,," + findRealIP());
-        System.out.println(getRealIP());
-        System.out.println(getLocalMacHex());
         /**
          * 有eth0的输出结果
 MAINGEAR
@@ -535,6 +600,91 @@ null
 127.0.0.1
 00-50-56-8A-61-24
          */
+    }
+    
+    
+    public static class InetAddressHelper extends Thread {
+        
+        private String hostName;
+
+        private InetAddress inetAddress;
+        
+        /* What will be run. */
+        private Runnable target;
+        
+        public InetAddressHelper(InetAddress inetAddress) {
+            this.inetAddress = inetAddress;
+            this.target = new getHostName();
+        }
+        
+        public InetAddressHelper(String hostName) {
+            this.hostName = hostName;
+            this.target = new GetByName();
+        }
+        
+        public InetAddressHelper startJoin(long waitMs) {
+            start();
+            try {
+                join(waitMs);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e.toString());
+            }
+            return this;
+        }
+        
+        public void run() {
+            target.run();
+        }
+        
+        public class GetByName implements Runnable {
+            @Override
+            public void run() {
+                InetAddressHelper.this.inetAddress = InetAddressHelper.getByName(InetAddressHelper.this.hostName);
+            }
+        }
+        
+        public class getHostName implements Runnable {
+            @Override
+            public void run() {
+                InetAddressHelper.this.hostName = InetAddressHelper.this.inetAddress.getHostName();
+            }
+        }
+        
+        protected static InetAddress getByName(String host) {
+            try {
+                return InetAddress.getByName(host);
+            } catch (UnknownHostException e) {
+                return null;
+            }
+        }
+        
+        protected static InetAddress[] getAllByName(String host) {
+            try {
+                return InetAddress.getAllByName(host);
+            } catch (UnknownHostException e) {
+                return null;
+            }
+        }
+
+        public String getHostName() {
+            return hostName;
+        }
+
+        public String getCanonicalHostName() {
+            return hostName;
+        }
+
+        public void setHostName(String hostName) {
+            this.hostName = hostName;
+        }
+
+        public InetAddress getInetAddress() {
+            return inetAddress;
+        }
+
+        public void setInetAddress(InetAddress inetAddress) {
+            this.inetAddress = inetAddress;
+        }
     }
     
 }

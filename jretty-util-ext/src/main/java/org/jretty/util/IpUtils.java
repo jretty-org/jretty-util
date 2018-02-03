@@ -208,11 +208,11 @@ public class IpUtils {
      * @return host对应的IP地址
      */
     public static String getSpecialHostAddress(String hostName) {
-        try {
-            return InetAddress.getByName(hostName).getHostAddress();
-        } catch (UnknownHostException e) {
-            return null;
+        InetAddress ia = new InetAddressHelper(hostName).startJoin(1000).getInetAddress();
+        if (ia != null) {
+            return ia.getHostAddress();
         }
+        return null;
     }
     
     /**
