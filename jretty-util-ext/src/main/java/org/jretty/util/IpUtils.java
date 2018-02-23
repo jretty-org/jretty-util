@@ -19,8 +19,9 @@ import org.jretty.log.Logger;
 /**
  * IP utils
  * 
- * @author zollty
+ * @author zollty  高效的算法保证
  * @since 2016-7-28
+ * @see InetAddressHelper
  */
 public class IpUtils {
     
@@ -29,20 +30,16 @@ public class IpUtils {
     private IpUtils() {}
 
     /**
-     * 获取本机Local ip（内网）地址，并自动区分Windows还是linux操作系统<br>
-     * 如果是Linux系统，则只取eth0网卡的ip
-     * @see {@link #getLocalIP(String)}
-     * @return
+     * 智能分析，精确获取本机网卡，并转换成十六进制
      */
-    public static String getLocalIP() {
-        return getLocalIP("eth0");
-    }
-    
     public static String getLocalMacHex() {
         byte[] mac = getLocalMac();
         return toHexMac(mac);
     }
     
+    /**
+     * 智能分析，精确获取本机网卡
+     */
     public static byte[] getLocalMac() {
         InetAddress ia = null;
         try {
@@ -77,6 +74,143 @@ public class IpUtils {
         }
         return mac;
     }
+    
+    /**
+     * 智能分析，精确获取本机Local ip（内网）地址
+     */
+    public static String getRealIP() {
+        String ip = getDefaultHostAddress();
+        if (ip != null) {
+            if (!"127.0.0.1".equals(ip)) { // 配置了host ip （/etc/hosts文件中）
+                return ip;
+            } else { // 没有配置 host ip
+                ip = null;
+            }
+        } else {
+            String hostName = getHostName();
+            if (hostName != null) {
+                ip = getSpecialHostAddress(hostName);
+            }
+        }
+
+        if (ip == null) {
+            ip = getSocketIp("114.114.114.114", 80);
+        }
+
+        if (ip == null) {
+            // 根据 findRealIP（）查找最有可能的ip
+            ip = findRealIP().getHostAddress();
+        }
+
+        return ip;
+    }
+    
+    /**
+     * 获取本机Local ip（内网）地址，并自动区分Windows还是linux操作系统<br>
+     * @see {@link #findRealIP()}
+     */
+    static String getLocalIP() {
+        InetAddress ip = null;
+        try {
+            if (isWindowsOS()) {
+                ip = InetAddress.getLocalHost();
+            } else {
+                ip = findRealIP();
+            }
+        } catch (UnknownHostException e) {
+            LOG.error(e, "parse IP Address error.");
+        }
+        return null != ip ? ip.getHostAddress() : null;
+    }
+    
+    /**
+     * 智能分析，精准获取本机IP地址（针对linux/unix系统）
+     */
+    static InetAddress findRealIP() {
+        InetAddress ip = null;
+        try {
+            Enumeration<NetworkInterface> netInterfaces = 
+                    (Enumeration<NetworkInterface>) NetworkInterface.getNetworkInterfaces();
+            boolean bFindIP = false;
+            Map<NetworkInterface, InetAddress> map = new HashMap<NetworkInterface, InetAddress>();
+            while (netInterfaces.hasMoreElements()) {
+                if (bFindIP) {
+                    break;
+                }
+                NetworkInterface ni = (NetworkInterface) netInterfaces.nextElement();
+                if (!ni.isUp()) { // 跳过没有启用的网卡
+                    continue;
+                }
+                // 遍历所有ip
+                Enumeration<InetAddress> ips = ni.getInetAddresses();
+                InetAddress tmp;
+                while (ips.hasMoreElements()) {
+                    tmp = (InetAddress) ips.nextElement();
+                    if (!tmp.isLoopbackAddress() // 127.开头的都是lookback地址
+                            && tmp.getHostAddress().indexOf(":") == -1) {
+                        ip = tmp;
+                        
+                        if(LOG.isDebugEnabled()) {
+                            LOG.debug(ni + " - " + ni.getMTU() + 
+                                    " isVirtual: " + ni.isVirtual() + 
+                                    " Multicast: " + ni.supportsMulticast() + 
+                                    " Parent: " + ni.getParent());
+                            LOG.debug(ni.getName() + 
+                                    " mac: " + toHexMac(ni.getHardwareAddress()) + 
+                                    " -ip- " + ip.getHostAddress());
+                        }
+
+                        map.put(ni, ip);
+                        break;
+                    }
+                }
+
+            }
+
+            if (map.size() == 1) {
+                ip = map.values().iterator().next();
+            } else {
+
+                Set<NetworkInterface> org = map.keySet();
+                for (NetworkInterface ni : org) {
+                    if ("eth0".equals(ni.getName())) {
+                        ip = map.get(ni);
+                        break;
+                    }
+                }
+
+                Set<NetworkInterface> two = findByMulticast(org);
+                if (two.size() == 1) {
+                    ip = map.get(two.iterator().next());
+
+                } else if (two.size() == 0) {
+                    two = findByMtu(org);
+                    if (two.size() == 0) {
+                        ip = map.get(org.iterator().next());
+                    } else if (two.size() == 1) {
+                        ip = map.get(two.iterator().next());
+                    } else {
+                        ip = map.get(two.iterator().next());
+                    }
+                } else {
+                    Set<NetworkInterface> three = findByMtu(two); // 再次过滤
+                    if (three.size() == 0) {
+                        ip = map.get(two.iterator().next());
+                    } else if (three.size() == 1) {
+                        ip = map.get(three.iterator().next());
+                    } else {
+                        ip = map.get(three.iterator().next());
+                    }
+                }
+
+            }
+
+        } catch (Exception e) {
+            LOG.error(e, "parse IP Address error..");
+        }
+
+        return ip;
+    }
 
     /**
      * 获取本机Local ip（内网）地址，并自动区分Windows还是linux操作系统
@@ -98,8 +232,8 @@ public class IpUtils {
             }
             // 如果是Linux操作系统
             else {
-                Enumeration<NetworkInterface> netInterfaces = (Enumeration<NetworkInterface>) 
-                        NetworkInterface.getNetworkInterfaces();
+                Enumeration<NetworkInterface> netInterfaces = 
+                        (Enumeration<NetworkInterface>) NetworkInterface.getNetworkInterfaces();
                 boolean bFindIP = false;
                 while (netInterfaces.hasMoreElements()) {
                     if (bFindIP) {
@@ -136,7 +270,12 @@ public class IpUtils {
         return sIP;
     }
     
-    
+    /**
+     * 根据Socket方式，获取本机出口IP
+     * @param host 远程通信地址
+     * @param port 通信端口
+     * @return 本机IP
+     */
     public static String getSocketIp(final String host, final int port) {
         Socket socket = null;
         try {
@@ -194,7 +333,7 @@ public class IpUtils {
      * <br>172.16.1.41     lightning-push-tomcat
      * <br>那么取出来的地址为：172.16.1.41。假如没配置hostname，则取出来的是“localhost”对应的地址，即127.0.0.1（也可以修改）
      */
-    public static String getDefaultHostAddress() {
+    static String getDefaultHostAddress() {
         try {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
@@ -219,7 +358,7 @@ public class IpUtils {
      * check if on the WINDOWS system.
      * @return true if on windows system.
      */
-    public static boolean isWindowsOS() {
+    static boolean isWindowsOS() {
         boolean isWindowsOS = false;
         String osName = System.getProperty("os.name");
         if (osName.toLowerCase().indexOf("windows") > -1) {
@@ -228,101 +367,6 @@ public class IpUtils {
         return isWindowsOS;
     }
 
-    
-    /**
-     * 智能获取本机IP地址（针对linux/unix系统）
-     */
-    public static InetAddress findRealIP() {
-        InetAddress ip = null;
-        try {
-
-            Enumeration<NetworkInterface> netInterfaces = (Enumeration<NetworkInterface>) NetworkInterface
-                    .getNetworkInterfaces();
-            boolean bFindIP = false;
-            Map<NetworkInterface, InetAddress> map = new HashMap<NetworkInterface, InetAddress>();
-            while (netInterfaces.hasMoreElements()) {
-                if (bFindIP) {
-                    break;
-                }
-                NetworkInterface ni = (NetworkInterface) netInterfaces.nextElement();
-                if (!ni.isUp()) { // 跳过没有启用的网卡
-                    continue;
-                }
-                // 遍历所有ip
-                Enumeration<InetAddress> ips = ni.getInetAddresses();
-                InetAddress tmp;
-                while (ips.hasMoreElements()) {
-                    tmp = (InetAddress) ips.nextElement();
-                    if (!tmp.isLoopbackAddress() // 127.开头的都是lookback地址
-                            && tmp.getHostAddress().indexOf(":") == -1) {
-                        ip = tmp;
-                        
-                        if(LOG.isDebugEnabled()) {
-                            LOG.debug(ni + " - " + ni.getMTU() + " isVirtual: " + ni.isVirtual() + " Multicast: "
-                                    + ni.supportsMulticast() + " Parent: " + ni.getParent());
-                            LOG.debug(ni.getName() + " mac: "
-                                    + toHexMac(ni.getHardwareAddress()) + " -ip- "
-                                    + ip.getHostAddress());
-                        }
-
-                        map.put(ni, ip);
-                        break;
-                    }
-                }
-
-            }
-
-            if (map.size() == 1) {
-                ip = map.values().iterator().next();
-            } else {
-
-                Set<NetworkInterface> org = map.keySet();
-                for (NetworkInterface ni : org) {
-                    if ("eth0".equals(ni.getName())) {
-                        ip = map.get(ni);
-                        break;
-                    }
-                }
-
-                Set<NetworkInterface> two = findByMulticast(org);
-                if (two.size() == 1) {
-                    ip = map.get(two.iterator().next());
-
-                } else if (two.size() == 0) {
-
-                    two = findByMtu(org);
-
-                    if (two.size() == 0) {
-                        ip = map.get(org.iterator().next());
-                    } else if (two.size() == 1) {
-                        ip = map.get(two.iterator().next());
-                    } else {
-                        ip = map.get(two.iterator().next());
-                    }
-
-                } else {
-
-                    Set<NetworkInterface> three = findByMtu(two); // 再次过滤
-
-                    if (three.size() == 0) {
-                        ip = map.get(two.iterator().next());
-                    } else if (three.size() == 1) {
-                        ip = map.get(three.iterator().next());
-                    } else {
-                        ip = map.get(three.iterator().next());
-                    }
-
-                }
-
-            }
-
-        } catch (Exception e) {
-            LOG.error(e, "parse IP Address error..");
-        }
-
-        return ip;
-    }
-    
     private static Set<NetworkInterface> findByMulticast(Set<NetworkInterface> sel) throws SocketException {
         Set<NetworkInterface> sel2 = new HashSet<NetworkInterface>();
         for (NetworkInterface ni : sel) {
@@ -332,6 +376,7 @@ public class IpUtils {
         }
         return sel2;
     }
+    
     private static Set<NetworkInterface> findByMtu(Set<NetworkInterface> sel) throws SocketException {
         Set<NetworkInterface> sel2 = new HashSet<NetworkInterface>();
         for (NetworkInterface ni : sel) {
@@ -341,6 +386,7 @@ public class IpUtils {
         }
         return sel2;
     }
+    
     private static String toHexMac(byte[] mac) {
         if (mac == null) {
             return null;
@@ -361,4 +407,5 @@ public class IpUtils {
         }
         return sb.toString().toUpperCase();
     }
+    
 }

@@ -8,8 +8,12 @@ import java.net.UnknownHostException;
  * 
  * <p>通过线程，巧妙实现了添加超时限制的功能。
  * <p>使用方法：
- * <p>1.根据hostName获取InetAddress对象：InetAddress ia = new InetAddressHelper(hostName).startJoin(1000).getInetAddress();
- * <p>2.根据InetAddress对象获取hostName：String hostName = new InetAddressHelper(ip).startJoin(2000).getHostName()
+ * 
+ * <p>1.根据hostName获取InetAddress对象：
+ * InetAddress ia = new InetAddressHelper(hostName).startJoin(1000).getInetAddress();
+ * 
+ * <p>2.根据InetAddress对象获取hostName：
+ * String hostName = new InetAddressHelper(ip).startJoin(2000).getHostName()
  * 
  * @author zollty
  * @since 2018年1月22日

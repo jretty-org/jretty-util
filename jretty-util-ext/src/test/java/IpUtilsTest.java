@@ -17,16 +17,6 @@ import java.util.Set;
 
 public class IpUtilsTest {
     
-    /**
-     * 获取本机Local ip（内网）地址，并自动区分Windows还是linux操作系统<br>
-     * 如果是Linux系统，则只取eth0网卡的ip
-     * @see {@link #getLocalIP(String)}
-     * @return
-     */
-    public static String getLocalIP() {
-        return getLocalIP("eth0");
-    }
-    
     public static String getLocalMacHex() {
         byte[] mac = getLocalMac();
         if (mac == null) {
@@ -105,6 +95,24 @@ public class IpUtilsTest {
             }
         }
         return mac;
+    }
+    
+    /**
+     * 获取本机Local ip（内网）地址，并自动区分Windows还是linux操作系统<br>
+     * @see {@link #findRealIP()}
+     */
+    public static String getLocalIP() {
+        InetAddress ip = null;
+        try {
+            if (isWindowsOS()) {
+                ip = InetAddress.getLocalHost();
+            } else {
+                ip = findRealIP();
+            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return null != ip ? ip.getHostAddress() : null;
     }
 
     /**
@@ -242,6 +250,16 @@ public class IpUtilsTest {
             return ia.getHostAddress();
         }
         return null;
+    }
+    
+    /**
+     * 获取本机Local ip（内网）地址，并自动区分Windows还是linux操作系统<br>
+     * 如果是Linux系统，则只取eth0网卡的ip
+     * @see {@link #getLocalIP(String)}
+     * @return
+     */
+    public static String getNormalLocalIP() {
+        return getLocalIP("eth0");
     }
     
     /**
@@ -466,17 +484,18 @@ public class IpUtilsTest {
     public static void main(String[] args) throws IOException {
         System.out.println("0.exit");
         System.out.println("1.getHostName()");
-        System.out.println("2.getLocalIP()");
-        System.out.println("3.getLocalIP(\"eth0\")");
-        System.out.println("4.getDefaultHostAddress()");
+        System.out.println("2.getLocalMacHex()");
+        System.out.println("3.getLocalIP()");
+        System.out.println("4.getRealIP()");
         System.out.println("5.getSocketIp(\"114.114.114.114\", 80)");
         System.out.println("6.getSocketIp(\"10.1.10.80\", 80)");
         System.out.println("7.getSpecialHostAddress(\"localhost\")");
         System.out.println("8.getSpecialHostAddress(\"127.0.0.1\")");
         System.out.println("9.findRealIP()");
-        System.out.println("10.getRealIP()");
-        System.out.println("11.getLocalMacHex()");
-        System.out.println("12.getSpecialHostAddress(\"www.baidu.com\")");
+        System.out.println("10.getNormalLocalIP()");
+        System.out.println("11.getLocalIP(\"eth0\")");
+        System.out.println("12.getDefaultHostAddress()");
+        System.out.println("13.getSpecialHostAddress(\"www.baidu.com\")");
         while (true) {
           System.out.print("> ");
           String input = new BufferedReader(new InputStreamReader(System.in, "UTF-8")).readLine();
@@ -484,7 +503,13 @@ public class IpUtilsTest {
             continue;
           }
           input = input.trim();
-          Byte num = Byte.parseByte(input);
+          Byte num = null;
+          try {
+              num = Byte.parseByte(input);
+          } catch (Exception e) {
+              System.out.println("> Please input the right num!");
+              continue;
+          }
           long start = System.currentTimeMillis();
           switch(num) {
               case 0: {
@@ -496,15 +521,15 @@ public class IpUtilsTest {
                   break;
               }
               case 2: {
-                  System.out.println("Result > " + getLocalIP() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  System.out.println("Result > " + getLocalMacHex() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
                   break;
               }
               case 3: {
-                  System.out.println("Result > " + getLocalIP("eth0") +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  System.out.println("Result > " + getLocalIP() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
                   break;
               }
               case 4: {
-                  System.out.println("Result > " + getDefaultHostAddress() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  System.out.println("Result > " + getRealIP() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
                   break;
               }
               case 5: {
@@ -528,14 +553,18 @@ public class IpUtilsTest {
                   break;
               }
               case 10: {
-                  System.out.println("Result > " + getRealIP() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  System.out.println("Result > " + getNormalLocalIP() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
                   break;
               }
               case 11: {
-                  System.out.println("Result > " + getLocalMacHex() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  System.out.println("Result > " + getLocalIP("eth0") +" (cost " + (System.currentTimeMillis()-start) + " ms)");
                   break;
               }
               case 12: {
+                  System.out.println("Result > " + getDefaultHostAddress() +" (cost " + (System.currentTimeMillis()-start) + " ms)");
+                  break;
+              }
+              case 13: {
                   System.out.println("Result > " + getSpecialHostAddress("www.baidu.com") +" (cost " + (System.currentTimeMillis()-start) + " ms)");
                   break;
               }
