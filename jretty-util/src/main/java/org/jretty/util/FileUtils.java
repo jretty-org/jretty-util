@@ -80,7 +80,7 @@ public class FileUtils {
             return;
         }
         File nfile = new File(newPath);
-        if (!nfile.exists() && (new File(newPath)).mkdirs()) { // 如果文件夹不存在 则建立新文件夹
+        if (!(nfile.exists() || nfile.mkdirs())) { // 如果文件夹不存在 则建立新文件夹
             if (LOG.isInfoEnabled()) {
                 LOG.error("#copyFolder() - can't mk dir - [newPath={}]", newPath);
             }
