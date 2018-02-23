@@ -140,7 +140,7 @@ public class ZipUtils {
             FileInputStream in = null;
             try {
                 in = new FileInputStream(sourceFile);
-                IOUtils.clone(in, sourceFile.length(), zipOut);
+                IOUtils.cloneWithoutClose(in, sourceFile.length(), zipOut);
             }
             catch (IOException e) {
                 if (LOG.isDebugEnabled()) {
