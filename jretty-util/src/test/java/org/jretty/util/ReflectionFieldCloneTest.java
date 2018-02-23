@@ -12,6 +12,9 @@
  */
 package org.jretty.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jretty.tesper.LoopExecute;
 import org.jretty.tesper.TestTools;
 import org.junit.Test;
@@ -163,6 +166,20 @@ public class ReflectionFieldCloneTest {
 
         Parent target = new Parent();
         ReflectionUtils.fieldCloneByName(source, target);
+//        System.out.println(target);
+    }
+    
+    @Test
+    public void fieldCloneByNameTest3() {
+        Ba ba = new BasicAttr();
+        ba.setAge(18);
+        Foo target = new Foo();
+        Map<String, Object> sourceMap = new HashMap<String, Object>();
+        sourceMap.put("f4", 65535);
+        sourceMap.put("f5", (short) 23);
+        sourceMap.put("s", "sdsdjskjkds");
+        sourceMap.put("ba", ba);
+        ReflectionUtils.fieldCloneByName(sourceMap, target);
 //        System.out.println(target);
     }
 

@@ -179,7 +179,7 @@ public class ReflectionUtils extends ReflectionMethodUtils {
             public void doWith(Field targetField) {
                 Field sourceField = sourceMap.get(targetField.getName());
                 if (sourceField != null && 
-                        ClassUtils.isAssignableFromWithNum(targetField.getType(), sourceField.getType())) {
+                        ClassUtils.isAssignableWithNum(targetField.getType(), sourceField.getType())) {
                     makeAccessible(sourceField);
                     makeAccessible(targetField);
                     Object value = getField(sourceField, source);
@@ -191,6 +191,28 @@ public class ReflectionUtils extends ReflectionMethodUtils {
             }
         }, COPYABLE_FIELDS);
 	}
+	
+    public static void fieldCloneByName(final Map<String, Object> sourceMap, final Object target) {
+        Assert.isTrue(CollectionUtils.isNotEmpty(sourceMap), "source map for field copy cannot be empty");
+        Assert.notNull(target, "Destination for field copy cannot be null");
+        doWithFields(target.getClass(), new FieldCallback() {
+
+            public void doWith(Field targetField) {
+                Object sourceField = sourceMap.get(targetField.getName());
+                if (sourceField != null && Number.class.isAssignableFrom(sourceField.getClass())) {
+                    sourceField = ClassUtils.minType((Number) sourceField);
+                }
+                if (sourceField != null && ClassUtils.isAssignableWithNum(
+                        targetField.getType(), sourceField.getClass())) {
+                    makeAccessible(targetField);
+                    if (Number.class.isAssignableFrom(targetField.getType())) {
+                        sourceField = convertNumber((Number) sourceField, targetField.getType());
+                    }
+                    setField(targetField, target, sourceField);
+                }
+            }
+        }, COPYABLE_FIELDS);
+    }
 	
     public static Map<String, Field> getAllNonStaticFields(Class<?> clazz) {
         Assert.notNull(clazz, "Class must not be null");

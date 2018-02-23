@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jretty.util.ReflectionUtils;
 import org.jretty.util.json.support.ObjectWriter;
 import org.jretty.util.json.support.StringWriter;
 
@@ -84,6 +85,12 @@ public class JSONUtils {
         return parser.parse();
     }
     
+    public static <T> T parse(String jsonStr, Class<T> clazz) {
+        JSONParser parser = new JSONParserDirector(jsonStr);
+        T result = ReflectionUtils.newInstance(clazz);
+        ReflectionUtils.fieldCloneByName(parser.parseMap(), result);
+        return result;
+    }
 
     // ~ helper methods --------
 

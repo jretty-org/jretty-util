@@ -807,11 +807,61 @@ public class ClassUtils {
                 || numRanges.indexOf(source) - numRanges.indexOf(target) > 1;
     }
     
-    public static boolean isAssignableFromWithNum(Class<?> target, Class<?> source) {
-        if (Number.class.isAssignableFrom(target) || target.isPrimitive()) {
-            return ClassUtils.isNumAssignableFrom(target, source);
+    public static Object minType(Number value) {
+        // 目标为int，但是实际为long
+        // 目标为byte，但实际是int
+        if(value instanceof Integer) {
+            int d = value.intValue();
+            if(d <= Byte.MAX_VALUE && d>= Byte.MIN_VALUE) {
+                return value.byteValue();
+            }
         }
-        return target.isAssignableFrom(source);
+        if(value instanceof Long) {
+            long d = value.longValue();
+            if(d <= Byte.MAX_VALUE && d>= Byte.MIN_VALUE) {
+                return value.byteValue();
+            } else if(d <= Integer.MAX_VALUE && d>= Integer.MIN_VALUE) {
+                return value.intValue();
+            }
+        }
+        return value;
+    }
+    
+    public static boolean isNumber(Class<?> target) {
+        if (Number.class.isAssignableFrom(target)) {
+            return true;
+        }
+        if(target.isPrimitive() && (target.equals(Short.TYPE) 
+                || target.equals(Integer.TYPE) || target.equals(Long.TYPE) 
+                || target.equals(Byte.TYPE) || target.equals(Short.TYPE) 
+                || target.equals(Double.TYPE) || target.equals(Float.TYPE))) {
+            return true;
+        }
+        return false;
+    }
+    
+    public static boolean isAssignableWithNum(Class<?> lhsType, Class<?> rhsType) {
+        Assert.notNull(lhsType, "Left-hand side type must not be null");
+        Assert.notNull(rhsType, "Right-hand side type must not be null");
+        if (lhsType.isAssignableFrom(rhsType)) {
+            return true;
+        }
+        if (isNumber(lhsType)) {
+            return ClassUtils.isNumAssignableFrom(lhsType, rhsType);
+        }
+        if (lhsType.isPrimitive()) {
+            Class<?> resolvedPrimitive = primitiveWrapperTypeMap.get(rhsType);
+            if (resolvedPrimitive != null && lhsType.equals(resolvedPrimitive)) {
+                return true;
+            }
+        }
+        else {
+            Class<?> resolvedWrapper = primitiveTypeToWrapperMap.get(rhsType);
+            if (resolvedWrapper != null && lhsType.isAssignableFrom(resolvedWrapper)) {
+                return true;
+            }
+        }
+        return false;
     }
     
 }

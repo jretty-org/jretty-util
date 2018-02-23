@@ -82,6 +82,22 @@ public class CollectionUtils {
     }
     
     /**
+     * Checks if the map is null or empty (size==0).
+     * @return true if is null or empty
+     */
+    public static boolean isNullOrEmpty(Map<?,?> map) {
+        return map == null || map.isEmpty();
+    }
+
+    /**
+     * Checks if the map is null or empty (size==0).
+     * @return true if is not null and not empty
+     */
+    public static boolean isNotEmpty(Map<?,?> map) {
+        return map != null && !map.isEmpty();
+    }
+    
+    /**
      * Convenience method to return a Collection as a delimited (e.g. CSV)
      * String. E.g. useful for <code>toString()</code> implementations.
      * @param coll the Collection to display
