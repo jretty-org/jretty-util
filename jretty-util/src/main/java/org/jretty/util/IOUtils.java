@@ -244,6 +244,38 @@ public class IOUtils {
             }
         }
     }
+    
+    /**
+     * @param len
+     *            in-source-length e.g. long len = fileIn.length()
+     */
+    public final static int cloneWithoutClose(
+            final InputStream in, long len, final OutputStream out) throws IOException {
+        Assert.notNull(in, "No InputStream specified");
+        Assert.notNull(out, "No OutputStream specified");
+        byte[] buf;
+        // 动态缓存大小
+        // case1 LEN>200000kb(195M) -- BUF=500kb e.g. 200M--500k
+        // case2 400kb< LEN <200000kb -- BUF=LEN/400 e.g. 100M--250k, 10M--25k, 400kb--1kb
+        // case3 LEN<400kb -- BUF=1kb e.g. 300kb--1kb, 0kb-1kb
+        if (len > MAX_BUFFER_SIZE * 400) {
+            buf = new byte[MAX_BUFFER_SIZE];
+        }
+        else if (len > MIN_BUFFER_SIZE * 400) {
+            buf = new byte[(int) len / 400];
+        }
+        else {
+            buf = new byte[DEFAULT_BUFFER_SIZE];
+        }
+
+        int byteCount = 0;
+        int bytesRead = 0;
+        while (-1 != (bytesRead = in.read(buf))) {
+            out.write(buf, 0, bytesRead);
+            byteCount += bytesRead;
+        }
+        return byteCount;
+    }
 
     
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
