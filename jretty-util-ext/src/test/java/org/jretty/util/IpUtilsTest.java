@@ -32,7 +32,7 @@ public class IpUtilsTest {
             @Override
             public void execute() throws Exception {
 
-                IpUtils.getLocalIP();
+                IpUtils.getLocalIP0();
             }
         });
         System.out.println("-------------------");
@@ -47,7 +47,7 @@ public class IpUtilsTest {
             @Override
             public void execute() throws Exception {
 
-                IpUtils.getRealIP();
+                IpUtils.getLocalIP();
             }
         });
     }

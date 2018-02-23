@@ -78,7 +78,7 @@ public class IpUtils {
     /**
      * 智能分析，精确获取本机Local ip（内网）地址
      */
-    public static String getRealIP() {
+    public static String getLocalIP() {
         String ip = getDefaultHostAddress();
         if (ip != null) {
             if (!"127.0.0.1".equals(ip)) { // 配置了host ip （/etc/hosts文件中）
@@ -109,7 +109,7 @@ public class IpUtils {
      * 获取本机Local ip（内网）地址，并自动区分Windows还是linux操作系统<br>
      * @see {@link #findRealIP()}
      */
-    static String getLocalIP() {
+    static String getLocalIP0() {
         InetAddress ip = null;
         try {
             if (isWindowsOS()) {
