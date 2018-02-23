@@ -27,7 +27,7 @@ class Temp {
                 Field targetField = entry.getValue();
                 Field sourceField = sourceMap.get(entry.getKey());
                 if (sourceField != null && 
-                        ClassUtils.isAssignableFromWithNum(targetField.getType(), sourceField.getType())) {
+                        ClassUtils.isAssignableWithNum(targetField.getType(), sourceField.getType())) {
                     ReflectionUtils.makeAccessible(sourceField);
                     ReflectionUtils.makeAccessible(targetField);
                     Object value = ReflectionUtils.getField(sourceField, source);

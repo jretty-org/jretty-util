@@ -64,26 +64,26 @@ public class ClassUtilsTest {
     
     @Test
     public void testisAssignableFromWithNum() {
-        Assert.assertTrue(ClassUtils.isAssignableFromWithNum(Double.class, double.class));
-        Assert.assertTrue(ClassUtils.isAssignableFromWithNum(double.class, Double.class));
+        Assert.assertTrue(ClassUtils.isAssignableWithNum(Double.class, double.class));
+        Assert.assertTrue(ClassUtils.isAssignableWithNum(double.class, Double.class));
         
-        Assert.assertTrue(ClassUtils.isAssignableFromWithNum(Double.class, Double.class));
-        Assert.assertTrue(ClassUtils.isAssignableFromWithNum(double.class, double.class));
+        Assert.assertTrue(ClassUtils.isAssignableWithNum(Double.class, Double.class));
+        Assert.assertTrue(ClassUtils.isAssignableWithNum(double.class, double.class));
         
-        Assert.assertTrue(ClassUtils.isAssignableFromWithNum(Float.class, float.class));
-        Assert.assertTrue(ClassUtils.isAssignableFromWithNum(float.class, Float.class));
+        Assert.assertTrue(ClassUtils.isAssignableWithNum(Float.class, float.class));
+        Assert.assertTrue(ClassUtils.isAssignableWithNum(float.class, Float.class));
         
-        Assert.assertTrue(!ClassUtils.isAssignableFromWithNum(Float.class, double.class));
-        Assert.assertTrue(!ClassUtils.isAssignableFromWithNum(float.class, Double.class));
+        Assert.assertTrue(!ClassUtils.isAssignableWithNum(Float.class, double.class));
+        Assert.assertTrue(!ClassUtils.isAssignableWithNum(float.class, Double.class));
         
-        Assert.assertTrue(ClassUtils.isAssignableFromWithNum(Double.class, Float.class));
-        Assert.assertTrue(ClassUtils.isAssignableFromWithNum(double.class, float.class));
+        Assert.assertTrue(ClassUtils.isAssignableWithNum(Double.class, Float.class));
+        Assert.assertTrue(ClassUtils.isAssignableWithNum(double.class, float.class));
         
-        Assert.assertTrue(!ClassUtils.isAssignableFromWithNum(Short.class, ClassUtilsTest.class));
-        Assert.assertTrue(!ClassUtils.isAssignableFromWithNum(short.class, ClassUtilsTest.class));
-        Assert.assertTrue(!ClassUtils.isAssignableFromWithNum(ClassUtilsTest.class, Short.class));
-        Assert.assertTrue(!ClassUtils.isAssignableFromWithNum(ClassUtilsTest.class, short.class));
-        Assert.assertTrue(ClassUtils.isAssignableFromWithNum(ClassUtilsTest.class, ClassUtilsTest.class));
+        Assert.assertTrue(!ClassUtils.isAssignableWithNum(Short.class, ClassUtilsTest.class));
+        Assert.assertTrue(!ClassUtils.isAssignableWithNum(short.class, ClassUtilsTest.class));
+        Assert.assertTrue(!ClassUtils.isAssignableWithNum(ClassUtilsTest.class, Short.class));
+        Assert.assertTrue(!ClassUtils.isAssignableWithNum(ClassUtilsTest.class, short.class));
+        Assert.assertTrue(ClassUtils.isAssignableWithNum(ClassUtilsTest.class, ClassUtilsTest.class));
     }
 
 }
