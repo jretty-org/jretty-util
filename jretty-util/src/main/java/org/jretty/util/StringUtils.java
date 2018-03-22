@@ -43,17 +43,32 @@ public class StringUtils {
     /**
      * Checks if a String is null or empty ("").
      * 
-     * see {@link #isEmpty(CharSequence)}
+     * <p> the same as {@link #isEmpty(CharSequence)} </p>
      */
     public static boolean isNullOrEmpty(CharSequence str) {
         return str == null || str.length() == 0;
     }
-
+    
     /**
      * Checks if a String is null or empty ("").
      */
     public static boolean isNotEmpty(CharSequence str) {
         return str != null && str.length() != 0;
+    }
+    
+    /**
+     * Checks if all the String are null or empty ("").
+     */
+    public static boolean areNotEmpty(CharSequence... values) {
+        boolean result = true;
+        if (values == null || values.length == 0) {
+            result = false;
+        } else {
+            for (CharSequence value : values) {
+                result &= !isEmpty(value);
+            }
+        }
+        return result;
     }
 
     /**
@@ -98,6 +113,21 @@ public class StringUtils {
             }
         }
         return false;
+    }
+    
+    /**
+     * Checks if all the String are empty (""), null or whitespace(e.g. " ", "\t", "\n").
+     */
+    public static boolean areNotBlank(CharSequence... values) {
+        boolean result = true;
+        if (values == null || values.length == 0) {
+            result = false;
+        } else {
+            for (CharSequence value : values) {
+                result &= !isBlank(value);
+            }
+        }
+        return result;
     }
 
     /**

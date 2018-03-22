@@ -57,6 +57,8 @@ public class IOUtils {
      * default read file buffer size. default 4k
      */
     private static final int DEFAULT_BUFFER_SIZE = 4096;
+    
+    private static final int EOF = -1;
 
     /**
      * get BufferedWriter output stream
@@ -172,7 +174,7 @@ public class IOUtils {
             int byteCount = 0;
             char[] buffer = new char[DEFAULT_BUFFER_SIZE];
             int bytesRead = -1;
-            while ((bytesRead = in.read(buffer)) != -1) {
+            while ((bytesRead = in.read(buffer)) != EOF) {
                 out.write(buffer, 0, bytesRead);
                 byteCount += bytesRead;
             }
@@ -181,17 +183,26 @@ public class IOUtils {
             try {
                 in.close();
             }
-            catch (IOException ex) {
+            catch (IOException e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn(e, "close error");
+                }
             }
             try {
                 out.flush();
             }
             catch (IOException e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn(e, "flush error");
+                }
             }
             try {
                 out.close();
             }
-            catch (IOException ex) {
+            catch (IOException e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn(e, "close error");
+                }
             }
         }
     }
@@ -221,7 +232,7 @@ public class IOUtils {
 
             int byteCount = 0;
             int bytesRead = 0;
-            while (-1 != (bytesRead = in.read(buf))) {
+            while (EOF != (bytesRead = in.read(buf))) {
                 out.write(buf, 0, bytesRead);
                 byteCount += bytesRead;
             }
@@ -230,17 +241,26 @@ public class IOUtils {
             try {
                 in.close();
             }
-            catch (IOException ex) {
+            catch (IOException e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn(e, "close error");
+                }
             }
             try {
                 out.flush();
             }
             catch (IOException e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn(e, "flush error");
+                }
             }
             try {
                 out.close();
             }
-            catch (IOException ex) {
+            catch (IOException e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn(e, "close error");
+                }
             }
         }
     }
@@ -270,7 +290,7 @@ public class IOUtils {
 
         int byteCount = 0;
         int bytesRead = 0;
-        while (-1 != (bytesRead = in.read(buf))) {
+        while (EOF != (bytesRead = in.read(buf))) {
             out.write(buf, 0, bytesRead);
             byteCount += bytesRead;
         }
@@ -292,7 +312,7 @@ public class IOUtils {
             }
             catch (IOException e) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.warn("flush error", e);
+                    LOG.warn(e, "flush error");
                 }
             }
             try {
@@ -300,7 +320,7 @@ public class IOUtils {
             }
             catch (Exception e) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.warn("close error", e);
+                    LOG.warn(e, "close error");
                 }
             }
         }
@@ -313,7 +333,7 @@ public class IOUtils {
             }
             catch (IOException e) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.warn("flush error", e);
+                    LOG.warn(e, "flush error");
                 }
             }
             try {
@@ -321,7 +341,7 @@ public class IOUtils {
             }
             catch (Exception e) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.warn("close error", e);
+                    LOG.warn(e, "close error");
                 }
             }
         }
@@ -337,7 +357,7 @@ public class IOUtils {
             }
             catch (Exception e) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.warn("close error", e);
+                    LOG.warn(e, "close error");
                 }
             }
         }
@@ -350,20 +370,25 @@ public class IOUtils {
             }
             catch (Exception e) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.warn("close error", e);
+                    LOG.warn(e, "close error");
                 }
             }
         }
     }
 
-    public final static void close(Closeable clo) {
-        if (clo != null) {
-            try {
-                clo.close();
-            }
-            catch (Exception e) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.warn("close error", e);
+    public final static void close(Closeable ...clos) {
+        if (clos == null) {
+            return;
+        }
+        for (Closeable clo : clos) {
+            if (clo != null) {
+                try {
+                    clo.close();
+                }
+                catch (Exception e) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.warn(e, "close error");
+                    }
                 }
             }
         }

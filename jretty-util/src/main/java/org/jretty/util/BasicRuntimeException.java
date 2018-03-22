@@ -34,6 +34,9 @@ public class BasicRuntimeException extends RuntimeException {
         super(StringUtils.replaceParams(message, args));
     }
 
+    /**
+     * @param e 原始异常
+     */
     public BasicRuntimeException(Throwable e) {
         super(e);
     }

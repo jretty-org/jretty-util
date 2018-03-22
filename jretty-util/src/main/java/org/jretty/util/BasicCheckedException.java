@@ -34,8 +34,11 @@ public class BasicCheckedException extends Exception {
         super(StringUtils.replaceParams(message, args));
     }
 
-    public BasicCheckedException(Throwable arg0) {
-        super(arg0);
+    /**
+     * @param e 原始异常
+     */
+    public BasicCheckedException(Throwable e) {
+        super(e);
     }
 
     /**

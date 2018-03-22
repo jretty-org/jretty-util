@@ -70,30 +70,43 @@ public class FileUtils {
      *            复制后路径 如：f:/fqf/ff
      * @return boolean
      */
-    public static void copyFolder(String oldPath, String newPath) {
+    public static boolean copyFolder(String oldPath, String newPath) {
         File oldFile = new File(oldPath);
+        if (oldFile.isFile()) {
+            try {
+                cloneFile(oldFile, new File(newPath));
+            } catch (IOException e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.warn(e, "cloneFile error. filePath=" 
+                            + oldPath + ", newPath=" + newPath);
+                }
+                return false;
+            }
+            return true;
+        }
         String[] files = oldFile.list();
         if (null == files) {
             if (LOG.isInfoEnabled()) {
-                LOG.error("#copyFolder() - file is null. [oldPath={}]", oldPath);
+                LOG.warn("#copyFolder() - dir is empty, no file to copy. [oldPath={}]", oldPath);
             }
-            return;
+            return true;
         }
         File nfile = new File(newPath);
         if (!(nfile.exists() || nfile.mkdirs())) { // 如果文件夹不存在 则建立新文件夹
             if (LOG.isInfoEnabled()) {
                 LOG.error("#copyFolder() - can't mk dir - [newPath={}]", newPath);
             }
-            return;
+            return false;
         }
         else if (!nfile.isDirectory()) {
             if (LOG.isInfoEnabled()) {
                 LOG.error("#copyFolder() - newPath is not a directory - [newPath={}]", newPath);
             }
-            return;
+            return false;
         }
         File sourceFile;
         String fileName;
+        boolean ret = true;
         for (int i = 0; i < files.length; i++) {
             fileName = files[i];
             sourceFile = new File(oldPath + SEPARATOR + fileName);
@@ -103,14 +116,17 @@ public class FileUtils {
                 }
                 catch (IOException e) {
                     if (LOG.isInfoEnabled()) {
-                        LOG.warn(e, "cloneFile error. [filePath={}]", oldPath + SEPARATOR + fileName);
+                        LOG.warn(e, "cloneFile error. filePath=" 
+                                + oldPath + SEPARATOR + fileName);
                     }
+                    ret = false;
                 }
             }
             else if (sourceFile.isDirectory()) {// 如果是子文件夹
                 copyFolder(oldPath + SEPARATOR + fileName, newPath + SEPARATOR + fileName);
             }
         }
+        return ret;
     }
 
     public static void cloneFile(final File fileIn, final File fileOut) throws IOException {
