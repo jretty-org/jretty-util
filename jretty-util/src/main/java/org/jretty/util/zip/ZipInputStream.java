@@ -22,7 +22,7 @@
  *===========================================================================
  */
 /*
- * @(#)ZipInputStream.java	1.44 07/06/15
+ * @(#)ZipInputStream.java    1.44 07/06/15
  *
  * Copyright 2007 Sun Microsystems, Inc. All rights reserved.
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
@@ -44,8 +44,8 @@ import java.util.zip.ZipException;
  * ZIP file format. Includes support for both compressed and uncompressed
  * entries.
  *
- * @author	David Connelly, Zollty Tsou(2013-06-07)
- * @version	1.44, 06/15/07
+ * @author    David Connelly, Zollty Tsou(2013-06-07)
+ * @version   1.44, 06/15/07
  */
 public
 class ZipInputStream extends InflaterInputStream implements ZipConstants {

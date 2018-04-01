@@ -37,21 +37,21 @@ package org.jretty.util.resource;
  */
 public class FileSystemResourceLoader extends DefaultResourceLoader {
 
-	/**
-	 * Resolve resource paths as file system paths.
-	 * <p>Note: Even if a given path starts with a slash, it will get
-	 * interpreted as relative to the current VM working directory.
-	 * @param path the path to the resource
-	 * @return the corresponding Resource handle
-	 * @see FileSystemResource
-	 * @see org.springframework.web.context.support.ServletContextResourceLoader#getResourceByPath
-	 */
-	@Override
-	protected Resource getResourceByPath(String path) {
-	    return getFsResource(path);
-	}
-	
-	public static Resource getFsResource(String path) {
+    /**
+     * Resolve resource paths as file system paths.
+     * <p>Note: Even if a given path starts with a slash, it will get
+     * interpreted as relative to the current VM working directory.
+     * @param path the path to the resource
+     * @return the corresponding Resource handle
+     * @see FileSystemResource
+     * @see org.springframework.web.context.support.ServletContextResourceLoader#getResourceByPath
+     */
+    @Override
+    protected Resource getResourceByPath(String path) {
+        return getFsResource(path);
+    }
+    
+    public static Resource getFsResource(String path) {
         if (path != null && path.startsWith("/")) {
             path = path.substring(1);
         }
@@ -59,19 +59,19 @@ public class FileSystemResourceLoader extends DefaultResourceLoader {
     }
 
 
-//	/**
-//	 * FileSystemResource that explicitly expresses a context-relative path
-//	 * through implementing the ContextResource interface.
-//	 */
-//	private static class FileSystemContextResource extends FileSystemResource implements ContextResource {
+//    /**
+//     * FileSystemResource that explicitly expresses a context-relative path
+//     * through implementing the ContextResource interface.
+//     */
+//    private static class FileSystemContextResource extends FileSystemResource implements ContextResource {
 //
-//		public FileSystemContextResource(String path) {
-//			super(path);
-//		}
+//        public FileSystemContextResource(String path) {
+//            super(path);
+//        }
 //
-//		public String getPathWithinContext() {
-//			return getPath();
-//		}
-//	}
+//        public String getPathWithinContext() {
+//            return getPath();
+//        }
+//    }
 
 }

@@ -38,7 +38,7 @@ public class ExceptionUtils {
     public static String getStackTraceStr(LineChecker linechecker, Throwable e) {
         return getStackTraceStr(linechecker, e, null);
     }
-	
+    
     /**
      * 智能将StackTrace堆栈信息转换成字符串
      * 

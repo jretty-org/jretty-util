@@ -12,6 +12,7 @@
  */
 package org.jretty.util;
 
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -23,35 +24,35 @@ public class StringUtilsTest {
     @Test
     public void test_areNotEmpty(){
         
-        org.junit.Assert.assertFalse(StringUtils.areNotEmpty("s", "", ""));
-        org.junit.Assert.assertFalse(StringUtils.areNotEmpty("", "s", ""));
-        org.junit.Assert.assertFalse(StringUtils.areNotEmpty("", "", null));
-        org.junit.Assert.assertFalse(StringUtils.areNotEmpty(null, "", ""));
-        org.junit.Assert.assertFalse(StringUtils.areNotEmpty(null, null, null));
+        assertFalse(StringUtils.areNotEmpty("s", "", ""));
+        assertFalse(StringUtils.areNotEmpty("", "s", ""));
+        assertFalse(StringUtils.areNotEmpty("", "", null));
+        assertFalse(StringUtils.areNotEmpty(null, "", ""));
+        assertFalse(StringUtils.areNotEmpty(null, null, null));
         
-        org.junit.Assert.assertTrue(StringUtils.areNotEmpty("s", "-", "-"));
+        assertTrue(StringUtils.areNotEmpty("s", "-", "-"));
     }
     
     @Test
     public void testReplaceParams(){
         
-        org.junit.Assert.assertEquals(StringUtils.replaceParams("dss{}-{}-{}ssssssss", new String[]{"1111", null, "2222"}),
+        assertEquals(StringUtils.replaceParams("dss{}-{}-{}ssssssss", new String[]{"1111", null, "2222"}),
                 "dss1111-null-2222ssssssss");
         
-        org.junit.Assert.assertEquals(StringUtils.replaceParams("dssssssssss", new String[]{"1111", null, "2222"}),
+        assertEquals(StringUtils.replaceParams("dssssssssss", new String[]{"1111", null, "2222"}),
                 "dssssssssss 1111 null 2222");
         
-        org.junit.Assert.assertEquals(StringUtils.replaceParams("dsssss{}sssss", new String[]{"1111", null, "2222"}),
+        assertEquals(StringUtils.replaceParams("dsssss{}sssss", new String[]{"1111", null, "2222"}),
                 "dsssss1111sssss null 2222");
         
-        org.junit.Assert.assertEquals(StringUtils.replaceParams("dssssssssss{}", new String[]{"1111", null, "2222"}),
+        assertEquals(StringUtils.replaceParams("dssssssssss{}", new String[]{"1111", null, "2222"}),
                 "dssssssssss1111 null 2222");
     }
     
     @Test
     public void testApplyRelativePath(){
         String path = StringUtils.applyRelativePath("org/jretty/util/resource/Resource.class", "ClassPathResource.class");
-        org.junit.Assert.assertEquals("org/jretty/util/resource/ClassPathResource.class", path);
+        assertEquals("org/jretty/util/resource/ClassPathResource.class", path);
     }
     
     @Test
@@ -65,8 +66,17 @@ public class StringUtilsTest {
         
         // System.out.println(newStr);
         
-        org.junit.Assert.assertEquals(rightStr, newStr);
+        assertEquals(rightStr, newStr);
         
+    }
+    
+    @Test
+    public void testIndex() {
+        String str = "0123456";
+        assertEquals("01", StringUtils.beforeIndex(str, "23"));
+        assertEquals("456", StringUtils.afterIndex(str, "23"));
+        assertEquals("01456", StringUtils.stripIndex(str, "23"));
+        assertEquals("234", StringUtils.middleOfIndex(str, "01", "56"));
     }
     
 }

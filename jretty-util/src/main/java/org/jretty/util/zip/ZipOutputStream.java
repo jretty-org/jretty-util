@@ -22,7 +22,7 @@
  *===========================================================================
  */
 /*
- * @(#)ZipOutputStream.java	1.35 06/07/31
+ * @(#)ZipOutputStream.java    1.35 06/07/31
  *
  * Copyright 2006 Sun Microsystems, Inc. All rights reserved.
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
@@ -41,29 +41,29 @@ import java.util.zip.ZipException;
  * ZIP file format. Includes support for both compressed and uncompressed
  * entries.
  *
- * @author	David Connelly, Zollty Tsou(2013-06-07)
- * @version	1.35, 07/31/06
+ * @author    David Connelly, Zollty Tsou(2013-06-07)
+ * @version   1.35, 07/31/06
  */
 public class ZipOutputStream extends DeflaterOutputStream implements
-		ZipConstants {
+        ZipConstants {
 
     private static class XEntry {
-	public final ZipEntry entry;
-	public final long offset;
-	public final int flag;
-	public XEntry(ZipEntry entry, long offset) {
-	    this.entry = entry;
-	    this.offset = offset;
-	    this.flag = (entry.method == DEFLATED &&
-			 (entry.size  == -1 ||
-			  entry.csize == -1 ||
-			  entry.crc   == -1))
-		// store size, compressed size, and crc-32 in data descriptor
-		// immediately following the compressed entry data
-		? 8
-		// store size, compressed size, and crc-32 in LOC header
-		: 0;
-	}
+    public final ZipEntry entry;
+    public final long offset;
+    public final int flag;
+    public XEntry(ZipEntry entry, long offset) {
+        this.entry = entry;
+        this.offset = offset;
+        this.flag = (entry.method == DEFLATED &&
+             (entry.size  == -1 ||
+              entry.csize == -1 ||
+              entry.crc   == -1))
+        // store size, compressed size, and crc-32 in data descriptor
+        // immediately following the compressed entry data
+        ? 8
+        // store size, compressed size, and crc-32 in LOC header
+        : 0;
+    }
     }
 
     private XEntry current;
@@ -96,8 +96,8 @@ public class ZipOutputStream extends DeflaterOutputStream implements
      * Checks to make sure that this stream has not been closed.
      */
     private void ensureOpen() throws IOException {
-	if (closed) {
-	    throw new IOException("Stream closed");
+    if (closed) {
+        throw new IOException("Stream closed");
         }
     }
     /**
@@ -128,7 +128,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
      * @author zollty
      */
     public ZipOutputStream(OutputStream out, String charset) {
-    	super(out, new java.util.zip.Deflater(java.util.zip.Deflater.DEFAULT_COMPRESSION, true));
+        super(out, new java.util.zip.Deflater(java.util.zip.Deflater.DEFAULT_COMPRESSION, true));
         usesDefaultDeflater = true;
         this.charset = charset;
     }
@@ -137,7 +137,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
      * Sets the ZIP file comment.
      * @param comment the comment string
      * @exception IllegalArgumentException if the length of the specified
-     *		  ZIP file comment is greater than 0xFFFF bytes
+     *          ZIP file comment is greater than 0xFFFF bytes
      */
     public void setComment(String comment) {
         if (comment != null && comment.length() > 0xffff / 3 && getUTF8Length(comment) > 0xffff) {
@@ -152,7 +152,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
      * for an individual ZIP file entry, and is initially set to DEFLATED.
      * @param method the default compression method
      * @exception IllegalArgumentException if the specified compression method
-     *		  is invalid
+     *          is invalid
      */
     public void setMethod(int method) {
         if (method != DEFLATED && method != STORED) {

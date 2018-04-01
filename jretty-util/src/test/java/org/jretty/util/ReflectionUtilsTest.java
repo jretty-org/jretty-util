@@ -1,7 +1,12 @@
 package org.jretty.util;
 
+import java.lang.reflect.Field;
+import java.util.Map;
+
+import org.jretty.test.Bar;
 import org.junit.Test;
 
+@SuppressWarnings("unused")
 public class ReflectionUtilsTest {
 
     static class Foo extends Exception {
@@ -39,6 +44,21 @@ public class ReflectionUtilsTest {
         
         // System.out.println( CollectionUtils.toString(map.entrySet(), "\n") );
     }
-
+    
+    
+    @Test
+    public void getFieldTest() {
+        Field field = ReflectionUtils.findField(Bar.class, "hadValue");
+        ReflectionUtils.makeAccessible(field);
+        Object value = ReflectionUtils.getField(field, new Bar());
+        // System.out.println(value);
+    }
+    
+    @Test
+    public void toMapTest() {
+        Map<String, Object> map = ReflectionUtils.toMap(new Bar());
+        
+        System.out.println( CollectionUtils.toString(map.entrySet(), "\n") );
+    }
     
 }

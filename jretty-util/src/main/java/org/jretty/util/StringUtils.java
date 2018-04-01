@@ -164,7 +164,7 @@ public class StringUtils {
     public static String getJvmEncoding() {
         return Charset.defaultCharset().displayName();
     }
-	
+    
     /**
      * 重新定义了String.getBytes()。默认用UTF-8编码，以便去除与平台的相关性。
      * <p>
@@ -570,6 +570,43 @@ public class StringUtils {
             }
         }
         return sb.toString();
+    }
+    
+    public static String stripIndex(String str, String index) {
+        int idx = str.indexOf(index);
+        if (idx == -1) {
+            return null;
+        }
+        return str.substring(0, idx) 
+                + str.substring(idx + index.length(), str.length());
+    }
+
+    public static String afterIndex(String str, String index) {
+        int idx = str.indexOf(index);
+        if (idx == -1) {
+            return null;
+        }
+        return str.substring(idx + index.length(), str.length());
+    }
+
+    public static String beforeIndex(String str, String index) {
+        int idx = str.indexOf(index);
+        if (idx == -1) {
+            return null;
+        }
+        return str.substring(0, idx);
+    }
+
+    public static String middleOfIndex(String str, String index1, String index2) {
+        int idx1 = str.indexOf(index1);
+        if (idx1 == -1) {
+            return null;
+        }
+        int idx2 = str.indexOf(index2);
+        if (idx2 == -1) {
+            return null;
+        }
+        return str.substring(idx1 + index1.length(), idx2);
     }
 
 }

@@ -22,38 +22,38 @@ import org.jretty.log.Logger;
  * @since 2013-8-20
  */
 public class ThreadUtils {
-	
-	private static final Logger LOG = LogFactory.getLogger(ThreadUtils.class);
-	
-	/**
-	 * 线程休眠
-	 * @param sleepTime
-	 */
-	public static void sleepThread(long sleepTime){
-		try {
-			Thread.sleep(sleepTime);
-		} catch (InterruptedException e) {
-			if(LOG.isDebugEnabled()) {
-			    LOG.info("Thread "+Thread.currentThread().getName()+" sleep be interrupted.");
-			}
-		}
-	}
-	
-	/**
-	 * 强行杀死线程的方法
-	 * @param thread
-	 */
-	@SuppressWarnings("deprecation")
-	public static void stopThread(Thread thread){
-		try {
-			thread.setPriority(Thread.MIN_PRIORITY);
-			thread.stop();
-			thread.destroy();
-		} catch (Throwable e) {
-			if(LOG.isDebugEnabled()) {
-			    LOG.info("stop thread ["+thread.getName()+"]...");
-			}
-		}
-	}
+    
+    private static final Logger LOG = LogFactory.getLogger(ThreadUtils.class);
+    
+    /**
+     * 线程休眠
+     * @param sleepTime
+     */
+    public static void sleepThread(long sleepTime){
+        try {
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException e) {
+            if(LOG.isDebugEnabled()) {
+                LOG.info("Thread "+Thread.currentThread().getName()+" sleep be interrupted.");
+            }
+        }
+    }
+    
+    /**
+     * 强行杀死线程的方法
+     * @param thread
+     */
+    @SuppressWarnings("deprecation")
+    public static void stopThread(Thread thread){
+        try {
+            thread.setPriority(Thread.MIN_PRIORITY);
+            thread.stop();
+            thread.destroy();
+        } catch (Throwable e) {
+            if(LOG.isDebugEnabled()) {
+                LOG.info("stop thread ["+thread.getName()+"]...");
+            }
+        }
+    }
 
 }

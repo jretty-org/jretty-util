@@ -22,7 +22,7 @@
  *===========================================================================
  */
 /*
- * @(#)DeflaterOutputStream.java	1.36 06/03/13
+ * @(#)DeflaterOutputStream.java    1.36 06/03/13
  *
  * Copyright 2006 Sun Microsystems, Inc. All rights reserved.
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
@@ -40,9 +40,9 @@ import java.util.zip.Deflater;
  * the "deflate" compression format. It is also used as the basis for other
  * types of compression filters, such as GZIPOutputStream.
  *
- * @see		Deflater
- * @version 	1.36, 03/13/06
- * @author 	David Connelly
+ * @see        Deflater
+ * @version     1.36, 03/13/06
+ * @author     David Connelly
  */
 public class DeflaterOutputStream extends FilterOutputStream {
     /**

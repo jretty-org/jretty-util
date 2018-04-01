@@ -85,7 +85,7 @@ public class CollectionUtils {
      * Checks if the map is null or empty (size==0).
      * @return true if is null or empty
      */
-    public static boolean isNullOrEmpty(Map<?,?> map) {
+    public static boolean isNullOrEmpty(Map<?, ?> map) {
         return map == null || map.isEmpty();
     }
 
@@ -93,7 +93,7 @@ public class CollectionUtils {
      * Checks if the map is null or empty (size==0).
      * @return true if is not null and not empty
      */
-    public static boolean isNotEmpty(Map<?,?> map) {
+    public static boolean isNotEmpty(Map<?, ?> map) {
         return map != null && !map.isEmpty();
     }
     
@@ -143,19 +143,20 @@ public class CollectionUtils {
      * Check List Element Duplication
      * @return return -1 if no duplication
      */
-	public static int checkDuplication(List<?> array) {
-		if (array != null && !array.isEmpty()) {
-			int size = array.size();
-			for (int i = 0; i < size; i++) {
-				for (int j = i + 1; j < size; j++) {
-					if (safeEqual(array.get(j), array.get(i))) {
-						return i;
-					}
-				}
-			}
-		}
-		return -1;
-	}
+    public static int checkDuplication(List<?> array) {
+        if(array == null || array.isEmpty()) {
+            return -1;
+        }
+        int size = array.size();
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                if (safeEqual(array.get(j), array.get(i))) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
     
     
     /**

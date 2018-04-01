@@ -42,8 +42,8 @@ import org.jretty.util.resource.Resource;
  * @since 2016-3-20
  */
 public class I18nMsgProperties implements I18nMsg {
-	
-	private static final Logger LOG = LogFactory.getLogger(I18nMsgProperties.class);
+    
+    private static final Logger LOG = LogFactory.getLogger(I18nMsgProperties.class);
     
     /**
      * Map<Locale, List<MSG_Properties>>
@@ -95,8 +95,8 @@ public class I18nMsgProperties implements I18nMsg {
      * @param fileName Properties文件名（全路径）
      */
     public void addFile(String localeStr, String fileName) {
-    	List<Properties> props;
-    	try {
+        List<Properties> props;
+        try {
             props = getProps(fileName);
         } catch (IOException e) {
             throw new NestedRuntimeException(e);
@@ -110,8 +110,8 @@ public class I18nMsgProperties implements I18nMsg {
      * @param fileName Properties文件名（全路径）
      */
     public void addFile(Locale locale, String fileName) {
-    	List<Properties> props;
-    	try {
+        List<Properties> props;
+        try {
             props = getProps(fileName);
         } catch (IOException e) {
             throw new NestedRuntimeException(e);
@@ -148,7 +148,7 @@ public class I18nMsgProperties implements I18nMsg {
         Resource[] ress = ResourceUtils.getResourcesByPathMatchingResolver("classpath*:" + fileName);
         List<Properties> props = new ArrayList<Properties>();
         if (ress != null) {
-        	LOG.debug("Got resource classpath*:{}, size={}", fileName, ress.length);
+            LOG.debug("Got resource classpath*:{}, size={}", fileName, ress.length);
             for (int i = 0; i < ress.length; i++) {
                 LOG.info("Got resource {}", ress[i].getURL());
                 Properties prop = new Properties();

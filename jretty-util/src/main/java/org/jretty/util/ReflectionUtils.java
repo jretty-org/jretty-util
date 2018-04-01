@@ -140,40 +140,40 @@ public class ReflectionUtils extends ReflectionMethodUtils {
         }
     }
 
-	/**
-	 * Given the source object and the destination, which must be the same class
-	 * or a subclass, copy all fields, including inherited fields. Designed to
-	 * work on objects with public no-arg constructors.
-	 * @throws IllegalArgumentException if the arguments are incompatible
-	 */
-	public static void fieldCloneByInherit(final Object parentSource, final Object dest) {
-	    Assert.notNull(parentSource, "Source for field copy cannot be null");
+    /**
+     * Given the source object and the destination, which must be the same class
+     * or a subclass, copy all fields, including inherited fields. Designed to
+     * work on objects with public no-arg constructors.
+     * @throws IllegalArgumentException if the arguments are incompatible
+     */
+    public static void fieldCloneByInherit(final Object parentSource, final Object dest) {
+        Assert.notNull(parentSource, "Source for field copy cannot be null");
         Assert.notNull(dest, "Destination for field copy cannot be null");
-		if (!parentSource.getClass().isAssignableFrom(dest.getClass())) {
-			throw new IllegalArgumentException("Destination class [" + dest.getClass().getName()
-					+ "] must be same or subclass as source class [" + parentSource.getClass().getName() + "]");
-		}
-		doWithFields(parentSource.getClass(), new FieldCallback() {
-		    
-			public void doWith(Field field) {
-				makeAccessible(field);
-				Object srcValue = getField(field, parentSource);
-				setField(field, dest, srcValue);
-			}
-		}, COPYABLE_FIELDS);
-	}
+        if (!parentSource.getClass().isAssignableFrom(dest.getClass())) {
+            throw new IllegalArgumentException("Destination class [" + dest.getClass().getName()
+                    + "] must be same or subclass as source class [" + parentSource.getClass().getName() + "]");
+        }
+        doWithFields(parentSource.getClass(), new FieldCallback() {
+            
+            public void doWith(Field field) {
+                makeAccessible(field);
+                Object srcValue = getField(field, parentSource);
+                setField(field, dest, srcValue);
+            }
+        }, COPYABLE_FIELDS);
+    }
     
-	/**
+    /**
      * 两个对象属性的拷贝：将source对象的属性值，赋值给target对象对应的名字和类型相同的属性。<br>
      * 比如可以实现：父类转子类——将父类的属性值拷贝给子类。（当然，只需要属性名称和类型一致就行了，不需要继承关系）
      * <p>支持数值类型 把小范围的值 赋值给 大范围的值，比如Float赋值给Double 
      * @param source 原始对象[orginal obj]
      * @param target 目标对象[target obj]
      */
-	public static void fieldCloneByName(final Object source, final Object target) {
-	    Assert.notNull(source, "Source for field copy cannot be null");
-	    Assert.notNull(target, "Destination for field copy cannot be null");
-	    final Map<String, Field> sourceMap = getAllNonStaticFields(source.getClass());
+    public static void fieldCloneByName(final Object source, final Object target) {
+        Assert.notNull(source, "Source for field copy cannot be null");
+        Assert.notNull(target, "Destination for field copy cannot be null");
+        final Map<String, Field> sourceMap = getAllNonStaticFields(source.getClass());
         doWithFields(target.getClass(), new FieldCallback() {
             
             public void doWith(Field targetField) {
@@ -190,8 +190,8 @@ public class ReflectionUtils extends ReflectionMethodUtils {
                 }
             }
         }, COPYABLE_FIELDS);
-	}
-	
+    }
+
     public static void fieldCloneByName(final Map<String, Object> sourceMap, final Object target) {
         Assert.isTrue(CollectionUtils.isNotEmpty(sourceMap), "source map for field copy cannot be empty");
         Assert.notNull(target, "Destination for field copy cannot be null");
@@ -213,7 +213,19 @@ public class ReflectionUtils extends ReflectionMethodUtils {
             }
         }, COPYABLE_FIELDS);
     }
-	
+    
+    public static Map<String, Object> toMap(final Object source) {
+        Assert.notNull(source, "Source cannot be null");
+        final Map<String, Field> sourceMap = getAllNonStaticFields(source.getClass());
+        Map<String, Object> ret = new HashMap<String, Object>();
+        for(Map.Entry<String, Field> entry: sourceMap.entrySet()) {
+            Field sourceField = entry.getValue();
+            makeAccessible(sourceField);
+            ret.put(entry.getKey(), getField(sourceField, source));
+        }
+        return ret;
+    }
+    
     public static Map<String, Field> getAllNonStaticFields(Class<?> clazz) {
         Assert.notNull(clazz, "Class must not be null");
         Class<?> searchType = clazz;
@@ -233,8 +245,8 @@ public class ReflectionUtils extends ReflectionMethodUtils {
         }
         return map;
     }
-	
-	/**
+    
+    /**
      * Get all fields. Searches all superclasses up to {@link Object}.
      * @param clazz the class to introspect
      * @return the corresponding Field object's Map &lt;Field name, Field object&gt;
@@ -256,7 +268,7 @@ public class ReflectionUtils extends ReflectionMethodUtils {
         }
         return map;
     }
-	
+    
     /**
      * Attempt to find a {@link Field field} on the supplied {@link Class} with the
      * supplied <code>name</code>. Searches all superclasses up to {@link Object}.
@@ -328,43 +340,43 @@ public class ReflectionUtils extends ReflectionMethodUtils {
         while (targetClass != null && targetClass != Object.class);
     }
     
-	/**
-	 * Callback interface invoked on each field in the hierarchy.
-	 */
-	public interface FieldCallback {
+    /**
+     * Callback interface invoked on each field in the hierarchy.
+     */
+    public interface FieldCallback {
 
-		/**
-		 * Perform an operation using the given field.
-		 * @param field the field to operate on
-		 */
-		void doWith(Field field);
-	}
-
-
-	/**
-	 * Callback optionally used to filter fields to be operated on by a field callback.
-	 */
-	public interface FieldFilter {
-
-		/**
-		 * Determine whether the given field matches.
-		 * @param field the field to check
-		 */
-		boolean matches(Field field);
-	}
+        /**
+         * Perform an operation using the given field.
+         * @param field the field to operate on
+         */
+        void doWith(Field field);
+    }
 
 
-	/**
-	 * Pre-built FieldFilter that matches all non-static, non-final fields.
-	 */
-	public static final FieldFilter COPYABLE_FIELDS = new FieldFilter() {
+    /**
+     * Callback optionally used to filter fields to be operated on by a field callback.
+     */
+    public interface FieldFilter {
 
-		public boolean matches(Field field) {
-			return !(Modifier.isStatic(field.getModifiers()) || Modifier.isFinal(field.getModifiers()));
-		}
-	};
+        /**
+         * Determine whether the given field matches.
+         * @param field the field to check
+         */
+        boolean matches(Field field);
+    }
 
-	/**
+
+    /**
+     * Pre-built FieldFilter that matches all non-static, non-final fields.
+     */
+    public static final FieldFilter COPYABLE_FIELDS = new FieldFilter() {
+
+        public boolean matches(Field field) {
+            return !(Modifier.isStatic(field.getModifiers()) || Modifier.isFinal(field.getModifiers()));
+        }
+    };
+
+    /**
      * 低范围的值 转换成 高范围的类型，比如 Integer的值 转换成 long类型
      * @param value
      * @param classType 可以为Byte，Double，Float，Integer，Long，Short

@@ -45,7 +45,7 @@ public class KeyValueMsgProperties implements KeyValueMsg {
     private List<String> defaultFile;
     
     public KeyValueMsgProperties() {
-    	this.setModulePath(null);
+        this.setModulePath(null);
     }
 
     /**
@@ -69,30 +69,30 @@ public class KeyValueMsgProperties implements KeyValueMsg {
     public void addFile(String fileName) {
         this.i18nMsg.addFile(DEFAULT_LOCALE, fileName);
     }
-	
+    
     /**
      * 设置modulePath（即文件名去掉properties后缀），配置不会立即加载，第一次用到时获取
      * @param modulePath properties的文件名（去掉properties后缀）
      */
-	public void setModulePath(String modulePath) {
-		this.modulePath = modulePath;
-		this.i18nMsg = new I18nMsgProperties(modulePath);
-	}
-	
-	/**
-	 * 设置defaultFile（即默认引入的properties的文件名），
-	 * 会按顺序把配置加载到队列的前面。使用时优先从这些properties的文件中获取值。
-	 * @param defaultFile 默认引入的properties的文件名（全路径）
-	 */
-	public void setDefaultFile(List<String> defaultFile) {
-		if (defaultFile == null || defaultFile.isEmpty()) {
-			return;
-		}
-		this.defaultFile = defaultFile;
-		for (String fileName : this.defaultFile) {
-			this.addFile(fileName);
-		}
-	}
+    public void setModulePath(String modulePath) {
+        this.modulePath = modulePath;
+        this.i18nMsg = new I18nMsgProperties(modulePath);
+    }
+    
+    /**
+     * 设置defaultFile（即默认引入的properties的文件名），
+     * 会按顺序把配置加载到队列的前面。使用时优先从这些properties的文件中获取值。
+     * @param defaultFile 默认引入的properties的文件名（全路径）
+     */
+    public void setDefaultFile(List<String> defaultFile) {
+        if (defaultFile == null || defaultFile.isEmpty()) {
+            return;
+        }
+        this.defaultFile = defaultFile;
+        for (String fileName : this.defaultFile) {
+            this.addFile(fileName);
+        }
+    }
 
     @Override
     public String getString(String key) {
@@ -128,8 +128,8 @@ public class KeyValueMsgProperties implements KeyValueMsg {
         return modulePath;
     }
 
-	public List<String> getDefaultFile() {
-		return defaultFile;
-	}
+    public List<String> getDefaultFile() {
+        return defaultFile;
+    }
 
 }
