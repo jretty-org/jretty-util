@@ -562,7 +562,7 @@ public class StringUtils {
                 sb.append("&quot;");
                 break;
             case '\'':
-                sb.append("&apos;");
+                sb.append("&#39;");
                 break;
             default:
                 sb.append(c);
@@ -570,6 +570,15 @@ public class StringUtils {
             }
         }
         return sb.toString();
+    }
+    
+    public static String simpleHtmlUnEscape(String str) {
+        str = replace(str, "&amp;", "&");
+        str = replace(str, "&lt;", "<");
+        str = replace(str, "&gt;", ">");
+        str = replace(str, "&quot;", "\"");
+        str = replace(str, "&#39;", "\'");
+        return str;
     }
     
     public static String stripIndex(String str, String index) {
