@@ -72,10 +72,12 @@ public class StringUtilsTest {
     
     @Test
     public void testIndex() {
-        String str = "0123456";
+        String str = "01234560123456";
         assertEquals("01", StringUtils.beforeIndex(str, "23"));
-        assertEquals("456", StringUtils.afterIndex(str, "23"));
-        assertEquals("01456", StringUtils.stripIndex(str, "23"));
+        assertEquals("012345601234", StringUtils.beforeLastIndex(str, "56"));
+        assertEquals("4560123456", StringUtils.afterIndex(str, "23"));
+        assertEquals("56", StringUtils.afterLastIndex(str, "34"));
+        assertEquals("014560123456", StringUtils.stripIndex(str, "23"));
         assertEquals("234", StringUtils.middleOfIndex(str, "01", "56"));
     }
     

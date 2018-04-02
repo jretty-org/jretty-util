@@ -588,9 +588,25 @@ public class StringUtils {
         }
         return str.substring(idx + index.length(), str.length());
     }
+    
+    public static String afterLastIndex(String str, String index) {
+        int idx = str.lastIndexOf(index);
+        if (idx == -1) {
+            return null;
+        }
+        return str.substring(idx + index.length(), str.length());
+    }
 
     public static String beforeIndex(String str, String index) {
         int idx = str.indexOf(index);
+        if (idx == -1) {
+            return null;
+        }
+        return str.substring(0, idx);
+    }
+    
+    public static String beforeLastIndex(String str, String index) {
+        int idx = str.lastIndexOf(index);
         if (idx == -1) {
             return null;
         }
