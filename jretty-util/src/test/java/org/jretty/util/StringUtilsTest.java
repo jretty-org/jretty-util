@@ -68,6 +68,14 @@ public class StringUtilsTest {
         
         assertEquals(rightStr, newStr);
         
+        str = "1aa2aa3aa4";
+        newStr = StringUtils.replace(str, "aa", "--");
+        
+        assertEquals("1--2--3--4", newStr);
+        
+        str = "1\r\n2\r\n3\r\n4";
+        newStr = StringUtils.replace(str, "\r\n", "--");
+        System.out.println(newStr);
     }
     
     @Test
