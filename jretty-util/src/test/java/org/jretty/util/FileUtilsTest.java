@@ -18,6 +18,12 @@ public class FileUtilsTest {
     
     static long count=0;
     
+    static void findFileTest() throws IOException {
+        final String dir = "D:\\1sync\\article\\_posts";
+        final String target = "2017-10-27-vpn-ping-problem.html";
+        System.out.println(FileUtils.findFile(new File(dir), target));
+    }
+    
     static void cloneFileTest() throws IOException {
         final String template = "D:\\0sync-local\\git\\fast\\fast-demo-mini\\a";
         final String target = "D:\\0sync-local\\git\\fast\\temp\\a";
@@ -35,7 +41,7 @@ public class FileUtilsTest {
         // testGetFileLength();
         
         
-//        cloneFileTest();
+        findFileTest();
         
         
     }

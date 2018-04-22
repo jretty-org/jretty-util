@@ -194,6 +194,28 @@ public class FileUtils {
         return result;
     }
     
+    /** 查找 目录以及子目录中 名为@fileName的文件 */
+    public static File findFile(File folder, String fileName) {
+        if (folder.isFile()) {
+            if (folder.getName().equalsIgnoreCase(fileName)) {
+                return folder;
+            }
+            return null;
+        } else if (folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            File ret = null;
+            for (File filePath : files) {
+                ret = findFile(filePath, fileName);
+                if (ret != null) {
+                    return ret;
+                }
+            }
+            return ret;
+        } else {
+            return null;
+        }
+    }
+    
     public static void appendStr2File(String fileFullPath, String str, String charSet) {
         BufferedWriter out = null;
         try {
