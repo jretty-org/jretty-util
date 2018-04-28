@@ -120,8 +120,17 @@ public class ResourceUtilsTest {
         getInputStreamFromClassPath(getClass().getClassLoader(), "org/jretty/util/StringUtils.class");
         noInputStreamFromClassPath(getClass().getClassLoader(), "org/jretty/util/StringUtils222.class");
     }
+    
+    @Test
+    @Ignore
+    public void testgetResourcesByPathMatchingResolver() throws IOException{
+        Resource[] resources = ResourceUtils.getResourcesByPathMatchingResolver("classpath*:jretty-log.properties");
+        LOG.info("resources.length: "+ resources.length);
+        System.out.println(resources[0].exists());
+    }
         
     @Test
+    @Ignore
     public void testGetResource(){
         Resource resource = ResourceUtils.getResource("classpath:org/jretty/util/StringUtils.class");
         Assert.assertTrue(resource.exists());
