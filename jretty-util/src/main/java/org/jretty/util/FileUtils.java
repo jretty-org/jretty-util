@@ -194,7 +194,7 @@ public class FileUtils {
         return result;
     }
     
-    /** 查找 目录以及子目录中 名为@fileName的文件 */
+    /** 递归查找 目录以及子目录中 名为@fileName的文件 */
     public static File findFile(File folder, String fileName) {
         if (folder.isFile()) {
             if (folder.getName().equalsIgnoreCase(fileName)) {
@@ -214,6 +214,32 @@ public class FileUtils {
         } else {
             return null;
         }
+    }
+    
+    /**
+     * 递归删除parent目录下面的所有空目录
+     */
+    public static boolean deleteEmptyDir(File parent) {
+        if (parent.isDirectory()) {
+            File[] files = parent.listFiles();
+            if (files.length == 0) {
+                return true;
+            }
+            boolean ret = true;
+            for (File filePath : files) {
+                if (filePath.isFile()) {
+                    ret = false;
+                    continue;
+                }
+                if (deleteEmptyDir(filePath)) {
+                    filePath.delete();
+                } else {
+                    ret = false;
+                }
+            }
+            return ret;
+        }
+        return false;
     }
     
     public static void appendStr2File(String fileFullPath, String str, String charSet) {
