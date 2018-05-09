@@ -627,11 +627,12 @@ public class StringUtils {
         if (idx1 == -1) {
             return null;
         }
+        str = str.substring(idx1 + index1.length(), str.length());
         int idx2 = str.indexOf(index2);
         if (idx2 == -1) {
             return null;
         }
-        return str.substring(idx1 + index1.length(), idx2);
+        return str.substring(0, idx2);
     }
 
 }
