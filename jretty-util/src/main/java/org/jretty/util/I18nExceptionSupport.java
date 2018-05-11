@@ -26,6 +26,6 @@ public interface I18nExceptionSupport {
     /**
      * 获得错误信息参数（用以替换错误信息中的{}记号）
      */
-    public String[] getParams();
+    public Object[] getParams();
 
 }
