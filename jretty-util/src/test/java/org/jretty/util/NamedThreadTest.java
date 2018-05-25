@@ -22,6 +22,7 @@ public class NamedThreadTest {
             @Override
             public void run() {
                 ThreadUtils.sleepThread(15000);
+                System.out.println(Thread.currentThread().getName() + " done!");
             }
 
             @Override
@@ -30,13 +31,14 @@ public class NamedThreadTest {
             }
         };
         es.execute(r);
+        ThreadUtils.sleepThread(1000);
         es.execute(r);
+        ThreadUtils.sleepThread(1000);
         es.execute(r);
+        ThreadUtils.sleepThread(1000);
         es.execute(r);
+        ThreadUtils.sleepThread(1000);
         es.execute(r);
-        
-        factory = new NamedThreadFactory("apollo", true);
-        factory.newThread(r).start();
         
         factory = new NamedThreadFactory("AsyncRunAfterStart_Thread", false);
         factory.newThread(new Runnable() {
@@ -47,8 +49,34 @@ public class NamedThreadTest {
         }).start();
         
         
+        test2();
+        
         es.awaitTermination(20000, TimeUnit.MILLISECONDS);
         es.shutdownNow();
+    }
+    
+    public static void test2() throws InterruptedException {
+        NamedThreadFactory factory = new NamedThreadFactory("apollo", true);
+        factory.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                System.out.println("--------------" + e.toString());
+            }
+        });
+        factory.newThread(new NamedRunnable() {
+            
+            @Override
+            public void run() {
+                ThreadUtils.sleepThread(15000);
+                System.out.println(Thread.currentThread().getName() + " done!");
+                throw new IllegalAccessError();
+            }
+
+            @Override
+            public String getName() {
+                return "apolloTask";
+            }
+        }).start();
     }
 
 }
