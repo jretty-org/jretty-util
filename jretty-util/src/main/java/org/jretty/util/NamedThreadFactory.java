@@ -13,6 +13,7 @@
 package org.jretty.util;
 
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 可定义名字的ThreadFactory
@@ -24,6 +25,16 @@ public class NamedThreadFactory implements ThreadFactory {
 
     private String baseName;
     private boolean addTimestamps;
+    private final AtomicInteger poolNumber = new AtomicInteger(1);
+    
+    /** Stores the uncaught exception handler. */
+    private Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
+
+    /** Stores the priority. */
+    private Integer priority;
+
+    /** Stores the daemon status flag. */
+    private Boolean daemonFlag;
 
     public NamedThreadFactory(String baseName) {
         super();
@@ -41,14 +52,30 @@ public class NamedThreadFactory implements ThreadFactory {
     public Thread newThread(Runnable r) {
         String name;
         if (r instanceof NamedRunnable) {
-            name = addTimestamps
-                    ? ((NamedRunnable) r).getName() + "-" + DateFormatUtils.getUniqueDatePattern_TimeMillis_noSplit()
-                    : ((NamedRunnable) r).getName();
+            name = ((NamedRunnable) r).getName();
         } else {
-            name = baseName + "$" + DateFormatUtils.getUniqueDatePattern_TimeMillis_noSplit();
+            name = baseName;
+        }
+        name = name + "-" + poolNumber.getAndIncrement();
+        if(addTimestamps) {
+            name = name + "$" + DateFormatUtils.getUniqueDatePattern_TimeMillis_noSplit();
+        }
+        
+        Thread t = new Thread(r, name);
+        
+        if (uncaughtExceptionHandler != null) {
+            t.setUncaughtExceptionHandler(uncaughtExceptionHandler);
         }
 
-        return new Thread(r, name);
+        if (priority != null) {
+            t.setPriority(priority.intValue());
+        }
+
+        if (daemonFlag != null) {
+            t.setDaemon(daemonFlag.booleanValue());
+        }
+
+        return t;
     }
 
     public String getBaseName() {
@@ -57,6 +84,35 @@ public class NamedThreadFactory implements ThreadFactory {
 
     public void setBaseName(String baseName) {
         this.baseName = baseName;
+    }
+
+    /**
+     * @param addTimestamps the addTimestamps to set
+     */
+    public void setAddTimestamps(boolean addTimestamps) {
+        this.addTimestamps = addTimestamps;
+    }
+
+    /**
+     * @param uncaughtExceptionHandler the uncaughtExceptionHandler to set
+     */
+    public void setUncaughtExceptionHandler(
+            Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+        this.uncaughtExceptionHandler = uncaughtExceptionHandler;
+    }
+
+    /**
+     * @param priority the priority to set
+     */
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    /**
+     * @param daemonFlag the daemonFlag to set
+     */
+    public void setDaemonFlag(Boolean daemonFlag) {
+        this.daemonFlag = daemonFlag;
     }
 
 }
