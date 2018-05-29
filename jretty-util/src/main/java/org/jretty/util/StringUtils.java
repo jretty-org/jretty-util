@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2013-2017 the original author or authors.
+ * Copyright (C) 2013-2018 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,8 @@ public class StringUtils {
         // length > 0 then check every character
         for (int i = 0; i < strLen; i++) {
             if (Character.isWhitespace(str.charAt(i)) == false) {
-                return false; // find char is not whitespace
+                // find char is not whitespace
+                return false;
             }
         }
         return true;
@@ -109,7 +110,8 @@ public class StringUtils {
         // length > 0 then check every character
         for (int i = 0; i < strLen; i++) {
             if (Character.isWhitespace(str.charAt(i)) == false) {
-                return true; // find char is not whitespace
+                // find char is not whitespace
+                return true;
             }
         }
         return false;
@@ -264,7 +266,8 @@ public class StringUtils {
             return inString;
         }
         StringBuilder sb = new StringBuilder();
-        int pos = 0; // our position in the old string
+        // our position in the old string
+        int pos = 0;
         int index = inString.indexOf(oldPattern);
         // the index of an occurrence we've found, or -1
         int patLen = oldPattern.length();
@@ -331,7 +334,6 @@ public class StringUtils {
         int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
         if (extIndex == -1) {
             return path.substring(path.lastIndexOf(Const.FOLDER_SEPARATOR) + 1, path.length());
-            // return null;
         }
         String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
         int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
@@ -633,6 +635,206 @@ public class StringUtils {
             return null;
         }
         return str.substring(0, idx2);
+    }
+    
+    /**
+     * 判断两个字符是否相等（忽略大小写）。
+     * @return 若是英文字母，不区分大小写，相等true，不等返回false； 
+     *  若不是则区分，相等返回true，不等返回false。
+     */
+    public static boolean charEqualIgnoreCase(char c1, char c2) {
+        // 先判断c1和c2都是字母（65-90,97-122），然后判断c1=c2
+        if (((97 <= c1 && c1 <= 122) || (65 <= c1 && c1 <= 90)) 
+                && ((97 <= c2 && c2 <= 122) || (65 <= c2 && c2 <= 90))
+                && ((c1 - c2 == 32) || (c2 - c1 == 32))) {
+            return true;
+        }
+        if (c1 == c2) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Returns true if and only if this string contains the specified
+     * sequence of char values. (Case in-sensitive)
+     *
+     * @param subject  the String to check, may be null
+     * @param search  the String to search for
+     * @return true if this string contains {@code search}, false otherwise
+     */
+    public static boolean containsIgnoreCase(String subject, String search) {
+        return indexIgnoreCase(subject, search) > -1;
+    }
+    
+    /**
+     * <p>Case in-sensitive find of the first index within a String.</p>
+     *
+     * <p>A <code>null</code> String will return <code>-1</code>.
+     * A negative start position is treated as zero.
+     * An empty ("") search String always matches.
+     * A start position greater than the string length only matches
+     * an empty search String.</p>
+     *
+     * <pre>
+     * StringUtils.indexIgnoreCase(null, *)          = -1
+     * StringUtils.indexIgnoreCase(*, null)          = -1
+     * StringUtils.indexIgnoreCase("", "")           = 0
+     * StringUtils.indexIgnoreCase("aabaabaa", "a")  = 0
+     * StringUtils.indexIgnoreCase("aabaabaa", "b")  = 2
+     * StringUtils.indexIgnoreCase("aabaabaa", "ab") = 1
+     * </pre>
+     *
+     * @param subject  the String to check, may be null
+     * @param search  the String to find, may be null
+     * @return the first index of the search String,
+     *  -1 if no match or <code>null</code> string input
+     */
+    public static int indexIgnoreCase(String subject, String search) {
+        return indexIgnoreCase(subject, search, 0);
+    }
+    
+    /**
+     * see {@link #indexIgnoreCase(String, String)}
+     */
+    public static int indexIgnoreCase(String subject, String search, int fromIndex) {
+        if (subject == null || search == null) {
+            return -1;
+        }
+        if (fromIndex < 0) {
+            fromIndex = 0;
+        }
+        if (search.length() == 0) {
+            return fromIndex;
+        }
+        int index1 = fromIndex;
+        int index2 = 0;
+
+        char c1;
+        char c2;
+        int slen = subject.length();
+        int tlen = search.length() - 1;
+        loop1: while (true) {
+
+            if (index1 < slen) {
+                c1 = subject.charAt(index1);
+                c2 = search.charAt(index2);
+
+            } else {
+                break loop1;
+            }
+
+            while (true) {
+                if (StringUtils.charEqualIgnoreCase(c1, c2)) {
+
+                    if (index1 < slen - 1 && index2 < tlen) {
+
+                        c1 = subject.charAt(++index1);
+                        c2 = search.charAt(++index2);
+                    } else if (index2 == tlen) {
+
+                        return fromIndex;
+                    } else {
+
+                        break loop1;
+                    }
+
+                } else {
+                    // 在比较时，发现查找子字符串中某个字符不匹配，则重新开始查找子字符串
+                    index2 = 0;
+                    break;
+                }
+            }
+            // 重新查找子字符串的位置
+            index1 = ++fromIndex;
+        }
+
+        return -1;
+    }
+    
+    /**
+     * <p>Case in-sensitive find of the last index within a String.</p>
+     *
+     * <p>A <code>null</code> String will return <code>-1</code>.
+     * A negative start position returns <code>-1</code>.
+     * An empty ("") search String always matches unless the start position is negative.
+     * A start position greater than the string length searches the whole string.</p>
+     *
+     * <pre>
+     * StringUtils.lastIndexOfIgnoreCase(null, *)          = -1
+     * StringUtils.lastIndexOfIgnoreCase(*, null)          = -1
+     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "A")  = 7
+     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "B")  = 5
+     * StringUtils.lastIndexOfIgnoreCase("aabaabaa", "AB") = 4
+     * </pre>
+     *
+     * @param subject  the String to check, may be null
+     * @param search  the String to find, may be null
+     * @return the first index of the search String,
+     *  -1 if no match or <code>null</code> string input
+     */
+    public static int lastIndexIgnoreCase(String subject, String search) {
+        return lastIndexIgnoreCase(subject, search, subject.length());
+    }
+
+    /**
+     * see {@link #lastIndexIgnoreCase(String, String)}
+     */
+    public static int lastIndexIgnoreCase(String subject, String search, int fromIndex) {
+        if (subject == null || search == null) {
+            return -1;
+        }
+        int slen = subject.length();
+        int tlen = search.length();
+        if (fromIndex > (slen - tlen)) {
+            fromIndex = slen - tlen;
+        }
+        if (fromIndex < 0) {
+            return -1;
+        }
+        if (search.length() == 0) {
+            return fromIndex;
+        }
+
+        int index1 = fromIndex;
+        int index2 = 0;
+
+        char c1;
+        char c2;
+        tlen = tlen - 1;
+        loop1: while (true) {
+
+            if (index1 >= 0) {
+                c1 = subject.charAt(index1);
+                c2 = search.charAt(index2);
+            } else {
+                break loop1;
+            }
+
+            while (true) {
+                if (StringUtils.charEqualIgnoreCase(c1, c2)) {
+                    if (index1 < slen - 1 && index2 < tlen) {
+
+                        c1 = subject.charAt(++index1);
+                        c2 = search.charAt(++index2);
+                    } else if (index2 == tlen) {
+
+                        return fromIndex;
+                    } else {
+
+                        break loop1;
+                    }
+                } else {
+                    // 在比较时，发现查找子字符串中某个字符不匹配，则重新开始查找子字符串
+                    index2 = 0;
+                    break;
+                }
+            }
+            // 重新查找子字符串的位置
+            index1 = --fromIndex;
+        }
+
+        return -1;
     }
 
 }

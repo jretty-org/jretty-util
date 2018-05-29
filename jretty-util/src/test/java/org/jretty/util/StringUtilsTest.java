@@ -13,6 +13,7 @@
 package org.jretty.util;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 /**
@@ -75,7 +76,7 @@ public class StringUtilsTest {
         
         str = "1\r\n2\r\n3\r\n4";
         newStr = StringUtils.replace(str, "\r\n", "--");
-        System.out.println(newStr);
+        // System.out.println(newStr);
     }
     
     @Test
@@ -89,4 +90,44 @@ public class StringUtilsTest {
         assertEquals("234", StringUtils.middleOfIndex(str, "01", "56"));
     }
     
+    
+    @Test
+    public void testIndexIgnoreCase() {
+        assertEquals(StringUtils.indexIgnoreCase("", "xxx"), -1);
+        assertEquals(StringUtils.indexIgnoreCase("xxx", ""), 0);
+        assertEquals(StringUtils.indexIgnoreCase("", ""), 0);
+        
+        assertEquals(StringUtils.indexIgnoreCase("", "xxx", 1), -1);
+        assertEquals(StringUtils.indexIgnoreCase("xxx", "", 1), 1);
+        assertEquals(StringUtils.indexIgnoreCase("", "", 1), 1);
+        
+        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "a") == 0);
+        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "b") == 2);
+        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "ab") == 1);
+        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "A") == 0);
+        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "B") == 2);
+        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "AB") == 1);
+        assertTrue(StringUtils.indexIgnoreCase("aaba\r\nabaa", "\r\n") == 4);
+        assertTrue(StringUtils.indexIgnoreCase("aaba\r\nabaa╋ふ▒㊧❀", "╋ふ▒㊧❀") == 10);
+    }
+    
+    @Test
+    public void testLastIndexIgnoreCase() {
+        assertEquals(StringUtils.lastIndexIgnoreCase("", "xxx"), -1);
+        assertEquals(StringUtils.lastIndexIgnoreCase("xxx", ""), 3);
+        assertEquals(StringUtils.lastIndexIgnoreCase("", ""), 0);
+        
+        assertEquals(StringUtils.lastIndexIgnoreCase("xxx", "x", -1), -1);
+        assertEquals(StringUtils.lastIndexIgnoreCase("xxx", "", 2), 2);
+        assertEquals(StringUtils.lastIndexIgnoreCase("xxx", "", 5), 3);
+        
+        assertTrue(StringUtils.lastIndexIgnoreCase("aabaabaa", "a") == 7);
+        assertTrue(StringUtils.lastIndexIgnoreCase("aabaabaa", "b") == 5);
+        assertTrue(StringUtils.lastIndexIgnoreCase("aabaabaa", "ab") == 4);
+        assertTrue(StringUtils.lastIndexIgnoreCase("aabaabaa", "A") == 7);
+        assertTrue(StringUtils.lastIndexIgnoreCase("aabaabaa", "B") == 5);
+        assertTrue(StringUtils.lastIndexIgnoreCase("aabaabaa", "AB") == 4);
+        assertTrue(StringUtils.lastIndexIgnoreCase("aaba\r\nabaa", "\r\n") == 4);
+        assertTrue(StringUtils.lastIndexIgnoreCase("aaba\r\nabaa╋ふ▒㊧❀", "╋ふ▒㊧❀") == 10);
+    }
 }
