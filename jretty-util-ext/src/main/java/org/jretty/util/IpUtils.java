@@ -94,7 +94,7 @@ public class IpUtils {
         }
 
         if (ip == null) {
-            ip = getSocketIp("114.114.114.114", 80);
+            ip = getSocketIp("1.1.1.1", 80);
         }
 
         if (ip == null) {
