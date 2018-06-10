@@ -75,6 +75,7 @@ public class FileUtils {
         if (oldFile.isFile()) {
             try {
                 cloneFile(oldFile, new File(newPath));
+                return true;
             } catch (IOException e) {
                 if (LOG.isInfoEnabled()) {
                     LOG.warn(e, "cloneFile error. filePath=" 
@@ -82,7 +83,6 @@ public class FileUtils {
                 }
                 return false;
             }
-            return true;
         }
         String[] files = oldFile.list();
         if (null == files) {
@@ -122,7 +122,8 @@ public class FileUtils {
                     ret = false;
                 }
             }
-            else if (sourceFile.isDirectory()) {// 如果是子文件夹
+            else if (sourceFile.isDirectory()) {
+                // 如果是子文件夹
                 copyFolder(oldPath + SEPARATOR + fileName, newPath + SEPARATOR + fileName);
             }
         }
@@ -197,10 +198,7 @@ public class FileUtils {
     /** 递归查找 目录以及子目录中 名为@fileName的文件 */
     public static File findFile(File folder, String fileName) {
         if (folder.isFile()) {
-            if (folder.getName().equalsIgnoreCase(fileName)) {
-                return folder;
-            }
-            return null;
+            return folder.getName().equalsIgnoreCase(fileName) ? folder : null;
         } else if (folder.isDirectory()) {
             File[] files = folder.listFiles();
             File ret = null;
@@ -304,7 +302,7 @@ public class FileUtils {
             String buf = null;
             StringBuilder builder = new StringBuilder();
             while (null != (buf = br.readLine())) {
-                builder.append(buf).append("\r\n");
+                builder.append(buf).append(Const.CRLF);
             }
             return builder.toString();
         }
@@ -367,8 +365,9 @@ public class FileUtils {
         }
         String name = file.getName();
         for (String type : inludeType) {
-            if (name.endsWith(type))
+            if (name.endsWith(type)) {
                 return true;
+            }
         }
         return false;
     }
@@ -382,12 +381,8 @@ public class FileUtils {
 
         @Override
         public int compare(File f1, File f2) {
-            if (f1.lastModified() < f2.lastModified()) { // 降序
-                return 1;
-            }
-            else {
-                return -1;
-            }
+            // 降序
+            return f1.lastModified() < f2.lastModified() ? 1 : -1;
         }
     }
     

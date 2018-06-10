@@ -106,7 +106,7 @@ public class CollectionUtils {
      */
     public static String toString(Collection<?> coll, String delim) {
         if ( coll == null || coll.isEmpty() ) {
-            return "";
+            return Const.STRING_LEN0;
         }
         StringBuilder sb = new StringBuilder();
         Iterator<?> it = coll.iterator();

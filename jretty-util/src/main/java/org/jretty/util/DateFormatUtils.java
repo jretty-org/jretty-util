@@ -435,7 +435,8 @@ public class DateFormatUtils {
 
     protected static DateInfo uniformat(Date date) {
         DateInfo dinfo = new DateInfo();
-        synchronized (calendar) { // 如此同步效率高得多，同步块内没有复杂的运算过程
+        // 如此同步效率高得多，同步块内没有复杂的运算过程
+        synchronized (calendar) {
             calendar.setTime(date);
             dinfo.year = calendar.get(1);
             dinfo.month = calendar.get(2);
@@ -505,8 +506,9 @@ public class DateFormatUtils {
             sbu.append('0');
         }
         sbu.append(dinfo.day);
-        if (split)
+        if (split) {
             sbu.append(DateInfo._SEP_MS);
+        }
         if (dinfo.hour < 10) {
             sbu.append('0');
         }
@@ -524,8 +526,9 @@ public class DateFormatUtils {
 
         long now = dinfo.date.getTime();
         int millis = (int) (now % 1000L);
-        if (millis < 100)
+        if (millis < 100) {
             sbu.append('0');
+        }
         if (millis < 10) {
             sbu.append('0');
         }

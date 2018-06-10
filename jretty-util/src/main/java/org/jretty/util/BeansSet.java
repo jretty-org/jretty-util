@@ -47,10 +47,7 @@ public class BeansSet {
      */
     public boolean add(ObjectBean<?> obj) {
         String id = obj.getId();
-        if (StringUtils.isNullOrEmpty(id)) {
-            return false;
-        }
-        if (objects.containsKey(id)) {
+        if (StringUtils.isNullOrEmpty(id) || objects.containsKey(id)) {
             return false;
         }
         objects.put(id, obj);
@@ -96,8 +93,9 @@ public class BeansSet {
      * 替换或者新增一个bean
      */
     public <T> T replaceOrAdd(String id, T newObj) {
-        if (StringUtils.isNullOrEmpty(id))
+        if (StringUtils.isNullOrEmpty(id)) {
             return null;
+        }
         ObjectBean<T> obj = new ObjectBean<T>(id, newObj);
         objects.put(id, obj);
         return newObj;
@@ -108,17 +106,11 @@ public class BeansSet {
     }
 
     public boolean contains(ObjectBean<?> obj) {
-        if (objects.containsKey(obj.getId())) {
-            return true;
-        }
-        return false;
+        return objects.containsKey(obj.getId());
     }
 
     public boolean contains(String id) {
-        if (objects.containsKey(id)) {
-            return true;
-        }
-        return false;
+        return objects.containsKey(id);
     }
 
     /**
@@ -176,7 +168,7 @@ public class BeansSet {
         // }
 
         @SuppressWarnings("unchecked")
-        public <T> T next() { // nextObj
+        public <T> T next() {
             if (iterator.hasNext()) {
                 return (T) iterator.next().getValue().getObject();
             }

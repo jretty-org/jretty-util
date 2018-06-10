@@ -53,7 +53,7 @@ public class AlgorithmUtils {
             return null;
         }
         if (data.length == 0) {
-            return "";
+            return Const.STRING_LEN0;
         }
         StringBuilder hexString = new StringBuilder(33);
         String stmp;

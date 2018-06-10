@@ -54,4 +54,11 @@ public class Const {
     /** 字符串："null" */
     public static final String STRING_NULL = "null";
     
+    /** 换行（Line Feed）符 */
+    public static final char LF = '\n';
+    /** 回车（Carriage Return） */
+    public static final char CR = '\r';
+    /** 换行（Line Feed）+ 回车（Carriage Return） */
+    public static final String CRLF = "\r\n";
+    
 }

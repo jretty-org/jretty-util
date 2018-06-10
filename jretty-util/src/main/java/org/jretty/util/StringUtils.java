@@ -20,10 +20,14 @@ import java.util.List;
 /**
  * 通用字符串工具类
  * 
- * @author zollty 
+ * @author zollty (高效的算法保障)
  * @since 2013-06-02
  */
 public class StringUtils {
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // String 空值判断和处理 相关算法工具
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
     /**
      * Checks if a String is null or empty ("").
@@ -143,8 +147,13 @@ public class StringUtils {
      * 将null转换成空字符串""
      */
     public static String nullToEmpty(String str) {
-        return str == null ? "" : str;
+        return str == null ? Const.STRING_LEN0 : str;
     }
+    
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // String Charset-字符编码 相关工具
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
     public static String decideCharSet(String charSet) {
         if (StringUtils.isNullOrEmpty(charSet)) {
@@ -182,7 +191,7 @@ public class StringUtils {
         try {
             return str.getBytes(Const.DEFAULT_CHARSET);
         }
-        catch (final UnsupportedEncodingException e) {
+        catch (UnsupportedEncodingException e) {
             throw new NestedRuntimeException(e);
         }
     }
@@ -202,7 +211,7 @@ public class StringUtils {
         try {
             return str.getBytes(decideCharSet(charSet));
         }
-        catch (final UnsupportedEncodingException e) {
+        catch (UnsupportedEncodingException e) {
             throw new NestedRuntimeException(e);
         }
     }
@@ -214,7 +223,7 @@ public class StringUtils {
         try {
             return new String(bytes, Const.DEFAULT_CHARSET);
         }
-        catch (final UnsupportedEncodingException e) {
+        catch (UnsupportedEncodingException e) {
             throw new NestedRuntimeException(e);
         }
     }
@@ -233,9 +242,7 @@ public class StringUtils {
 
     /**
      * 字符串编码转换
-     * 
-     * @param newCharset
-     *            新编码，例如UTF-8
+     * @param newCharset 新编码，例如UTF-8
      */
     public static String changeEncode(final String str, final String newCharset) {
         if (str == null || str.length() == 0)
@@ -244,14 +251,19 @@ public class StringUtils {
             String iso = new String(str.getBytes(newCharset), Const.ISO_8859_1); // ISO-8859-1
             return new String(iso.getBytes(Const.ISO_8859_1), newCharset);
         }
-        catch (final UnsupportedEncodingException e) {
+        catch (UnsupportedEncodingException e) {
             throw new NestedRuntimeException(e);
         }
     }
+    
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // String 替换处理 相关算法工具
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+    
     /**
-     * Replace all occurences of a substring within a string with another string. <br>
-     * [非正则表达式，区别于String.replace()方法]
+     * Replace all occurences of a substring within a string with another string.
+     * <p>[非正则表达式，区别于String.replace()方法]</p>
      * 
      * @param inString
      *            String to examine
@@ -280,206 +292,6 @@ public class StringUtils {
         sb.append(inString.substring(pos));
         // remember to append any characters to the right of a match
         return sb.toString();
-    }
-
-    /**
-     * 从路径（url或者目录都可以）中获取文件名称（带后缀，形如 abc.txt） <br>
-     * Extract the filename from the given path, e.g. "mypath/myfile.txt" -> "myfile.txt".
-     * 
-     * @param path
-     *            the file path (may be <code>null</code>)
-     * @return the extracted filename, or <code>null</code> if none
-     */
-    public static String getFilenameFromPath(String path) {
-        if (null == path)
-            return null;
-        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        // path = path.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
-        int separatorIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        return (separatorIndex != -1 ? path2.substring(separatorIndex + 1) : path2);
-    }
-
-    /**
-     * 从路径（url或者目录都可以）中剥去文件名，获得文件所在的目录。 <br>
-     * Strip the filename from the given path, e.g. "mypath/myfile.txt" -> "mypath/".
-     * 
-     * @param path
-     *            the file path (may be <code>null</code>)
-     * @return the path with stripped filename, or <code>null</code> if none
-     */
-    public static String stripFilenameFromPath(String path) {
-        if (null == path)
-            return null;
-        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        if (folderIndex == -1) {
-            return path2;
-        }
-        return path2.substring(0, folderIndex + 1);
-    }
-
-    private static final char EXTENSION_SEPARATOR = '.';
-
-    /**
-     * 从路径（url或者目录都可以）中获取文件名称（不带后缀，形如 abc） <br>
-     * Extract the filename without it's extension from the given path, e.g. "mypath/myfile.txt" -> "myfile".
-     * 
-     * @param path
-     *            the file path (may be <code>null</code>)
-     * @return the extracted filename, or <code>null</code> if none
-     */
-    public static String getFilenameWithoutExtension(String path) {
-        if (null == path)
-            return null;
-        int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
-        if (extIndex == -1) {
-            return path.substring(path.lastIndexOf(Const.FOLDER_SEPARATOR) + 1, path.length());
-        }
-        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        if (folderIndex > extIndex) {
-            // throw new RuntimeException("the path form is not correct!--"+path);
-            return null;
-        }
-        return path2.substring(folderIndex + 1, extIndex);
-    }
-
-    /**
-     * 从路径（url或者目录都可以）中获取文件后缀（比如 txt）<br>
-     * Extract the filename extension from the given path, e.g. "mypath/myfile.txt" -> "txt".
-     * 
-     * @param path
-     *            the file path (may be <code>null</code>)
-     * @return the extracted filename extension, or <code>null</code> if none
-     */
-    public static String getFilenameExtension(String path) {
-        if (null == path)
-            return null;
-        int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
-        if (extIndex == -1) {
-            return null;
-        }
-        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        if (folderIndex > extIndex) {
-            return null;
-        }
-        return path2.substring(extIndex + 1);
-    }
-
-    /**
-     * Apply the given relative path to the given path, assuming standard Java folder separation (i.e. "/" separators).
-     * 
-     * @param path
-     *            the path to start from (usually a full file path)
-     * @param relativePath
-     *            the relative path to apply (relative to the full file path above)
-     * @return the full file path that results from applying the relative path
-     */
-    public static String applyRelativePath(String path, String relativePath) {
-        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        String relativePath2 = relativePath.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-
-        int separatorIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        if (separatorIndex != -1) {
-            String newPath = path.substring(0, separatorIndex);
-            if (!relativePath2.startsWith(Const.FOLDER_SEPARATOR)) {
-                newPath += Const.FOLDER_SEPARATOR;
-            }
-            return newPath + relativePath2;
-        }
-        else {
-            return relativePath2;
-        }
-    }
-
-    /**
-     * Count the occurrences of the substring in string s.
-     * 
-     * @param str
-     *            string to search in. Return 0 if this is null.
-     * @param sub
-     *            string to search for. Return 0 if this is null.
-     */
-    public static int countOccurrencesOf(String str, String sub) {
-        if (str == null || sub == null || str.length() == 0 || sub.length() == 0) {
-            return 0;
-        }
-        int count = 0;
-        int pos = 0;
-        int idx;
-        while ((idx = str.indexOf(sub, pos)) != -1) {
-            ++count;
-            pos = idx + sub.length();
-        }
-        return count;
-    }
-    
-    /**
-     * Normalize the path by suppressing sequences like "path/.." and
-     * inner simple dots.
-     * <p>The result is convenient for path comparison. For other uses,
-     * notice that Windows separators ("\") are replaced by simple slashes.
-     * @param path the original path
-     * @return the normalized path
-     */
-    public static String cleanPath(String path) {
-        if (path == null) {
-            return null;
-        }
-        String pathToUse = replace(path, Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-
-        // Strip prefix from path to analyze, to not treat it as part of the
-        // first path element. This is necessary to correctly parse paths like
-        // "file:core/../core/io/Resource.class", where the ".." should just
-        // strip the first "core" directory while keeping the "file:" prefix.
-        int prefixIndex = pathToUse.indexOf(":");
-        String prefix = Const.STRING_LEN0;
-        if (prefixIndex != -1) {
-            prefix = pathToUse.substring(0, prefixIndex + 1);
-            if (prefix.contains(Const.FOLDER_SEPARATOR)) {
-                prefix = Const.STRING_LEN0;
-            }
-            else {
-                pathToUse = pathToUse.substring(prefixIndex + 1);
-            }
-        }
-        if (pathToUse.startsWith(Const.FOLDER_SEPARATOR)) {
-            prefix = prefix + Const.FOLDER_SEPARATOR;
-            pathToUse = pathToUse.substring(1);
-        }
-
-        String[] pathArray = StringSplitUtils.splitByWholeSeparator(pathToUse, Const.FOLDER_SEPARATOR);
-        List<String> pathElements = new LinkedList<String>();
-        int tops = 0;
-
-        for (int i = pathArray.length - 1; i >= 0; i--) {
-            String element = pathArray[i];
-            if (Const.CURRENT_PATH.equals(element)) {
-                // Points to current directory - drop it.
-            }
-            else if (Const.TOP_PATH.equals(element)) {
-                // Registering top path found.
-                tops++;
-            }
-            else {
-                if (tops > 0) {
-                    // Merging path element with element corresponding to top path.
-                    tops--;
-                }
-                else {
-                    // Normal path element found.
-                    pathElements.add(0, element);
-                }
-            }
-        }
-
-        // Remaining top paths need to be retained.
-        for (int i = 0; i < tops; i++) {
-            pathElements.add(0, Const.TOP_PATH);
-        }
-
-        return prefix + CollectionUtils.toString(pathElements, Const.FOLDER_SEPARATOR);
     }
 
     private static final String REPLACE_LABEL = "{}";
@@ -518,10 +330,12 @@ public class StringUtils {
         int index = 0;
         for (int start; (start = s.indexOf(REPLACE_LABEL, cursor)) != -1;) {
             result.append(s.substring(cursor, start));
-            if (index < stra.length)
+            if (index < stra.length) {
                 result.append(stra[index]);
-            else
+            }
+            else {
                 result.append(REPLACE_LABEL);
+            }
             cursor = start + 2;
             index++;
         }
@@ -583,6 +397,11 @@ public class StringUtils {
         return str;
     }
     
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // String Index 查找 相关算法工具
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+    
     public static String stripIndex(String str, String index) {
         int idx = str.indexOf(index);
         if (idx == -1) {
@@ -638,21 +457,37 @@ public class StringUtils {
     }
     
     /**
+     * Count the occurrences of the substring in string s.
+     * 
+     * @param str
+     *            string to search in. Return 0 if this is null.
+     * @param sub
+     *            string to search for. Return 0 if this is null.
+     */
+    public static int countOccurrencesOf(String str, String sub) {
+        if (str == null || sub == null || str.length() == 0 || sub.length() == 0) {
+            return 0;
+        }
+        int count = 0;
+        int pos = 0;
+        int idx;
+        while ((idx = str.indexOf(sub, pos)) != -1) {
+            ++count;
+            pos = idx + sub.length();
+        }
+        return count;
+    }
+    
+    /**
      * 判断两个字符是否相等（忽略大小写）。
      * @return 若是英文字母，不区分大小写，相等true，不等返回false； 
      *  若不是则区分，相等返回true，不等返回false。
      */
     public static boolean charEqualIgnoreCase(char c1, char c2) {
-        // 先判断c1和c2都是字母（65-90,97-122），然后判断c1=c2
-        if (((97 <= c1 && c1 <= 122) || (65 <= c1 && c1 <= 90)) 
+        // 先判断c1和c2都是字母（65-90,97-122），然后判断c1==c2
+        return (((97 <= c1 && c1 <= 122) || (65 <= c1 && c1 <= 90)) 
                 && ((97 <= c2 && c2 <= 122) || (65 <= c2 && c2 <= 90))
-                && ((c1 - c2 == 32) || (c2 - c1 == 32))) {
-            return true;
-        }
-        if (c1 == c2) {
-            return true;
-        }
-        return false;
+                && ((c1 - c2 == 32) || (c2 - c1 == 32))) ? true : c1 == c2;
     }
     
     /**
@@ -835,6 +670,188 @@ public class StringUtils {
         }
 
         return -1;
+    }
+    
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // String fileName and Path 相关工具
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+    /**
+     * 从路径（url或者目录都可以）中获取文件名称（带后缀，形如 abc.txt） <br>
+     * Extract the filename from the given path, e.g. "mypath/myfile.txt" -> "myfile.txt".
+     * 
+     * @param path
+     *            the file path (may be <code>null</code>)
+     * @return the extracted filename, or <code>null</code> if none
+     */
+    public static String getFilenameFromPath(String path) {
+        if (null == path)
+            return null;
+        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+        int separatorIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
+        return (separatorIndex != -1 ? path2.substring(separatorIndex + 1) : path2);
+    }
+
+    /**
+     * 从路径（url或者目录都可以）中剥去文件名，获得文件所在的目录。 <br>
+     * Strip the filename from the given path, e.g. "mypath/myfile.txt" -> "mypath/".
+     * 
+     * @param path
+     *            the file path (may be <code>null</code>)
+     * @return the path with stripped filename, or <code>null</code> if none
+     */
+    public static String stripFilenameFromPath(String path) {
+        if (null == path)
+            return null;
+        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+        int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
+        if (folderIndex == -1) {
+            return path2;
+        }
+        return path2.substring(0, folderIndex + 1);
+    }
+
+    private static final char EXTENSION_SEPARATOR = '.';
+
+    /**
+     * 从路径（url或者目录都可以）中获取文件名称（不带后缀，形如 abc） <br>
+     * Extract the filename without it's extension from the given path, e.g. "mypath/myfile.txt" -> "myfile".
+     * 
+     * @param path
+     *            the file path (may be <code>null</code>)
+     * @return the extracted filename, or <code>null</code> if none
+     */
+    public static String getFilenameWithoutExtension(String path) {
+        if (null == path)
+            return null;
+        int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
+        if (extIndex == -1) {
+            return path.substring(path.lastIndexOf(Const.FOLDER_SEPARATOR) + 1, path.length());
+        }
+        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+        int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
+        if (folderIndex > extIndex) {
+            // throw new RuntimeException("the path form is not correct!--"+path);
+            return null;
+        }
+        return path2.substring(folderIndex + 1, extIndex);
+    }
+
+    /**
+     * 从路径（url或者目录都可以）中获取文件后缀（比如 txt）<br>
+     * Extract the filename extension from the given path, e.g. "mypath/myfile.txt" -> "txt".
+     * 
+     * @param path
+     *            the file path (may be <code>null</code>)
+     * @return the extracted filename extension, or <code>null</code> if none
+     */
+    public static String getFilenameExtension(String path) {
+        if (null == path)
+            return null;
+        int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
+        if (extIndex == -1) {
+            return null;
+        }
+        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+        int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
+        if (folderIndex > extIndex) {
+            return null;
+        }
+        return path2.substring(extIndex + 1);
+    }
+
+    /**
+     * Apply the given relative path to the given path, assuming standard Java folder separation (i.e. "/" separators).
+     * 
+     * @param path
+     *            the path to start from (usually a full file path)
+     * @param relativePath
+     *            the relative path to apply (relative to the full file path above)
+     * @return the full file path that results from applying the relative path
+     */
+    public static String applyRelativePath(String path, String relativePath) {
+        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+        String relativePath2 = relativePath.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+
+        int separatorIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
+        if (separatorIndex != -1) {
+            String newPath = path.substring(0, separatorIndex);
+            if (!relativePath2.startsWith(Const.FOLDER_SEPARATOR)) {
+                newPath += Const.FOLDER_SEPARATOR;
+            }
+            return newPath + relativePath2;
+        }
+        else {
+            return relativePath2;
+        }
+    }
+
+    /**
+     * Normalize the path by suppressing sequences like "path/.." and
+     * inner simple dots.
+     * <p>The result is convenient for path comparison. For other uses,
+     * notice that Windows separators ("\") are replaced by simple slashes.
+     * @param path the original path
+     * @return the normalized path
+     */
+    public static String cleanPath(String path) {
+        if (path == null) {
+            return null;
+        }
+        String pathToUse = replace(path, Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+
+        // Strip prefix from path to analyze, to not treat it as part of the
+        // first path element. This is necessary to correctly parse paths like
+        // "file:core/../core/io/Resource.class", where the ".." should just
+        // strip the first "core" directory while keeping the "file:" prefix.
+        int prefixIndex = pathToUse.indexOf(":");
+        String prefix = Const.STRING_LEN0;
+        if (prefixIndex != -1) {
+            prefix = pathToUse.substring(0, prefixIndex + 1);
+            if (prefix.contains(Const.FOLDER_SEPARATOR)) {
+                prefix = Const.STRING_LEN0;
+            }
+            else {
+                pathToUse = pathToUse.substring(prefixIndex + 1);
+            }
+        }
+        if (pathToUse.startsWith(Const.FOLDER_SEPARATOR)) {
+            prefix = prefix + Const.FOLDER_SEPARATOR;
+            pathToUse = pathToUse.substring(1);
+        }
+
+        String[] pathArray = StringSplitUtils.splitByWholeSeparator(pathToUse, Const.FOLDER_SEPARATOR);
+        List<String> pathElements = new LinkedList<String>();
+        int tops = 0;
+
+        for (int i = pathArray.length - 1; i >= 0; i--) {
+            String element = pathArray[i];
+            if (Const.CURRENT_PATH.equals(element)) {
+                // Points to current directory - drop it.
+            }
+            else if (Const.TOP_PATH.equals(element)) {
+                // Registering top path found.
+                tops++;
+            }
+            else {
+                if (tops > 0) {
+                    // Merging path element with element corresponding to top path.
+                    tops--;
+                }
+                else {
+                    // Normal path element found.
+                    pathElements.add(0, element);
+                }
+            }
+        }
+
+        // Remaining top paths need to be retained.
+        for (int i = 0; i < tops; i++) {
+            pathElements.add(0, Const.TOP_PATH);
+        }
+
+        return prefix + CollectionUtils.toString(pathElements, Const.FOLDER_SEPARATOR);
     }
 
 }

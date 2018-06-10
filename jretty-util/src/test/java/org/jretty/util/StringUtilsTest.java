@@ -90,6 +90,16 @@ public class StringUtilsTest {
         assertEquals("234", StringUtils.middleOfIndex(str, "01", "56"));
     }
     
+    @Test
+    public void test_charEqualIgnoreCase() {
+        assertTrue(StringUtils.charEqualIgnoreCase('A', 'a'));
+        assertTrue(StringUtils.charEqualIgnoreCase('z', 'Z'));
+        assertTrue(StringUtils.charEqualIgnoreCase('Z', 'Z'));
+        assertTrue(StringUtils.charEqualIgnoreCase('额', '额'));
+        assertFalse(StringUtils.charEqualIgnoreCase('额', '饿'));
+        assertTrue(StringUtils.charEqualIgnoreCase('-', '-'));
+    }
+    
     
     @Test
     public void testIndexIgnoreCase() {

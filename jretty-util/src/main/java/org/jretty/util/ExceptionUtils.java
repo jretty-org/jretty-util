@@ -27,6 +27,9 @@ import java.io.StringWriter;
  * @since 2013-6-27
  */
 public class ExceptionUtils {
+    private static final String OMIT_PRE = "\t... ";
+    private static final String OMIT_SUB = " more\n";
+    private static final String SPLIT_SIGN = ": ";
 
     /**
      * 智能将StackTrace堆栈信息转换成字符串
@@ -49,23 +52,14 @@ public class ExceptionUtils {
      */
     public static String getStackTraceStr(LineChecker linechecker, Throwable e, String prompt) {
         if (null == e) {
-            return "";
+            return Const.STRING_LEN0;
         }
-        StringWriter str = new StringWriter();
-        PrintWriter out = new PrintWriter(str);
-        try {
-            e.printStackTrace(out);
-            out.flush();
-        }
-        catch (RuntimeException ex) {
-            throw new NestedRuntimeException(ex);
-        } finally {
-            out.close();
-        }
-        String result = str.toString();
-        StringReader sr = new StringReader(result);
-
-        BufferedReader br = new BufferedReader(sr);
+        // 注意：StringWriter/StringReader不需要close和flush
+        StringWriter sw = new StringWriter();
+        PrintWriter out = new PrintWriter(sw);
+        e.printStackTrace(out);
+        out = null;
+        
         StringBuilder sb = new StringBuilder();
         if (StringUtils.isNotEmpty(prompt)) {
             sb.append(prompt);
@@ -75,30 +69,31 @@ public class ExceptionUtils {
         int skip = 0;
         String errorMsg = null;
         String back = null;
+        BufferedReader br = new BufferedReader(new StringReader(sw.toString()));
         try {
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("\tat")) {
                     if (skip > 0) {
-                        sb.append("\t... ").append(skip).append(" more\n");
+                        sb.append(OMIT_PRE).append(skip).append(OMIT_SUB);
                         skip = 0;
                     }
                     if (errorMsg != null) {
-                        errorMsg += "\n" + line;
+                        errorMsg += Const.LF + line;
                     }
                     else {
                         errorMsg = line;
                     }
-                    // sb.append(line).append('\n');
+                    // sb.append(line).append(Const.LF);
                     at = 3;
                     continue;
                 }
                 if (errorMsg != null) {
                     if (back != null && errorMsg.length() > 100 && back.length() > 100) { // 小于100的不做处理
                         boolean a = errorMsg.endsWith(back.substring(back.length() - 10));
-                        int ia = errorMsg.indexOf(": ") + 2;
+                        int ia = errorMsg.indexOf(SPLIT_SIGN) + 2;
                         String ma = errorMsg.substring(ia, ia + 10); // 截取10个字符
-                        int ib = back.indexOf(": ") + 2;
+                        int ib = back.indexOf(SPLIT_SIGN) + 2;
                         String mb = back.substring(ib, ib + 10); // 截取10个字符
                         boolean b = ma.equals(mb);
                         if (a && b) {
@@ -107,36 +102,36 @@ public class ExceptionUtils {
                             errorMsg = null;
                         }
                         else {
-                            sb.append(errorMsg).append('\n');
+                            sb.append(errorMsg).append(Const.LF);
                             back = errorMsg;
                             errorMsg = null;
                         }
                     }
                     else {
-                        sb.append(errorMsg).append('\n');
+                        sb.append(errorMsg).append(Const.LF);
                         back = errorMsg;
                         errorMsg = null;
                     }
                 }
                 if (at > 0) {
-                    sb.append(line).append('\n');
+                    sb.append(line).append(Const.LF);
                     at--;
                     continue;
                 }
                 if (linechecker == null) {
                     if (skip > 0) {
-                        sb.append("\t... ").append(skip).append(" more\n");
+                        sb.append(OMIT_PRE).append(skip).append(OMIT_SUB);
                         skip = 0;
                     }
-                    sb.append(line).append('\n');
+                    sb.append(line).append(Const.LF);
                     continue;
                 }
                 if (linechecker.checkLine(line)) {
                     if (skip > 0) {
-                        sb.append("\t... ").append(skip).append(" more\n");
+                        sb.append(OMIT_PRE).append(skip).append(OMIT_SUB);
                         skip = 0;
                     }
-                    sb.append(line).append('\n');
+                    sb.append(line).append(Const.LF);
                     continue;
                 }
                 skip++;
@@ -145,6 +140,7 @@ public class ExceptionUtils {
         catch (Exception exp) {
             throw new NestedRuntimeException(exp);
         }
+        br = null;
         if (errorMsg != null) {
             sb.append(errorMsg);
         }
