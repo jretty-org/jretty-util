@@ -20,27 +20,21 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  * @author zollty
  * @since 2016-11-26
- * @param <T>
  */
 public class BatchTakeBlockQueue<T> {
-
+    
+    /** 基于装饰者模式设计 */
     private LinkedBlockingQueue<T> dataCache;
-
-    /**
-     * 最大缓存的数据条数
-     */
+    
+    /** 最大缓存的数据条数 */
     private final int maxCacheSize;
     
     private final static int DEFAULT_MAX_CACHE_SIZE = 102400;
 
-    /**
-     * 每次批量取数据的最小条数
-     */
+    /** 每次批量取数据的最小条数 */
     private int batchMinSize = 100;
 
-    /**
-     * 如果使用offerMayWait，则必须设置offerTimeoutMs值。
-     */
+    /** 如果使用offerMayWait，则必须设置offerTimeoutMs值。 */
     private Long offerTimeoutMs;
 
     /** Lock held by take, poll, etc */
@@ -73,9 +67,7 @@ public class BatchTakeBlockQueue<T> {
 
     public boolean offer(T src) throws InterruptedException {
         if (dataCache.offer(src)) {
-
             checkWhenAddData();
-
             return true;
         }
         return false;
@@ -84,28 +76,21 @@ public class BatchTakeBlockQueue<T> {
     public boolean offerMayWait(T src) throws InterruptedException {
         if (offerTimeoutMs != null) {
             if (dataCache.offer(src, offerTimeoutMs, TimeUnit.MILLISECONDS)) {
-
                 checkWhenAddData();
-
-                return true;
-            }
-            return false;
-        } else {
-            if (dataCache.offer(src)) {
-
-                checkWhenAddData();
-
                 return true;
             }
             return false;
         }
+        if (dataCache.offer(src)) {
+            checkWhenAddData();
+            return true;
+        }
+        return false;
     }
     
     public boolean offerMayWait(T src, long offerTimeoutMs) throws InterruptedException {
         if (dataCache.offer(src, offerTimeoutMs, TimeUnit.MILLISECONDS)) {
-
             checkWhenAddData();
-
             return true;
         }
         return false;
@@ -142,7 +127,6 @@ public class BatchTakeBlockQueue<T> {
 
         final ReentrantLock takeLock = this.takeLock;
         try {
-
             takeLock.lockInterruptibly();
             try {
                 while (tmpCount.get() < batchMinSize) {
@@ -154,7 +138,6 @@ public class BatchTakeBlockQueue<T> {
             } finally {
                 takeLock.unlock();
             }
-
         } catch (Exception e) {
             // ignore...
         }
@@ -199,6 +182,5 @@ public class BatchTakeBlockQueue<T> {
     public void setOfferTimeoutMs(Long offerTimeoutMs) {
         this.offerTimeoutMs = offerTimeoutMs;
     }
-
-
+    
 }
