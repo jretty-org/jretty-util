@@ -38,3 +38,16 @@ And msg utils for Properties manage, and some internal optimizations.
 Changes in version 1.3.0 (2017-01-24)
 -------------------------------------
 Make the Construtor parameter of Nested Exception from string to object, and other optimizations.
+
+Changes in version 1.4.0 (2017-04-28)
+-------------------------------------
+a lot of optimization and new util's methods.
+StringSplitUtils\StringUtils\ReflectionMethodUtils optimization. Add FileUtils.getTextContent method.
+See the commits history for details.
+
+Changes in version 1.5.0 (2018-06-10)
+-------------------------------------
+A lot of optimization and new util's methods.
+Add IpUtils and NamedThread api, add String index algorithm, add findFile algorithm, ClassUtils optimization.
+See the commits history for details.
+
