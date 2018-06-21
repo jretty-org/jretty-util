@@ -144,9 +144,10 @@ public class ReflectionUtils extends ReflectionMethodUtils {
      * Given the source object and the destination, which must be the same class
      * or a subclass, copy all fields, including inherited fields. Designed to
      * work on objects with public no-arg constructors.
+     * @see #fieldCloneByName(Object, Object)
      * @throws IllegalArgumentException if the arguments are incompatible
      */
-    public static void fieldCloneByInherit(final Object parentSource, final Object dest) {
+    public static <T> T fieldCloneByInherit(final Object parentSource, final T dest) {
         Assert.notNull(parentSource, "Source for field copy cannot be null");
         Assert.notNull(dest, "Destination for field copy cannot be null");
         if (!parentSource.getClass().isAssignableFrom(dest.getClass())) {
@@ -161,6 +162,8 @@ public class ReflectionUtils extends ReflectionMethodUtils {
                 setField(field, dest, srcValue);
             }
         }, COPYABLE_FIELDS);
+        
+        return dest;
     }
     
     /**
@@ -169,8 +172,9 @@ public class ReflectionUtils extends ReflectionMethodUtils {
      * <p>支持数值类型 把小范围的值 赋值给 大范围的值，比如Float赋值给Double 
      * @param source 原始对象[orginal obj]
      * @param target 目标对象[target obj]
+     * @return target
      */
-    public static void fieldCloneByName(final Object source, final Object target) {
+    public static <T> T fieldCloneByName(final Object source, final T target) {
         Assert.notNull(source, "Source for field copy cannot be null");
         Assert.notNull(target, "Destination for field copy cannot be null");
         final Map<String, Field> sourceMap = getAllNonStaticFields(source.getClass());
@@ -190,9 +194,14 @@ public class ReflectionUtils extends ReflectionMethodUtils {
                 }
             }
         }, COPYABLE_FIELDS);
+        
+        return target;
     }
 
-    public static void fieldCloneByName(final Map<String, Object> sourceMap, final Object target) {
+    /**
+     * @see #fieldCloneByName(Object, Object)
+     */
+    public static <T> T fieldCloneByName(final Map<String, Object> sourceMap, final T target) {
         Assert.isTrue(CollectionUtils.isNotEmpty(sourceMap), "source map for field copy cannot be empty");
         Assert.notNull(target, "Destination for field copy cannot be null");
         doWithFields(target.getClass(), new FieldCallback() {
@@ -212,6 +221,8 @@ public class ReflectionUtils extends ReflectionMethodUtils {
                 }
             }
         }, COPYABLE_FIELDS);
+        
+        return target;
     }
     
     public static Map<String, Object> toMap(final Object source) {
