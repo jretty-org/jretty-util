@@ -333,20 +333,19 @@ public class ArrayUtils {
         return newArr;
     }
     
-    @SuppressWarnings("unchecked")
-    public static <T> T[] add(T[] array, T element) {
+    public static <T> T[] add(final T[] array, final T element) {
         Class<?> type;
         if (array != null) {
-            type = array.getClass();
+            type = array.getClass().getComponentType();
+        } else if (element != null) {
+            type = element.getClass();
+        } else {
+            throw new IllegalArgumentException("Arguments cannot both be null");
         }
-        else {
-            if (element != null)
-                type = element.getClass();
-            else
-                throw new IllegalArgumentException("Arguments cannot both be null");
-        }
+        @SuppressWarnings("unchecked") // type must be T
+        final
         T[] newArray = (T[]) copyArrayGrow1(array, type);
-        newArray[(newArray.length - 1)] = element;
+        newArray[newArray.length - 1] = element;
         return newArray;
     }
 
@@ -440,24 +439,8 @@ public class ArrayUtils {
         return newArr;
     }
     
-    public static String[] addAll(String[] array1, String[] array2) {
-        if (array1 == null && array2 == null) {
-            return null;
-        }
-        if (array1 == null) {
-            return array2.clone();
-        }
-        if (array2 == null) {
-            return array1.clone();
-        }
-        String[] joinedArray = new String[array1.length + array2.length];
-        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
-        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        return joinedArray;
-    }
-    
     @SuppressWarnings("unchecked")
-    public static <T> T[] addAll(T[] array1, T[] array2) {
+    public static <T> T[] addAll(T[] array1, T... array2) {
         if (array1 == null && array2 == null) {
             return null;
         }
@@ -484,8 +467,24 @@ public class ArrayUtils {
         }
         return joinedArray;
     }
+    
+    public static String[] addAll(String[] array1, String... array2) {
+        if (array1 == null && array2 == null) {
+            return null;
+        }
+        if (array1 == null) {
+            return array2.clone();
+        }
+        if (array2 == null) {
+            return array1.clone();
+        }
+        String[] joinedArray = new String[array1.length + array2.length];
+        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
+        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
+        return joinedArray;
+    }
 
-    public static boolean[] addAll(boolean[] array1, boolean[] array2) {
+    public static boolean[] addAll(boolean[] array1, boolean... array2) {
         if (array1 == null && array2 == null) {
             return null;
         }
@@ -501,7 +500,7 @@ public class ArrayUtils {
         return joinedArray;
     }
 
-    public static char[] addAll(char[] array1, char[] array2) {
+    public static char[] addAll(char[] array1, char... array2) {
         if (array1 == null && array2 == null) {
             return null;
         }
@@ -517,7 +516,7 @@ public class ArrayUtils {
         return joinedArray;
     }
 
-    public static byte[] addAll(byte[] array1, byte[] array2) {
+    public static byte[] addAll(byte[] array1, byte... array2) {
         if (array1 == null && array2 == null) {
             return null;
         }
@@ -533,7 +532,7 @@ public class ArrayUtils {
         return joinedArray;
     }
 
-    public static short[] addAll(short[] array1, short[] array2) {
+    public static short[] addAll(short[] array1, short... array2) {
         if (array1 == null && array2 == null) {
             return null;
         }
@@ -549,7 +548,7 @@ public class ArrayUtils {
         return joinedArray;
     }
 
-    public static int[] addAll(int[] array1, int[] array2) {
+    public static int[] addAll(int[] array1, int... array2) {
         if (array1 == null && array2 == null) {
             return null;
         }
@@ -565,7 +564,7 @@ public class ArrayUtils {
         return joinedArray;
     }
 
-    public static long[] addAll(long[] array1, long[] array2) {
+    public static long[] addAll(long[] array1, long... array2) {
         if (array1 == null && array2 == null) {
             return null;
         }
@@ -581,7 +580,7 @@ public class ArrayUtils {
         return joinedArray;
     }
 
-    public static float[] addAll(float[] array1, float[] array2) {
+    public static float[] addAll(float[] array1, float... array2) {
         if (array1 == null && array2 == null) {
             return null;
         }
@@ -597,7 +596,7 @@ public class ArrayUtils {
         return joinedArray;
     }
 
-    public static double[] addAll(double[] array1, double[] array2) {
+    public static double[] addAll(double[] array1, double... array2) {
         if (array1 == null && array2 == null) {
             return null;
         }
