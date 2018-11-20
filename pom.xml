@@ -18,19 +18,27 @@
   <parent>
     <groupId>org.jretty</groupId>
     <artifactId>jretty</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <!-- <relativePath>lib/pom-1.0.xml</relativePath> -->
   </parent>
   <artifactId>jretty-util-parent</artifactId>
-  <version>1.0.0-RELEASE</version>
+  <version>1.2.0-RELEASE</version>
   <packaging>pom</packaging>
   <name>jretty-util-parent</name>
   <description>A simple Java util's libraries. See the sub modules.</description>
 
   <modules>
     <module>jretty-util</module>
+    <module>jretty-util-basic</module>
+    <module>jretty-util-json</module>
+    <module>jretty-util-zip</module>
+    <module>jretty-util-match</module>
+    <module>jretty-util-resource</module>
+    <module>jretty-util-msg</module>
+    <module>jretty-util-order</module>
     <module>jretty-util-web</module>
     <module>jretty-util-ext</module>
+    <module>jretty-core-starter-mvc</module>
   </modules>
 
   <!-- CONST -->
@@ -47,16 +55,56 @@
         <groupId>org.jretty</groupId>
         <artifactId>jretty-log</artifactId>
         <version>1.2.0</version>
-        <scope>system</scope>
-        <systemPath>${basedir}/../lib/jretty-log-1.2.0.jar</systemPath>
       </dependency>
-
+      
       <dependency>
         <groupId>org.jretty</groupId>
-        <artifactId>jretty-util</artifactId>
-        <version>1.5.0</version>
+        <artifactId>jretty-util-basic</artifactId>
+        <version>1.0.0</version>
       </dependency>
-
+      
+      <dependency>
+        <groupId>org.jretty</groupId>
+        <artifactId>jretty-util-ext</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.jretty</groupId>
+        <artifactId>jretty-util-zip</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.jretty</groupId>
+        <artifactId>jretty-util-json</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.jretty</groupId>
+        <artifactId>jretty-util-match</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.jretty</groupId>
+        <artifactId>jretty-util-order</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.jretty</groupId>
+        <artifactId>jretty-util-resource</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.jretty</groupId>
+        <artifactId>jretty-util-web</artifactId>
+        <version>1.2.0</version>
+      </dependency>
+      
       <!-- Servlet -->
       <dependency>
         <groupId>javax.servlet</groupId>
@@ -77,8 +125,7 @@
         <groupId>org.jretty</groupId>
         <artifactId>tesper</artifactId>
         <version>1.0.0</version>
-        <scope>system</scope>
-        <systemPath>${basedir}/../lib/tesper-1.0.0.jar</systemPath>
+        <scope>test</scope>
       </dependency>
 
     </dependencies>

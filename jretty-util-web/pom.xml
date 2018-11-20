@@ -18,12 +18,12 @@
   <parent>
     <groupId>org.jretty</groupId>
     <artifactId>jretty-util-parent</artifactId>
-    <version>1.0.0-RELEASE</version>
+    <version>1.2.0-RELEASE</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>jretty-util-web</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
   <name>jretty-util-web</name>
   <description>Java utils use under web servlet environment. See the parent pom for more infomation.</description>
 
@@ -31,18 +31,18 @@
 
     <dependency>
       <groupId>org.jretty</groupId>
-      <artifactId>jretty-log</artifactId>
+      <artifactId>jretty-util-basic</artifactId>
     </dependency>
     
     <dependency>
       <groupId>org.jretty</groupId>
-      <artifactId>jretty-util</artifactId>
+      <artifactId>jretty-util-resource</artifactId>
     </dependency>
 
-    <!-- Servlet -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     
 
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>org.jretty</groupId>
       <artifactId>tesper</artifactId>
-      <!-- <scope>test</scope> -->
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

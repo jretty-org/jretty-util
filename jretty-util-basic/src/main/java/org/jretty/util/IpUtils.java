@@ -271,7 +271,8 @@ public class IpUtils {
     }
     
     /**
-     * 根据Socket方式，获取本机出口IP
+     * 根据Socket方式，获取本机出口IP<br>
+     * 可以使用域名服务器作为测试，如果能连外网，可以使用：getSocketIp("1.1.1.1", 80)
      * @param host 远程通信地址
      * @param port 通信端口
      * @return 本机IP
@@ -279,7 +280,6 @@ public class IpUtils {
     public static String getSocketIp(final String host, final int port) {
         Socket socket = null;
         try {
-            // socket = new Socket(host, port);
             socket = new Socket();
             socket.connect(new InetSocketAddress(host, port), 500);
             socket.setSoTimeout(1000);

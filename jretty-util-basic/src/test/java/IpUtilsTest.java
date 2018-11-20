@@ -496,6 +496,7 @@ public class IpUtilsTest {
         System.out.println("11.getLocalIP(\"eth0\")");
         System.out.println("12.getDefaultHostAddress()");
         System.out.println("13.getSpecialHostAddress(\"www.baidu.com\")");
+        System.out.println("14.printWangKaInfo()");
         while (true) {
           System.out.print("> ");
           String input = new BufferedReader(new InputStreamReader(System.in, "UTF-8")).readLine();
@@ -568,6 +569,10 @@ public class IpUtilsTest {
                   System.out.println("Result > " + getSpecialHostAddress("www.baidu.com") +" (cost " + (System.currentTimeMillis()-start) + " ms)");
                   break;
               }
+              case 14: {
+                  printWangKaInfo();
+                  break;
+              }
           }
         }
         
@@ -629,6 +634,54 @@ null
 127.0.0.1
 00-50-56-8A-61-24
          */
+    }
+    
+    
+    /**
+     * 打印本机网卡信息（针对linux/unix系统）
+     */
+    public static void printWangKaInfo() {
+        try {
+            Enumeration<NetworkInterface> netInterfaces = (Enumeration<NetworkInterface>) NetworkInterface
+                    .getNetworkInterfaces();
+            while (netInterfaces.hasMoreElements()) {
+                NetworkInterface ni = (NetworkInterface) netInterfaces.nextElement();
+                if (!ni.isUp()) { // 跳过没有启用的网卡
+                    System.out.println("未启用的网卡：" + ni.getName() + " mac: " + toHexMac(ni.getHardwareAddress()));
+                    // continue;
+                }
+                System.out.println("网卡：" + ni.getName() + " mac: " + toHexMac(ni.getHardwareAddress()));
+
+                // 遍历所有ip
+                Enumeration<InetAddress> ips = ni.getInetAddresses();
+                InetAddress ip;
+                while (ips.hasMoreElements()) {
+                    ip = (InetAddress) ips.nextElement();
+                    if (!ip.isLoopbackAddress() // 127.开头的都是lookback地址
+                            && ip.getHostAddress().indexOf(":") == -1) {
+                        System.out.println(ni.getName() + " mac: " + toHexMac(ni.getHardwareAddress()) 
+                                + " -ip- " + ip.getHostAddress() + " - " + ni.getMTU() + " isVirtual: " + ni.isVirtual()
+                                + " Multicast: " + ni.supportsMulticast() + " Parent: " + ni.getParent());
+                        System.out.println("ip.getClass-----------------------------------" + ip.getClass().getName());
+                        System.out.println("getHostName" + ": " + new InetAddressHelper(ip).startJoin(2000).getHostName());
+                        System.out.println("getHostAddress" + ": " + ip.getHostAddress());
+                        System.out.println("isSiteLocalAddress" + ": " + ip.isSiteLocalAddress());
+                        System.out.println("isLinkLocalAddress" + ": " + ip.isLinkLocalAddress());
+                        System.out.println("isAnyLocalAddress" + ": " + ip.isAnyLocalAddress());
+                        System.out.println("isMCGlobal" + ": " + ip.isMCGlobal());
+                        System.out.println("isMCLinkLocal" + ": " + ip.isMCLinkLocal());
+                        System.out.println("isMCNodeLocal" + ": " + ip.isMCNodeLocal());
+                        System.out.println("isMulticastAddress" + ": " + ip.isMulticastAddress());
+                        System.out.println("isReachable(100)" + ": " + ip.isReachable(100));
+                        System.out.println("-----------------------------------");
+                    }
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     

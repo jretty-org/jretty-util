@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.jretty</groupId>
     <artifactId>jretty-util-parent</artifactId>
-    <version>1.0.0-RELEASE</version>
+    <version>1.2.0-RELEASE</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>jretty-util-ext</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
+  <version>1.0.0</version>
   <name>jretty-util-ext</name>
   <description>jretty util extentions.</description>
 
@@ -27,16 +27,18 @@
 
     <dependency>
       <groupId>org.jretty</groupId>
-      <artifactId>jretty-log</artifactId>
+      <artifactId>jretty-util-basic</artifactId>
     </dependency>
     
+    <!-- for optional -->
     
     <!-- RedisTemplate 需要用到 -->
     <dependency>
       <artifactId>jedis</artifactId>
       <groupId>redis.clients</groupId>
       <version>2.9.0</version>
-      <scope>provided</scope>
+      <!-- <scope>provided</scope> -->
+      <optional>true</optional>
     </dependency>
 
     <!-- ZzBeanUtils 需要用到 -->
@@ -44,13 +46,7 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
       <version>${spring.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>${spring.version}</version>
-      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     
     
@@ -72,7 +68,7 @@
     <dependency>
       <groupId>org.jretty</groupId>
       <artifactId>tesper</artifactId>
-      <!-- <scope>test</scope> -->
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
