@@ -18,7 +18,7 @@
   <parent>
     <groupId>org.jretty</groupId>
     <artifactId>jretty</artifactId>
-    <version>1.1</version>
+    <version>21</version>
     <!-- <relativePath>lib/pom-1.0.xml</relativePath> -->
   </parent>
   <artifactId>jretty-util-parent</artifactId>
@@ -28,7 +28,7 @@
   <description>A simple Java util's libraries. See the sub modules.</description>
 
   <modules>
-    <module>jretty-util</module>
+    <!-- <module>jretty-util</module> -->
     <module>jretty-util-basic</module>
     <module>jretty-util-json</module>
     <module>jretty-util-zip</module>
@@ -44,7 +44,9 @@
   <!-- CONST -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java-version>1.6</java-version>
+    <java-version>1.7</java-version>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
   </properties>
 
   <!-- DEPENDENCIES Version Management -->
@@ -149,7 +151,7 @@
       <resource>
         <directory>${basedir}/src/main/resources</directory>
         <excludes>
-          <exclude>*.copyarea.db</exclude>
+          <exclude>.gitkeep</exclude>
           <exclude>**/*.keep</exclude>
           <exclude>**/*.bak</exclude>
           <exclude>**/placeholder</exclude>
@@ -174,7 +176,6 @@
           <artifactId>maven-jar-plugin</artifactId>
           <configuration>
             <archive>
-              <addMavenDescriptor>false</addMavenDescriptor>
               <manifestEntries>
                 <Built-By>Zollty Tsou</Built-By>
               </manifestEntries>

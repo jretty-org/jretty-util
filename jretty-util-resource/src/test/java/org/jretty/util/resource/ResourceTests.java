@@ -73,11 +73,11 @@ public class ResourceTests {
 
     @Test
     public void testClassPathResource() throws IOException {
-        Resource resource = new ClassPathResource("org/zollty/util/resource/Resource.class");
+        Resource resource = new ClassPathResource("org/jretty/util/resource/Resource.class");
         doTestResource(resource);
-        Resource resource2 = new ClassPathResource("org/zollty/util/resource/../resource/./Resource.class");
+        Resource resource2 = new ClassPathResource("org/jretty/util/resource/../resource/./Resource.class");
         assertEquals(resource, resource2);
-        Resource resource3 = new ClassPathResource("org/zollty/util/resource/").createRelative("../resource/./Resource.class");
+        Resource resource3 = new ClassPathResource("org/jretty/util/resource/").createRelative("../resource/./Resource.class");
         assertEquals(resource, resource3);
 
         // Check whether equal/hashCode works in a HashSet.
@@ -90,10 +90,10 @@ public class ResourceTests {
     @Test
     public void testClassPathResourceWithClassLoader() throws IOException {
         Resource resource =
-                new ClassPathResource("org/zollty/util/resource/Resource.class", getClass().getClassLoader());
+                new ClassPathResource("org/jretty/util/resource/Resource.class", getClass().getClassLoader());
         doTestResource(resource);
         assertEquals(resource,
-                new ClassPathResource("org/zollty/util/resource/../resource/./Resource.class", getClass().getClassLoader()));
+                new ClassPathResource("org/jretty/util/resource/../resource/./Resource.class", getClass().getClassLoader()));
     }
 
     @Test
