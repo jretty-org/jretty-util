@@ -39,6 +39,7 @@
     <module>jretty-util-web</module>
     <module>jretty-util-ext</module>
     <module>jretty-core-starter-mvc</module>
+    <module>jretty-core-starter-all</module>
   </modules>
 
   <!-- CONST -->

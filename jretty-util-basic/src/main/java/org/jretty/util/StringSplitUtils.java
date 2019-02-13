@@ -481,17 +481,17 @@ public class StringSplitUtils {
     }
     
     //~~~~~~~~~
-    
     /**
      * 不显示空值，例如 src = "/opt//was/"   sep=/  result = [opt, was]
      * @see #splitByWholeSeparatorWorker(String, String, boolean, boolean)
      * @deprecated use {@link #splitByWholeIgnoreEmpty(String, String)}
      */
     public static String[] splitByWholeSeparatorIgnoreEmpty(String str, String separator) {
-        return splitByWholeSeparatorWorker(str, separator, false, false, false) ; // 显示空值
+        return splitByWholeSeparatorWorker(str, separator, true, false, false) ; // 显示空值
     }
     
     /**
+     * 不显示空值，例如 src = "/opt//was/"   sep=/  result = [opt, was]
      * @see #splitByWholeIgnoreEmpty(String, String, boolean)
      */
     public static String[] splitByWholeIgnoreEmpty(String str, String separator) {

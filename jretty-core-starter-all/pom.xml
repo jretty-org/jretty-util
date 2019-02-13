@@ -20,11 +20,11 @@
     <artifactId>jretty</artifactId>
     <version>21</version>
   </parent>
-  <artifactId>jretty-core-starter-mvc</artifactId>
+  <artifactId>jretty-core-starter-all</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
-  <name>jretty-core-starter-mvc</name>
-  <description>Starter of jretty-core (common-use java utils) for zollty-mvc.</description>
+  <version>1.0-SNAPSHOT</version>
+  <name>jretty-core-starter-all</name>
+  <description>Starter of jretty-core (common-use java utils), include all jretty-util-*.</description>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -40,25 +40,43 @@
       <artifactId>jretty-util-basic</artifactId>
       <version>1.0.0</version>
     </dependency>
-    
+
+    <dependency>
+      <groupId>org.jretty</groupId>
+      <artifactId>jretty-util-ext</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jretty</groupId>
+      <artifactId>jretty-util-zip</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jretty</groupId>
+      <artifactId>jretty-util-json</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
     <dependency>
       <groupId>org.jretty</groupId>
       <artifactId>jretty-util-match</artifactId>
       <version>1.0.0</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jretty</groupId>
       <artifactId>jretty-util-order</artifactId>
       <version>1.0.0</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jretty</groupId>
       <artifactId>jretty-util-resource</artifactId>
       <version>1.0.0</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jretty</groupId>
       <artifactId>jretty-util-web</artifactId>
