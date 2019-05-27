@@ -32,12 +32,22 @@ public class UrlUtils {
 
     /** URL protocol for an entry from a jar file: "jar" */
     public static final String URL_PROTOCOL_JAR = "jar";
+    /** URL prefix for loading from a jar file: "jar:". */
+    public static final String JAR_URL_PREFIX = "jar:";
+    
+    /** URL protocol for an entry from a war file: "war". */
+    public static final String URL_PROTOCOL_WAR = "war";
+    /** URL prefix for loading from a war file on Tomcat: "war:". */
+    public static final String WAR_URL_PREFIX = "war:";
 
     /** URL protocol for an entry from a zip file: "zip" */
     public static final String URL_PROTOCOL_ZIP = "zip";
 
     /** URL protocol for an entry from a JBoss jar file: "vfszip" */
     public static final String URL_PROTOCOL_VFSZIP = "vfszip";
+    
+    /** URL protocol for a JBoss file system resource: "vfsfile". */
+    public static final String URL_PROTOCOL_VFSFILE = "vfsfile";
 
     /** URL protocol for a JBoss VFS resource: "vfs" */
     public static final String URL_PROTOCOL_VFS = "vfs";
@@ -50,36 +60,37 @@ public class UrlUtils {
 
     /** Separator between JAR URL and file path within the JAR */
     public static final String JAR_URL_SEPARATOR = "!/";
+    
+    /** Special separator between WAR URL and jar part on Tomcat. */
+    public static final String WAR_URL_SEPARATOR = "*/";
 
     
     /**
      * Determine whether the given URL points to a resource in the file system,
-     * that is, has protocol "file" or "vfs".
+     * i.e. has protocol "file", "vfsfile" or "vfs".
      * @param url the URL to check
      * @return whether the URL has been identified as a file system URL
      */
     public static boolean isFileURL(URL url) {
         String protocol = url.getProtocol();
-        return (URL_PROTOCOL_FILE.equals(protocol) || protocol.startsWith(URL_PROTOCOL_VFS));
+        return (URL_PROTOCOL_FILE.equals(protocol) || URL_PROTOCOL_VFSFILE.equals(protocol) ||
+                URL_PROTOCOL_VFS.equals(protocol));
     }
-
+    
     /**
-     * Determine whether the given URL points to a resource in a jar file,
-     * that is, has protocol "jar", "zip", "wsjar" or "code-source".
-     * <p>"zip" and "wsjar" are used by BEA WebLogic Server and IBM WebSphere, respectively,
-     * but can be treated like jar files. The same applies to "code-source" URLs on Oracle
-     * OC4J, provided that the path contains a jar separator.
+     * Determine whether the given URL points to a resource in a jar file.
+     * i.e. has protocol "jar", "war, ""zip", "vfszip" or "wsjar".
      * @param url the URL to check
      * @return whether the URL has been identified as a JAR URL
      */
     public static boolean isJarURL(URL url) {
         String protocol = url.getProtocol();
-        return (URL_PROTOCOL_JAR.equals(protocol) ||
-                URL_PROTOCOL_ZIP.equals(protocol) ||
-                URL_PROTOCOL_WSJAR.equals(protocol) ||
-                (URL_PROTOCOL_CODE_SOURCE.equals(protocol) && url.getPath().contains(JAR_URL_SEPARATOR)));
+        return (URL_PROTOCOL_JAR.equals(protocol) || URL_PROTOCOL_WAR.equals(protocol) ||
+                URL_PROTOCOL_ZIP.equals(protocol) || URL_PROTOCOL_VFSZIP.equals(protocol) ||
+                URL_PROTOCOL_WSJAR.equals(protocol));
     }
 
+    
     /**
      * Extract the URL for the actual jar file from the given URL
      * (which may point to a resource in a jar file or to a jar file itself).
@@ -107,6 +118,37 @@ public class UrlUtils {
         else {
             return jarUrl;
         }
+    }
+
+    /**
+     * Extract the URL for the outermost archive from the given jar/war URL
+     * (which may point to a resource in a jar file or to a jar file itself).
+     * <p>In the case of a jar file nested within a war file, this will return
+     * a URL to the war file since that is the one resolvable in the file system.
+     * @param jarUrl the original URL
+     * @return the URL for the actual jar file
+     * @throws MalformedURLException if no valid jar file URL could be extracted
+     * @since 4.1.8
+     * @see #extractJarFileURL(URL)
+     */
+    public static URL extractArchiveURL(URL jarUrl) throws MalformedURLException {
+        String urlFile = jarUrl.getFile();
+
+        int endIndex = urlFile.indexOf(WAR_URL_SEPARATOR);
+        if (endIndex != -1) {
+            // Tomcat's "war:file:...mywar.war*/WEB-INF/lib/myjar.jar!/myentry.txt"
+            String warFile = urlFile.substring(0, endIndex);
+            if (URL_PROTOCOL_WAR.equals(jarUrl.getProtocol())) {
+                return new URL(warFile);
+            }
+            int startIndex = warFile.indexOf(WAR_URL_PREFIX);
+            if (startIndex != -1) {
+                return new URL(warFile.substring(startIndex + WAR_URL_PREFIX.length()));
+            }
+        }
+
+        // Regular "jar:file:...myjar.jar!/myentry.txt"
+        return extractJarFileURL(jarUrl);
     }
 
     /**

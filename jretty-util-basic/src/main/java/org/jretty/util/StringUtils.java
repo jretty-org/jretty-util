@@ -423,6 +423,69 @@ public class StringUtils {
         return str;
     }
     
+    /**
+     * 英文单词 驼峰 转 下划线（全小写） 格式
+     * 例如 
+     * <p> dsaTimeDS == dsa_Time_DS
+     * <p> dsaTimeDSEr == dsa_Time_DS_Er
+     */
+    public static String camel2Underline(String param) {
+        if (param == null || param.length() == 0) {
+            return Const.STRING_LEN0;
+        }
+        int len = param.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = param.charAt(i);
+            if (Character.isUpperCase(c)) {
+                if ((i > 0 && Character.isLowerCase(param.charAt(i - 1)))
+                        || (i + 1 < len && Character.isLowerCase(param.charAt(i + 1)))) {
+                    sb.append(Const.UNDERLINE);
+                }
+                sb.append(c);
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 英文单词 下划线 转 驼峰 格式
+     */
+    public static String underline2Camel(String param) {
+        if (param == null || param.length() == 0) {
+            return Const.STRING_LEN0;
+        }
+        int len = param.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = param.charAt(i);
+            if (c == Const.UNDERLINE) {
+                if (++i < len) {
+                    sb.append(Character.toUpperCase(param.charAt(i)));
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+    
+    
+    /**
+     * 类似于 String.substring(int index)，只不过index从后面算起
+     * <p>等价于：str.substring(0, str.length() - lastIndex)
+     */
+    public static String lastSubstring(String str, int lastIndex) {
+        int idx = str.length();
+        idx = idx - lastIndex;
+        if (idx <= 0) {
+            return Const.STRING_LEN0;
+        }
+        return str.substring(0, idx);
+    }
+    
     
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
     // String Index 查找 相关算法工具
@@ -702,6 +765,12 @@ public class StringUtils {
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
     // String fileName and Path 相关工具
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+    public static String normalPath(String path) {
+        if (null == path) {
+            return null;
+        }
+        return path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
+    }
 
     /**
      * 从路径（url或者目录都可以）中获取文件名称（带后缀，形如 abc.txt） <br>
@@ -712,8 +781,9 @@ public class StringUtils {
      * @return the extracted filename, or <code>null</code> if none
      */
     public static String getFilenameFromPath(String path) {
-        if (null == path)
+        if (null == path) {
             return null;
+        }
         String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
         int separatorIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
         return (separatorIndex != -1 ? path2.substring(separatorIndex + 1) : path2);
@@ -728,14 +798,16 @@ public class StringUtils {
      * @return the path with stripped filename, or <code>null</code> if none
      */
     public static String stripFilenameFromPath(String path) {
-        if (null == path)
+        if (null == path) {
             return null;
+        }
+        int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
+        if (extIndex == -1) {
+            return path;
+        }
         String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
         int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        if (folderIndex == -1) {
-            return path2;
-        }
-        return path2.substring(0, folderIndex + 1);
+        return folderIndex > extIndex ? path2 : path2.substring(0, extIndex);
     }
 
     private static final char EXTENSION_SEPARATOR = '.';
@@ -749,8 +821,9 @@ public class StringUtils {
      * @return the extracted filename, or <code>null</code> if none
      */
     public static String getFilenameWithoutExtension(String path) {
-        if (null == path)
+        if (null == path) {
             return null;
+        }
         int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
         if (extIndex == -1) {
             return path.substring(path.lastIndexOf(Const.FOLDER_SEPARATOR) + 1, path.length());
@@ -773,8 +846,9 @@ public class StringUtils {
      * @return the extracted filename extension, or <code>null</code> if none
      */
     public static String getFilenameExtension(String path) {
-        if (null == path)
+        if (null == path) {
             return null;
+        }
         int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
         if (extIndex == -1) {
             return null;
@@ -789,6 +863,9 @@ public class StringUtils {
 
     /**
      * Apply the given relative path to the given path, assuming standard Java folder separation (i.e. "/" separators).
+     * <p>(org/home/aa.txt, bb.txt) --> org/home/bb.txt
+     * <p>(org/home/cc, bb.txt) --> org/home/bb.txt
+     * <p>(org/home/cc/, bb.txt) --> org/home/cc/bb.txt
      * 
      * @param path
      *            the path to start from (usually a full file path)
@@ -812,6 +889,29 @@ public class StringUtils {
             return relativePath2;
         }
     }
+    
+    public static String connectPaths(String ...paths) {
+        if (paths.length == 1) {
+            return paths[0];
+        }
+        StringBuilder sbu = new StringBuilder();
+        if (paths[0].endsWith(Const.FOLDER_SEPARATOR)) {
+            sbu.append(paths[0].substring(0, paths[0].length() - 1));
+        } else {
+            sbu.append(paths[0]);
+        }
+        for (int i = 1; i < paths.length; i++) {
+            if (!paths[i].startsWith(Const.FOLDER_SEPARATOR)) {
+                sbu.append(Const.FOLDER_SEPARATOR);
+            }
+            if (i != paths.length - 1 && paths[i].endsWith(Const.FOLDER_SEPARATOR)) {
+                sbu.append(paths[i].substring(0, paths[i].length() - 1));
+            } else {
+                sbu.append(paths[i]);
+            }
+        }
+        return sbu.toString();
+    }
 
     /**
      * Normalize the path by suppressing sequences like "path/.." and
@@ -822,7 +922,7 @@ public class StringUtils {
      * @return the normalized path
      */
     public static String cleanPath(String path) {
-        if (path == null) {
+        if (null == path) {
             return null;
         }
         String pathToUse = replace(path, Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);

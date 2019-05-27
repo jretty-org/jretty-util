@@ -98,10 +98,12 @@ public class ByteArrayResource extends AbstractResource {
     }
 
     /**
-     * This implementation returns the passed-in description, if any.
+     * This implementation returns a description that includes the passed-in
+     * {@code description}, if any.
      */
+    @Override
     public String getDescription() {
-        return this.description;
+        return "Byte array resource [" + this.description + "]";
     }
 
 
@@ -110,9 +112,9 @@ public class ByteArrayResource extends AbstractResource {
      * @see java.util.Arrays#equals(byte[], byte[])
      */
     @Override
-    public boolean equals(Object obj) {
-        return (obj == this ||
-            (obj instanceof ByteArrayResource && Arrays.equals(((ByteArrayResource) obj).byteArray, this.byteArray)));
+    public boolean equals(Object other) {
+        return (this == other || (other instanceof ByteArrayResource &&
+                Arrays.equals(((ByteArrayResource) other).byteArray, this.byteArray)));
     }
 
     /**

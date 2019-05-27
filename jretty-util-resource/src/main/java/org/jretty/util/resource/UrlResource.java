@@ -32,8 +32,8 @@ import org.jretty.util.UrlUtils;
 
 /**
  * {@link Resource} implementation for {@code java.net.URL} locators.
- * Obviously supports resolution as URL, and also as File in case of
- * the "file:" protocol.
+ * Supports resolution as a {@code URL} and also as a {@code File} in
+ * case of the {@code "file:"} protocol.
  *
  * @author Juergen Hoeller
  * @since 28.12.2003
@@ -58,9 +58,10 @@ public class UrlResource extends AbstractFileResolvingResource {
 
 
     /**
-     * Create a new UrlResource based on the given URI object.
+     * Create a new {@code UrlResource} based on the given URI object.
      * @param uri a URI
      * @throws MalformedURLException if the given URL path is not valid
+     * @since 2.5
      */
     public UrlResource(URI uri) throws MalformedURLException {
         Assert.notNull(uri, "URI must not be null");
@@ -70,7 +71,7 @@ public class UrlResource extends AbstractFileResolvingResource {
     }
 
     /**
-     * Create a new UrlResource based on the given URL object.
+     * Create a new {@code UrlResource} based on the given URL object.
      * @param url a URL
      */
     public UrlResource(URL url) {
@@ -81,7 +82,7 @@ public class UrlResource extends AbstractFileResolvingResource {
     }
 
     /**
-     * Create a new UrlResource based on a URL path.
+     * Create a new {@code UrlResource} based on a URL path.
      * <p>Note: The given path needs to be pre-encoded if necessary.
      * @param path a URL path
      * @throws MalformedURLException if the given URL path is not valid
@@ -95,7 +96,7 @@ public class UrlResource extends AbstractFileResolvingResource {
     }
 
     /**
-     * Create a new UrlResource based on a URI specification.
+     * Create a new {@code UrlResource} based on a URI specification.
      * <p>The given parts will automatically get encoded if necessary.
      * @param protocol the URL protocol to use (e.g. "jar" or "file" - without colon);
      * also known as "scheme"
@@ -109,7 +110,7 @@ public class UrlResource extends AbstractFileResolvingResource {
     }
 
     /**
-     * Create a new UrlResource based on a URI specification.
+     * Create a new {@code UrlResource} based on a URI specification.
      * <p>The given parts will automatically get encoded if necessary.
      * @param protocol the URL protocol to use (e.g. "jar" or "file" - without colon);
      * also known as "scheme"
@@ -133,33 +134,36 @@ public class UrlResource extends AbstractFileResolvingResource {
         }
     }
 
+
     /**
      * Determine a cleaned URL for the given original URL.
      * @param originalUrl the original URL
      * @param originalPath the original URL path
-     * @return the cleaned URL
+     * @return the cleaned URL (possibly the original URL as-is)
      * @see org.springframework.util.StringUtils#cleanPath
      */
     private URL getCleanedUrl(URL originalUrl, String originalPath) {
-        try {
-            return new URL(StringUtils.cleanPath(originalPath));
+        String cleanedPath = StringUtils.cleanPath(originalPath);
+        if (!cleanedPath.equals(originalPath)) {
+            try {
+                return new URL(cleanedPath);
+            }
+            catch (MalformedURLException ex) {
+                // Cleaned URL path cannot be converted to URL -> take original URL.
+            }
         }
-        catch (MalformedURLException ex) {
-            // Cleaned URL path cannot be converted to URL
-            // -> take original URL.
-            return originalUrl;
-        }
+        return originalUrl;
     }
-
 
     /**
      * This implementation opens an InputStream for the given URL.
-     * It sets the "UseCaches" flag to {@code false},
+     * <p>It sets the {@code useCaches} flag to {@code false},
      * mainly to avoid jar file locking on Windows.
      * @see java.net.URL#openConnection()
      * @see java.net.URLConnection#setUseCaches(boolean)
      * @see java.net.URLConnection#getInputStream()
      */
+    @Override
     public InputStream getInputStream() throws IOException {
         URLConnection con = this.url.openConnection();
         UrlUtils.useCachesIfNecessary(con);
@@ -179,7 +183,7 @@ public class UrlResource extends AbstractFileResolvingResource {
      * This implementation returns the underlying URL reference.
      */
     @Override
-    public URL getURL() throws IOException {
+    public URL getURL() {
         return this.url;
     }
 
@@ -194,6 +198,16 @@ public class UrlResource extends AbstractFileResolvingResource {
         }
         else {
             return super.getURI();
+        }
+    }
+
+    @Override
+    public boolean isFile() {
+        if (this.uri != null) {
+            return super.isFile(this.uri);
+        }
+        else {
+            return super.isFile();
         }
     }
 
@@ -213,7 +227,7 @@ public class UrlResource extends AbstractFileResolvingResource {
     }
 
     /**
-     * This implementation creates a UrlResource, applying the given path
+     * This implementation creates a {@code UrlResource}, applying the given path
      * relative to the path of the underlying URL of this resource descriptor.
      * @see java.net.URL#URL(java.net.URL, String)
      */
@@ -227,17 +241,17 @@ public class UrlResource extends AbstractFileResolvingResource {
 
     /**
      * This implementation returns the name of the file that this URL refers to.
-     * @see java.net.URL#getFile()
-     * @see java.io.File#getName()
+     * @see java.net.URL#getPath()
      */
     @Override
     public String getFilename() {
-        return new File(this.url.getFile()).getName();
+        return StringUtils.getFilenameFromPath(this.cleanedUrl.getPath());
     }
 
     /**
      * This implementation returns a description that includes the URL.
      */
+    @Override
     public String getDescription() {
         return "URL [" + this.url + "]";
     }
@@ -247,9 +261,9 @@ public class UrlResource extends AbstractFileResolvingResource {
      * This implementation compares the underlying URL references.
      */
     @Override
-    public boolean equals(Object obj) {
-        return (obj == this ||
-            (obj instanceof UrlResource && this.cleanedUrl.equals(((UrlResource) obj).cleanedUrl)));
+    public boolean equals(Object other) {
+        return (this == other || (other instanceof UrlResource &&
+                this.cleanedUrl.equals(((UrlResource) other).cleanedUrl)));
     }
 
     /**

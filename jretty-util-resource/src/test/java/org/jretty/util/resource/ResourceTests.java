@@ -44,7 +44,7 @@ public class ResourceTests {
         
         String content = IOUtils.copyToString(new InputStreamReader(resource.getInputStream()));
         assertEquals("testString", content);
-        assertEquals("my description", resource.getDescription());
+        assertEquals("Byte array resource [my description]", resource.getDescription());
         assertEquals(resource, new ByteArrayResource("testString".getBytes()));
     }
 

@@ -174,14 +174,18 @@ public class ReflectionFieldCloneTest {
     public void fieldCloneByNameTest3() {
         Ba ba = new BasicAttr();
         ba.setAge(18);
-        Foo target = new Foo();
         Map<String, Object> sourceMap = new HashMap<String, Object>();
         sourceMap.put("f4", 65535);
         sourceMap.put("f5", (short) 23);
         sourceMap.put("s", "sdsdjskjkds");
         sourceMap.put("ba", ba);
+        
+        Foo target = new Foo();
         ReflectionUtils.fieldCloneByName(sourceMap, target);
 //        System.out.println(target);
+        
+        Foo fan = new Foo();
+        ReflectionUtils.fieldCloneByName(target, fan);
     }
 
     @Test

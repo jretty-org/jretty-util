@@ -43,6 +43,9 @@ public class Const {
     /** WIN系统文件分隔符'\\'用于MS Windows系统 */
     public static final String WINDOWS_FOLDER_SEPARATOR = "\\";
     
+    /** 下划线 */
+    public static final char UNDERLINE = '_';
+    
     /** 路径标识：当前目录 */
     public static final String CURRENT_PATH = ".";
     /** 路径标识：上一级目录 */

@@ -18,8 +18,12 @@ package org.jretty.util.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+
 
 /**
  * Interface for a resource descriptor that abstracts from the actual
@@ -37,40 +41,53 @@ import java.net.URL;
  * @see #getFile()
  * @see WritableResource
  * @see ContextResource
+ * @see UrlResource
+ * @see FileUrlResource
  * @see FileSystemResource
  * @see ClassPathResource
- * @see UrlResource
  * @see ByteArrayResource
  * @see InputStreamResource
  */
 public interface Resource extends InputStreamSource {
 
     /**
-     * Return whether this resource actually exists in physical form.
+     * Determine whether this resource actually exists in physical form.
      * <p>This method performs a definitive existence check, whereas the
-     * existence of a <code>Resource</code> handle only guarantees a
-     * valid descriptor handle.
+     * existence of a {@code Resource} handle only guarantees a valid
+     * descriptor handle.
      */
     boolean exists();
 
     /**
-     * Return whether the contents of this resource can be read,
-     * e.g. via {@link #getInputStream()} or {@link #getFile()}.
-     * <p>Will be <code>true</code> for typical resource descriptors;
-     * note that actual content reading may still fail when attempted.
-     * However, a value of <code>false</code> is a definitive indication
+     * Indicate whether non-empty contents of this resource can be read via
+     * {@link #getInputStream()}.
+     * <p>Will be {@code true} for typical resource descriptors that exist
+     * since it strictly implies {@link #exists()} semantics as of 5.1.
+     * Note that actual content reading may still fail when attempted.
+     * However, a value of {@code false} is a definitive indication
      * that the resource content cannot be read.
      * @see #getInputStream()
+     * @see #exists()
      */
     boolean isReadable();
 
     /**
-     * Return whether this resource represents a handle with an open
-     * stream. If true, the InputStream cannot be read multiple times,
+     * Indicate whether this resource represents a handle with an open stream.
+     * If {@code true}, the InputStream cannot be read multiple times,
      * and must be read and closed to avoid resource leaks.
-     * <p>Will be <code>false</code> for typical resource descriptors.
+     * <p>Will be {@code false} for typical resource descriptors.
      */
     boolean isOpen();
+
+    /**
+     * Determine whether this resource represents a file in a file system.
+     * A value of {@code true} strongly suggests (but does not guarantee)
+     * that a {@link #getFile()} call will succeed.
+     * <p>This is conservatively {@code false} by default.
+     * @since 5.0
+     * @see #getFile()
+     */
+    boolean isFile();
 
     /**
      * Return a URL handle for this resource.
@@ -83,15 +100,31 @@ public interface Resource extends InputStreamSource {
      * Return a URI handle for this resource.
      * @throws IOException if the resource cannot be resolved as URI,
      * i.e. if the resource is not available as descriptor
+     * @since 2.5
      */
     URI getURI() throws IOException;
 
     /**
      * Return a File handle for this resource.
-     * @throws IOException if the resource cannot be resolved as absolute
-     * file path, i.e. if the resource is not available in a file system
+     * @throws java.io.FileNotFoundException if the resource cannot be resolved as
+     * absolute file path, i.e. if the resource is not available in a file system
+     * @throws IOException in case of general resolution/reading failures
+     * @see #getInputStream()
      */
     File getFile() throws IOException;
+
+    /**
+     * Return a {@link ReadableByteChannel}.
+     * <p>It is expected that each call creates a <i>fresh</i> channel.
+     * <p>The default implementation returns {@link Channels#newChannel(InputStream)}
+     * with the result of {@link #getInputStream()}.
+     * @return the byte channel for the underlying resource (must not be {@code null})
+     * @throws java.io.FileNotFoundException if the underlying resource doesn't exist
+     * @throws IOException if the content channel could not be opened
+     * @since 5.0
+     * @see #getInputStream()
+     */
+    ReadableByteChannel readableChannel() throws IOException;
 
     /**
      * Determine the content length for this resource.
@@ -118,7 +151,7 @@ public interface Resource extends InputStreamSource {
     /**
      * Determine a filename for this resource, i.e. typically the last
      * part of the path: for example, "myfile.txt".
-     * <p>Returns <code>null</code> if this type of resource does not
+     * <p>Returns {@code null} if this type of resource does not
      * have a filename.
      */
     String getFilename();
@@ -127,9 +160,9 @@ public interface Resource extends InputStreamSource {
      * Return a description for this resource,
      * to be used for error output when working with the resource.
      * <p>Implementations are also encouraged to return this value
-     * from their <code>toString</code> method.
-     * @see java.lang.Object#toString()
+     * from their {@code toString} method.
+     * @see Object#toString()
      */
     String getDescription();
-
+    
 }

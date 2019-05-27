@@ -33,6 +33,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -333,7 +334,24 @@ public class CollectionUtils {
         sortMap.putAll(map);
         return (Map<String, T>) sortMap;
     }
-
+    
+    public static <K, V> K getMapKeyByValue(Map<K, V> map, V value) {
+        Iterator<Entry<K, V>> i = map.entrySet().iterator();
+        if (value != null) {
+            while (i.hasNext()) {
+                Entry<K, V> e = i.next();
+                if (value.equals(e.getValue()))
+                    return e.getKey();
+            }
+        } else {
+            while (i.hasNext()) {
+                Entry<K, V> e = i.next();
+                if (e.getValue() == null)
+                    return e.getKey();
+            }
+        }
+        return null;
+    }
     
     // helper method ~~~
     

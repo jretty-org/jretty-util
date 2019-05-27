@@ -195,7 +195,8 @@ public class ClassPathResource extends AbstractFileResolvingResource {
     @Override
     public Resource createRelative(String relativePath) {
         String pathToUse = StringUtils.applyRelativePath(this.path, relativePath);
-        return new ClassPathResource(pathToUse, this.classLoader, this.clazz);
+        return (this.clazz != null ? new ClassPathResource(pathToUse, this.clazz) :
+                new ClassPathResource(pathToUse, this.classLoader));
     }
 
     /**
@@ -230,12 +231,12 @@ public class ClassPathResource extends AbstractFileResolvingResource {
      * This implementation compares the underlying class path locations.
      */
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
+    public boolean equals(Object other) {
+        if (other == this) {
             return true;
         }
-        if (obj instanceof ClassPathResource) {
-            ClassPathResource otherRes = (ClassPathResource) obj;
+        if (other instanceof ClassPathResource) {
+            ClassPathResource otherRes = (ClassPathResource) other;
             return (this.path.equals(otherRes.path) &&
                     privequals(this.classLoader, otherRes.classLoader) &&
                     privequals(this.clazz, otherRes.clazz));

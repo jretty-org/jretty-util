@@ -18,6 +18,7 @@ package org.jretty.util.resource;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.channels.WritableByteChannel;
 
 /**
  * Extended interface for a resource that supports writing to it.
@@ -40,6 +41,7 @@ public interface WritableResource extends Resource {
      * @see #isReadable()
      */
     boolean isWritable();
+    // default return true;
 
     /**
      * Return an {@link OutputStream} for the underlying resource,
@@ -48,5 +50,19 @@ public interface WritableResource extends Resource {
      * @see #getInputStream()
      */
     OutputStream getOutputStream() throws IOException;
+    
+    /**
+     * Return a {@link WritableByteChannel}.
+     * <p>It is expected that each call creates a <i>fresh</i> channel.
+     * <p>The default implementation returns {@link Channels#newChannel(OutputStream)}
+     * with the result of {@link #getOutputStream()}.
+     * @return the byte channel for the underlying resource (must not be {@code null})
+     * @throws java.io.FileNotFoundException if the underlying resource doesn't exist
+     * @throws IOException if the content channel could not be opened
+     * @since 5.0
+     * @see #getOutputStream()
+     */
+    WritableByteChannel writableChannel() throws IOException;
+    // default return Channels.newChannel(getOutputStream());
 
 }

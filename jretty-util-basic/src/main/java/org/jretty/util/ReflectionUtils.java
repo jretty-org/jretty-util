@@ -46,6 +46,19 @@ public class ReflectionUtils extends ReflectionMethodUtils {
         }
     }
     
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(String name, ClassLoader classLoader) {
+        Class<?> clazz = null;
+        try {
+            clazz = ClassUtils.forName(name, classLoader);
+        } catch (ClassNotFoundException e) {
+            throw new NestedRuntimeException(e);
+        } catch (LinkageError e) {
+            throw new NestedRuntimeException(e);
+        }
+        return (T) ReflectionUtils.newInstance(clazz);
+    }
+    
     /**
      * Set the field represented by the supplied {@link Field field object} on the
      * specified {@link Object target object} to the specified <code>value</code>.
@@ -159,7 +172,9 @@ public class ReflectionUtils extends ReflectionMethodUtils {
             public void doWith(Field field) {
                 makeAccessible(field);
                 Object srcValue = getField(field, parentSource);
-                setField(field, dest, srcValue);
+                if (srcValue != null) {
+                    setField(field, dest, srcValue);
+                }
             }
         }, COPYABLE_FIELDS);
         
@@ -185,11 +200,14 @@ public class ReflectionUtils extends ReflectionMethodUtils {
                 if (sourceField != null && 
                         ClassUtils.isAssignableWithNum(targetField.getType(), sourceField.getType())) {
                     makeAccessible(sourceField);
-                    makeAccessible(targetField);
                     Object value = getField(sourceField, source);
+                    if (value == null) {
+                        return;
+                    }
                     if(Number.class.isAssignableFrom(targetField.getType())) {
                         value = convertNumber((Number) value, targetField.getType());
                     }
+                    makeAccessible(targetField);
                     setField(targetField, target, value);
                 }
             }

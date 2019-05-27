@@ -149,12 +149,23 @@ public class ClassUtils {
         return cl;
     }
     
+//    public static <T> T newInstance(String name, ClassLoader classLoader) {
+//        try {
+//            return (T)forName(name, classLoader).newInstance();
+//        } catch (Exception e) {
+//            throw new NestedRuntimeException(e);
+//        }
+//    }
+    
+    /**
+     * a slient way to invoke the class.newInstance() method.
+     */
+    public static <T> T newInstance(Class<T> clazz) {
+        return ReflectionUtils.newInstance(clazz);
+    }
+    
     public static <T> T newInstance(String name, ClassLoader classLoader) {
-        try {
-            return (T)forName(name, classLoader).newInstance();
-        } catch (Exception e) {
-            throw new NestedRuntimeException(e);
-        }
+        return (T) ReflectionUtils.newInstance(name, classLoader);
     }
     
     /**

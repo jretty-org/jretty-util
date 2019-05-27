@@ -23,16 +23,20 @@ import java.net.URI;
 import java.net.URL;
 
 import org.jretty.util.Assert;
+import org.jretty.util.NestedIOException;
 
 /**
- * VFS based {@link Resource} implementation.
- * Supports the corresponding VFS API versions on JBoss AS 5.x as well as 6.x and 7.x.
+ * JBoss VFS based {@link Resource} implementation.
+ *
+ * <p>As of Spring 4.0, this class supports VFS 3.x on JBoss AS 6+
+ * (package {@code org.jboss.vfs}) and is in particular compatible with
+ * JBoss AS 7 and WildFly 8+.
  *
  * @author Ales Justin
  * @author Juergen Hoeller
  * @author Costin Leau
+ * @author Sam Brannen
  * @since 3.0
- * @see org.jboss.virtual.VirtualFile
  * @see org.jboss.vfs.VirtualFile
  */
 public class VfsResource extends AbstractResource {
@@ -40,12 +44,18 @@ public class VfsResource extends AbstractResource {
     private final Object resource;
 
 
-    public VfsResource(Object resources) {
-        Assert.notNull(resources, "VirtualFile must not be null");
-        this.resource = resources;
+    /**
+     * Create a new {@code VfsResource} wrapping the given resource handle.
+     * @param resource a {@code org.jboss.vfs.VirtualFile} instance
+     * (untyped in order to avoid a static dependency on the VFS API)
+     */
+    public VfsResource(Object resource) {
+        Assert.notNull(resource, "VirtualFile must not be null");
+        this.resource = resource;
     }
 
 
+    @Override
     public InputStream getInputStream() throws IOException {
         return VfsUtils.getInputStream(this.resource);
     }
@@ -66,7 +76,7 @@ public class VfsResource extends AbstractResource {
             return VfsUtils.getURL(this.resource);
         }
         catch (Exception ex) {
-            throw new IOException("Failed to obtain URL for file " + this.resource, ex);
+            throw new NestedIOException("Failed to obtain URL for file " + this.resource, ex);
         }
     }
 
@@ -76,7 +86,7 @@ public class VfsResource extends AbstractResource {
             return VfsUtils.getURI(this.resource);
         }
         catch (Exception ex) {
-            throw new IOException("Failed to obtain URI for " + this.resource, ex);
+            throw new NestedIOException(ex, "Failed to obtain URI for " + this.resource);
         }
     }
 
@@ -114,13 +124,15 @@ public class VfsResource extends AbstractResource {
         return VfsUtils.getName(this.resource);
     }
 
+    @Override
     public String getDescription() {
-        return this.resource.toString();
+        return "VFS resource [" + this.resource + "]";
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return (obj == this || (obj instanceof VfsResource && this.resource.equals(((VfsResource) obj).resource)));
+    public boolean equals(Object other) {
+        return (this == other || (other instanceof VfsResource &&
+                this.resource.equals(((VfsResource) other).resource)));
     }
 
     @Override

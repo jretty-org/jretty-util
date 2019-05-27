@@ -68,6 +68,43 @@ public class FileUtils {
     }
     
     /**
+     * 递归创建文件的父目录
+     */
+    public static void forceMkdirParent(final File file) throws IOException {
+        final File parent = file.getParentFile();
+        if (parent == null) {
+            return;
+        }
+        forceMkdir(parent);
+    }
+    
+    /**
+     * 递归创建目录
+     */
+    public static void forceMkdir(final File directory) throws IOException {
+        if (directory.exists()) {
+            if (!directory.isDirectory()) {
+                final String message =
+                        "File "
+                                + directory
+                                + " exists and is "
+                                + "not a directory. Unable to create directory.";
+                throw new IOException(message);
+            }
+        } else {
+            if (!directory.mkdirs()) {
+                // Double-check that some other thread or process hasn't made
+                // the directory in the background
+                if (!directory.isDirectory()) {
+                    final String message =
+                            "Unable to create directory " + directory;
+                    throw new IOException(message);
+                }
+            }
+        }
+    }
+    
+    /**
      * 复制整个文件夹内容
      * 
      * @param oldPath
@@ -334,16 +371,11 @@ public class FileUtils {
         return result;
     }
 
-    /** 获取 目录以及子目录中的所有文件 */
-    public static List<File> loopFiles(File file) {
-        return loopFiles(file, null);
-    }
-
     /**
      * 获取 目录以及子目录中的所有文件
      * @param inludeType 文件结尾类型（endsWith），比如 jpg, .jpg 都可以
      */
-    public static List<File> loopFiles(File file, String inludeType[]) {
+    public static List<File> loopFiles(File file, String... inludeType) {
         ArrayList<File> result = new ArrayList<File>();
         if (file.isFile() && checkFileType(file, inludeType)) {
             result.add(file);

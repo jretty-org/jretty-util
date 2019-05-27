@@ -14,16 +14,16 @@ package org.jretty.util;
 
 import java.io.IOException;
 
+import org.jretty.log.LogFactory;
+import org.jretty.log.Logger;
+import org.jretty.util.resource.ClassPathResource;
+import org.jretty.util.resource.Resource;
+import org.jretty.util.resource.web.ServletContextResource;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.jretty.log.LogFactory;
-import org.jretty.log.Logger;
-import org.jretty.util.resource.ClassPathResource;
-import org.jretty.util.resource.FileSystemContextResource;
-import org.jretty.util.resource.Resource;
 
 /**
  * @author zollty
@@ -54,7 +54,7 @@ public class WebResourceUtilsTest {
         try {
             resource.getFile();
 
-            Assert.assertEquals(FileSystemContextResource.class, resource.getClass());
+            Assert.assertEquals(ServletContextResource.class, resource.getClass());
         }
         catch (IOException e) {
             LOG.error(e);

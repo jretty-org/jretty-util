@@ -48,30 +48,16 @@ public class FileSystemResourceLoader extends DefaultResourceLoader {
      */
     @Override
     protected Resource getResourceByPath(String path) {
+        // refactor by zollty, don't change it!
         return getFsResource(path);
     }
     
+    // add by zollty
     public static Resource getFsResource(String path) {
-        if (path != null && path.startsWith("/")) {
+        if (path.startsWith("/")) {
             path = path.substring(1);
         }
         return new FileSystemContextResource(path);
     }
-
-
-//    /**
-//     * FileSystemResource that explicitly expresses a context-relative path
-//     * through implementing the ContextResource interface.
-//     */
-//    private static class FileSystemContextResource extends FileSystemResource implements ContextResource {
-//
-//        public FileSystemContextResource(String path) {
-//            super(path);
-//        }
-//
-//        public String getPathWithinContext() {
-//            return getPath();
-//        }
-//    }
 
 }
