@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,9 +67,30 @@ public class ReflectionMethodUtils {
     }
     
     /**
+     * 获取 方法的泛型参数的 实际元素类型
+     * <p> 例如 method(java.util.List<java.lang.Character> list) 得到：[java.lang.Character]
+     * <p> 再如 method(java.util.Map<java.lang.String, java.lang.Integer> map) 得到：[java.lang.String, java.lang.Integer]
+     * @param pos 要获取的Method参数的位置，从0开始
+     */
+    public static Class<?>[] getMethodParamGenericActualType(Method method, int pos) {
+        Type[] genericTypes = method.getGenericParameterTypes();
+        if (genericTypes[pos] instanceof ParameterizedType) {
+            Type[] actualTypeArguments = ((ParameterizedType) genericTypes[pos]).getActualTypeArguments();
+            Class<?>[] ret = new Class<?>[actualTypeArguments.length];
+            for (int i = 0; i < actualTypeArguments.length; i++) {
+                ret[i] = (Class<?>) actualTypeArguments[i];
+            }
+            return ret;
+        } else {// 非泛型
+            return new Class<?>[] { (Class<?>) genericTypes[pos] };
+        }
+    }
+    
+    /**
      * Invoke the specified {@link Method} against the supplied target object with the
      * supplied arguments. The target object can be <code>null</code> when invoking a
      * static {@link Method}.
+     * <p> Please invoke "ReflectionUtils.makeAccessible(method);" first.
      * @param method the method to invoke
      * @param target the target object to invoke the method on
      * @param args the invocation arguments (may be <code>null</code>)
@@ -125,6 +148,9 @@ public class ReflectionMethodUtils {
         return invokeMethod(method, null, args);
     }
 
+    /**
+     * please invoke "ReflectionUtils.makeAccessible(constructor);" first.
+     */
     public static Object invokeConstructor(Constructor<?> constructor, Object... args) {
         try {
             return constructor.newInstance(args);
@@ -313,7 +339,7 @@ public class ReflectionMethodUtils {
      * @return <code>true</code> if the exception can be thrown as-is;
      * <code>false</code> if it needs to be wrapped
      */
-    public static boolean declaresException(Method method, Class<?> exceptionType) {
+    public static boolean getDeclaresException(Method method, Class<?> exceptionType) {
         Assert.notNull(method, "Method must not be null");
         Class<?>[] declaredExceptions = method.getExceptionTypes();
         for (Class<?> declaredException : declaredExceptions) {

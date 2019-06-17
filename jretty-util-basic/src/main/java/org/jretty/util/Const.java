@@ -44,7 +44,7 @@ public class Const {
     public static final String WINDOWS_FOLDER_SEPARATOR = "\\";
     
     /** 下划线 */
-    public static final char UNDERLINE = '_';
+    public static final String UNDERLINE = "_";
     
     /** 路径标识：当前目录 */
     public static final String CURRENT_PATH = ".";
@@ -58,10 +58,12 @@ public class Const {
     public static final String STRING_NULL = "null";
     
     /** 换行（Line Feed）符 */
-    public static final char LF = '\n';
+    public static final String LF = "\n";
     /** 回车（Carriage Return） */
-    public static final char CR = '\r';
+    public static final String CR = "\r";
     /** 换行（Line Feed）+ 回车（Carriage Return） */
     public static final String CRLF = "\r\n";
+    
+    public static final String COMMA = ",";
     
 }

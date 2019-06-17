@@ -15,6 +15,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -152,7 +154,22 @@ public class ReflectionUtils extends ReflectionMethodUtils {
             ctor.setAccessible(true);
         }
     }
-
+    
+    /**
+     * 获取 泛型字段的 实际元素类型
+     * <p> 例如 java.util.List<java.lang.Character> 得到：[java.lang.Character]
+     * <p> 再如 java.util.Map<java.lang.String, java.lang.Integer> 得到：[java.lang.String, java.lang.Integer]
+     */
+    public static Class<?>[] getFieldGenericActualType(Field field) {
+        ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+        Type[] actualTypeArguments = genericType.getActualTypeArguments();
+        Class<?>[] ret = new Class<?>[actualTypeArguments.length];
+        for (int i = 0; i < actualTypeArguments.length; i++) {
+            ret[i] = (Class<?>) actualTypeArguments[i];
+        }
+        return ret;
+    }
+    
     /**
      * Given the source object and the destination, which must be the same class
      * or a subclass, copy all fields, including inherited fields. Designed to

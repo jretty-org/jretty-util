@@ -459,9 +459,10 @@ public class StringUtils {
         }
         int len = param.length();
         StringBuilder sb = new StringBuilder(len);
+        char underLine = Const.UNDERLINE.charAt(0);
         for (int i = 0; i < len; i++) {
             char c = param.charAt(i);
-            if (c == Const.UNDERLINE) {
+            if (c == underLine) {
                 if (++i < len) {
                     sb.append(Character.toUpperCase(param.charAt(i)));
                 }

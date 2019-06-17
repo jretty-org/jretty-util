@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -48,6 +49,44 @@ public class FileUtils {
      * The file copy buffer size (30 MB)
      */
     private static final long FILE_COPY_BUFFER_SIZE = 1024 * 1024 * 30;
+    
+    
+    /**
+     * get BufferedWriter output stream
+     * 
+     * @param fileFullPath
+     *            the absolute file path
+     * @param append
+     *            true if can append
+     * @param charSet
+     *            assign charSet,null if use the default charSet
+     * @return BufferedWriter
+     * @throws IOException
+     */
+    public static BufferedWriter getBufferedWriter(String fileFullPath,
+            boolean append, String charSet) throws IOException {
+        
+        return new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(fileFullPath, append), StringUtils.decideCharSet(charSet)));
+    }
+
+    /**
+     * get BufferedReader input stream
+     * 
+     * @param fileFullPath
+     *            the absolute file path
+     * @param charSet
+     *            assign charSet,null if use the default charSet
+     * @return BufferedReader
+     * @throws IOException
+     */
+    public final static BufferedReader getBufferedReader(String fileFullPath,
+            String charSet) throws IOException {
+        
+        return new BufferedReader(new InputStreamReader(
+                new FileInputStream(fileFullPath), StringUtils.decideCharSet(charSet)));
+    }
+    
 
     /**
      * deletes file or folder with all subfolders and subfiles.
@@ -437,7 +476,7 @@ public class FileUtils {
     public static void appendStr2File(String fileFullPath, String str, String charSet) {
         BufferedWriter out = null;
         try {
-            out = IOUtils.getBufferedWriter(fileFullPath, true, charSet);
+            out = getBufferedWriter(fileFullPath, true, charSet);
             out.write(str);
             out.flush();
         }

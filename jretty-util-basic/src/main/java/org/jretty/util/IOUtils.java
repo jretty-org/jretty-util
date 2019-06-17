@@ -63,6 +63,8 @@ public class IOUtils {
     /**
      * get BufferedWriter output stream
      * 
+     * @deprecated use FileUtils.getBufferedWriter
+     * 
      * @param fileFullPath
      *            the absolute file path
      * @param append
@@ -81,6 +83,8 @@ public class IOUtils {
 
     /**
      * get BufferedReader input stream
+     * 
+     * @deprecated use FileUtils.getBufferedReader
      * 
      * @param fileFullPath
      *            the absolute file path
