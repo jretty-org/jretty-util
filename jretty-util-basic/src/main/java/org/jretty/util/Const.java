@@ -46,13 +46,18 @@ public class Const {
     /** 下划线 */
     public static final String UNDERLINE = "_";
     
+    public static final String DOT = ".";
+    
     /** 路径标识：当前目录 */
-    public static final String CURRENT_PATH = ".";
+    public static final String CURRENT_PATH = DOT;
     /** 路径标识：上一级目录 */
-    public static final String TOP_PATH = "..";
+    public static final String PARENT_PATH = "..";
     
     /** 字符串："" */
     public static final String STRING_LEN0 = "";
+    
+    /** 字符串："" */
+    public static final String STRING_EMPTY = STRING_LEN0;
     
     /** 字符串："null" */
     public static final String STRING_NULL = "null";

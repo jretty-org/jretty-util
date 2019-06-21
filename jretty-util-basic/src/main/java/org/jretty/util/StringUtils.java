@@ -957,7 +957,7 @@ public class StringUtils {
             if (Const.CURRENT_PATH.equals(element)) {
                 // Points to current directory - drop it.
             }
-            else if (Const.TOP_PATH.equals(element)) {
+            else if (Const.PARENT_PATH.equals(element)) {
                 // Registering top path found.
                 tops++;
             }
@@ -975,7 +975,7 @@ public class StringUtils {
 
         // Remaining top paths need to be retained.
         for (int i = 0; i < tops; i++) {
-            pathElements.add(0, Const.TOP_PATH);
+            pathElements.add(0, Const.PARENT_PATH);
         }
 
         return prefix + CollectionUtils.toString(pathElements, Const.FOLDER_SEPARATOR);
