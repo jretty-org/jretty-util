@@ -15,7 +15,6 @@ package org.jretty.util;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
-import java.io.StringWriter;
 
 /**
  * 设计目的：<br>
@@ -30,6 +29,16 @@ public class ExceptionUtils {
     private static final String OMIT_PRE = "\t... ";
     private static final String OMIT_SUB = " more\n";
     private static final String SPLIT_SIGN = ": ";
+    
+    /**
+     * 获得完整的异常信息（包括class name、message 和 堆栈）
+     */
+    public static String getStackTraceStr(Throwable e) {
+        StringBuilderWriter sw = new StringBuilderWriter();
+        PrintWriter p = new PrintWriter(sw);
+        e.printStackTrace(p);
+        return sw.toString();
+    }
 
     /**
      * 智能将StackTrace堆栈信息转换成字符串
@@ -55,11 +64,13 @@ public class ExceptionUtils {
             return Const.STRING_LEN0;
         }
         // 注意：StringWriter/StringReader不需要close和flush
-        StringWriter sw = new StringWriter();
+        StringBuilderWriter sw = new StringBuilderWriter();
         PrintWriter out = new PrintWriter(sw);
         e.printStackTrace(out);
         out = null;
-        
+        if (linechecker == null) {
+            return sw.toString();
+        }
         StringBuilder sb = new StringBuilder();
         if (StringUtils.isNotEmpty(prompt)) {
             sb.append(prompt);
@@ -148,6 +159,9 @@ public class ExceptionUtils {
     }
 
     public static interface LineChecker {
+        /**
+         * @return true = 不过滤，false = 过滤
+         */
         boolean checkLine(String line);
     }
 
