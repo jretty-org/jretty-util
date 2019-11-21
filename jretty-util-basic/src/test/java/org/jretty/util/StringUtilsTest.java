@@ -50,15 +50,6 @@ public class StringUtilsTest {
                 "dssssssssss1111 null 2222");
     }
     
-    @Test
-    public void testApplyRelativePath(){
-        String path = StringUtils.applyRelativePath("org/jretty/util/resource/Resource.class", "ClassPathResource.class");
-        assertEquals("org/jretty/util/resource/ClassPathResource.class", path);
-        
-        assertEquals("org/home/res/aaa.txt", StringUtils.applyRelativePath("org/home/res/", "aaa.txt"));
-        assertEquals("org/home/aaa.txt", StringUtils.applyRelativePath("org/home/res", "aaa.txt"));
-        assertEquals("/home/aaa", StringUtils.applyRelativePath("/home/res", "aaa"));
-    }
     
     @Test
     public void testUnderline2Camel(){
@@ -78,20 +69,6 @@ public class StringUtilsTest {
         assertEquals("dsa_Time_DS_Ere", StringUtils.camel2Underline("dsaTimeDSEre"));
         assertEquals("dsa_Time_DS_Er_Sk", StringUtils.camel2Underline("dsaTimeDSErSk"));
         assertEquals("dsa_Time_DS_Er_ST", StringUtils.camel2Underline("dsaTimeDSErST"));
-    }
-    
-    @Test
-    public void testConnectPaths() {
-        assertEquals("/etc/", StringUtils.connectPaths("/etc/"));
-        assertEquals("/etc", StringUtils.connectPaths("/etc"));
-        assertEquals("/etc/aaa/bb", StringUtils.connectPaths("/etc/aaa", "bb"));
-        assertEquals("etc/aaa/bb/cc", StringUtils.connectPaths("etc/aaa", "bb/cc"));
-        assertEquals("/etc/aaa/bb", StringUtils.connectPaths("/etc/aaa/", "bb"));
-        assertEquals("/etc/aaa/bb", StringUtils.connectPaths("/etc/aaa/", "/bb"));
-        assertEquals("/etc/aaa/bb", StringUtils.connectPaths("/etc/aaa", "/bb"));
-        assertEquals("/etc/aaa/bb/", StringUtils.connectPaths("/etc/aaa", "/bb/"));
-        assertEquals("/etc/aaa/bb/cc/dd", StringUtils.connectPaths("/etc/aaa", "/bb/", "/cc/", "dd"));
-        assertEquals("/etc/aaa/bb/cc/dd/", StringUtils.connectPaths("/etc/aaa", "/bb/", "/cc/", "dd/"));
     }
     
     @Test

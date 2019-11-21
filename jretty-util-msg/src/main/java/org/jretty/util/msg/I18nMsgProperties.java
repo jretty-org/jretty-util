@@ -26,6 +26,7 @@ import org.jretty.util.CollectionUtils;
 import org.jretty.util.LocaleUtils;
 import org.jretty.util.NestedRuntimeException;
 import org.jretty.util.ResourceUtils;
+import org.jretty.util.SystemPlaceHolderUtils;
 import org.jretty.util.resource.Resource;
 
 /**
@@ -217,6 +218,9 @@ public class I18nMsgProperties implements I18nMsg {
         for (Properties prop : props) {
             ret = prop.getProperty(key);
             if (ret != null) {
+                // 解析系统变量
+                ret = SystemPlaceHolderUtils.resovlePlaceHolder(ret);
+                prop.setProperty(key, ret);
                 break;
             }
         }

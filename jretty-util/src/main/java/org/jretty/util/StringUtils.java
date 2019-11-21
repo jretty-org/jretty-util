@@ -14,8 +14,6 @@ package org.jretty.util;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * 通用字符串工具类
@@ -684,13 +682,10 @@ public class StringUtils {
      * @param path
      *            the file path (may be <code>null</code>)
      * @return the extracted filename, or <code>null</code> if none
+     * @deprecated please use PathUtils
      */
     public static String getFilenameFromPath(String path) {
-        if (null == path)
-            return null;
-        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        int separatorIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        return (separatorIndex != -1 ? path2.substring(separatorIndex + 1) : path2);
+        return PathUtils.getFilenameFromPath(path);
     }
 
     /**
@@ -700,19 +695,11 @@ public class StringUtils {
      * @param path
      *            the file path (may be <code>null</code>)
      * @return the path with stripped filename, or <code>null</code> if none
+     * @deprecated please use PathUtils
      */
     public static String stripFilenameFromPath(String path) {
-        if (null == path)
-            return null;
-        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        if (folderIndex == -1) {
-            return path2;
-        }
-        return path2.substring(0, folderIndex + 1);
+        return PathUtils.stripFilenameFromPath(path);
     }
-
-    private static final char EXTENSION_SEPARATOR = '.';
 
     /**
      * 从路径（url或者目录都可以）中获取文件名称（不带后缀，形如 abc） <br>
@@ -721,21 +708,10 @@ public class StringUtils {
      * @param path
      *            the file path (may be <code>null</code>)
      * @return the extracted filename, or <code>null</code> if none
+     * @deprecated please use PathUtils
      */
     public static String getFilenameWithoutExtension(String path) {
-        if (null == path)
-            return null;
-        int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
-        if (extIndex == -1) {
-            return path.substring(path.lastIndexOf(Const.FOLDER_SEPARATOR) + 1, path.length());
-        }
-        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        if (folderIndex > extIndex) {
-            // throw new RuntimeException("the path form is not correct!--"+path);
-            return null;
-        }
-        return path2.substring(folderIndex + 1, extIndex);
+        return PathUtils.getFilenameWithoutExtension(path);
     }
 
     /**
@@ -745,20 +721,10 @@ public class StringUtils {
      * @param path
      *            the file path (may be <code>null</code>)
      * @return the extracted filename extension, or <code>null</code> if none
+     * @deprecated please use PathUtils
      */
     public static String getFilenameExtension(String path) {
-        if (null == path)
-            return null;
-        int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
-        if (extIndex == -1) {
-            return null;
-        }
-        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        int folderIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        if (folderIndex > extIndex) {
-            return null;
-        }
-        return path2.substring(extIndex + 1);
+        return PathUtils.getFilenameExtension(path);
     }
 
     /**
@@ -769,22 +735,10 @@ public class StringUtils {
      * @param relativePath
      *            the relative path to apply (relative to the full file path above)
      * @return the full file path that results from applying the relative path
+     * @deprecated please use PathUtils
      */
     public static String applyRelativePath(String path, String relativePath) {
-        String path2 = path.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-        String relativePath2 = relativePath.replace(Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-
-        int separatorIndex = path2.lastIndexOf(Const.FOLDER_SEPARATOR);
-        if (separatorIndex != -1) {
-            String newPath = path.substring(0, separatorIndex);
-            if (!relativePath2.startsWith(Const.FOLDER_SEPARATOR)) {
-                newPath += Const.FOLDER_SEPARATOR;
-            }
-            return newPath + relativePath2;
-        }
-        else {
-            return relativePath2;
-        }
+        return PathUtils.applyRelativePath(path, relativePath);
     }
 
     /**
@@ -794,64 +748,10 @@ public class StringUtils {
      * notice that Windows separators ("\") are replaced by simple slashes.
      * @param path the original path
      * @return the normalized path
+     * @deprecated please use PathUtils
      */
     public static String cleanPath(String path) {
-        if (path == null) {
-            return null;
-        }
-        String pathToUse = replace(path, Const.WINDOWS_FOLDER_SEPARATOR, Const.FOLDER_SEPARATOR);
-
-        // Strip prefix from path to analyze, to not treat it as part of the
-        // first path element. This is necessary to correctly parse paths like
-        // "file:core/../core/io/Resource.class", where the ".." should just
-        // strip the first "core" directory while keeping the "file:" prefix.
-        int prefixIndex = pathToUse.indexOf(":");
-        String prefix = Const.STRING_LEN0;
-        if (prefixIndex != -1) {
-            prefix = pathToUse.substring(0, prefixIndex + 1);
-            if (prefix.contains(Const.FOLDER_SEPARATOR)) {
-                prefix = Const.STRING_LEN0;
-            }
-            else {
-                pathToUse = pathToUse.substring(prefixIndex + 1);
-            }
-        }
-        if (pathToUse.startsWith(Const.FOLDER_SEPARATOR)) {
-            prefix = prefix + Const.FOLDER_SEPARATOR;
-            pathToUse = pathToUse.substring(1);
-        }
-
-        String[] pathArray = StringSplitUtils.splitByWholeSeparator(pathToUse, Const.FOLDER_SEPARATOR);
-        List<String> pathElements = new LinkedList<String>();
-        int tops = 0;
-
-        for (int i = pathArray.length - 1; i >= 0; i--) {
-            String element = pathArray[i];
-            if (Const.CURRENT_PATH.equals(element)) {
-                // Points to current directory - drop it.
-            }
-            else if (Const.TOP_PATH.equals(element)) {
-                // Registering top path found.
-                tops++;
-            }
-            else {
-                if (tops > 0) {
-                    // Merging path element with element corresponding to top path.
-                    tops--;
-                }
-                else {
-                    // Normal path element found.
-                    pathElements.add(0, element);
-                }
-            }
-        }
-
-        // Remaining top paths need to be retained.
-        for (int i = 0; i < tops; i++) {
-            pathElements.add(0, Const.TOP_PATH);
-        }
-
-        return prefix + CollectionUtils.toString(pathElements, Const.FOLDER_SEPARATOR);
+        return PathUtils.cleanPath(path);
     }
 
 }
