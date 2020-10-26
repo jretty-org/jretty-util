@@ -162,4 +162,52 @@ public class StringUtilsTest {
         assertTrue(StringUtils.lastIndexIgnoreCase("aaba\r\nabaa", "\r\n") == 4);
         assertTrue(StringUtils.lastIndexIgnoreCase("aaba\r\nabaa╋ふ▒㊧❀", "╋ふ▒㊧❀") == 10);
     }
+    
+    static final String TEST_STR = "01234567890123";
+    @Test
+    public void testMatchFromIndex() {
+        int idx = StringUtils.matchFromIndex(TEST_STR, 1, "0");
+        assertEquals(10, idx);
+        
+        idx = StringUtils.matchFromIndex(TEST_STR, 0, "01");
+        assertEquals(0, idx);
+    }
+    
+    @Test
+    public void testStartsWithFromIndex() {
+        assertTrue(StringUtils.startsWithFromIndex(TEST_STR, 0, "012"));
+        assertTrue(StringUtils.startsWithFromIndex(TEST_STR, 9, "901"));
+    }
+    
+    @Test
+    public void testMiddleOfIndex() {
+        assertEquals("3456789", StringUtils.middleOfIndex(TEST_STR, "012", "012"));
+        assertEquals(null, StringUtils.middleOfIndex(TEST_STR, "012", "46"));
+    }
+    
+    @Test
+    public void testStripMiddleOfIndex() {
+        String first = StringUtils.beforeIndex(TEST_STR, "89");
+        int idx = TEST_STR.indexOf("89");
+        int idx2 = StringUtils.matchFromIndex(TEST_STR, idx, "12");
+        assertEquals("012345673", first + TEST_STR.substring(idx2 + 2));
+        assertEquals("012345673", StringUtils.stripMiddleOfIndex(TEST_STR, "89", "12"));
+        assertEquals("014567890123", StringUtils.stripMiddleOfIndex(TEST_STR, "2", "3"));
+        assertEquals(TEST_STR, StringUtils.stripMiddleOfIndex(TEST_STR, "89", "122"));
+        assertEquals(TEST_STR, StringUtils.stripMiddleOfIndex(TEST_STR, "819", "12"));
+    }
+    
+    @Test
+    public void testReplaceMiddleOfIndex() {
+        assertEquals("01234567aaa3", StringUtils.replaceMiddleOfIndex(TEST_STR, "89", "12", "aaa"));
+        assertEquals("01aaa4567890123", StringUtils.replaceMiddleOfIndex(TEST_STR, "2", "3", "aaa"));
+    }
+    
+    @Test
+    public void testReplaceBetween() {
+        assertEquals("0123456789aaa123", StringUtils.replaceBetween(TEST_STR, "89", "12", "aaa"));
+        assertEquals("012aaa34567890123", StringUtils.replaceBetween(TEST_STR, "2", "3", "aaa"));
+    }
+    
+    
 }

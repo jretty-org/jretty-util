@@ -289,12 +289,9 @@ public class StringUtils {
      * Replace all occurences of a substring within a string with another string.
      * <p>[非正则表达式，区别于String.replace()方法]</p>
      * 
-     * @param inString
-     *            String to examine
-     * @param oldPattern
-     *            String to replace
-     * @param newPattern
-     *            String to insert
+     * @param inString String to examine
+     * @param oldPattern String to replace
+     * @param newPattern String to insert
      * @return a String with the replacements
      */
     public static String replace(String inString, String oldPattern, String newPattern) {
@@ -534,6 +531,9 @@ public class StringUtils {
         return str.substring(0, idx);
     }
 
+    /**
+     * ("01234567890123", "012", "012") = "3456789"
+     */
     public static String middleOfIndex(String str, String index1, String index2) {
         int idx1 = str.indexOf(index1);
         if (idx1 == -1) {
@@ -547,6 +547,60 @@ public class StringUtils {
         return str.substring(0, idx2);
     }
     
+    /**
+     * ("01234567890123", "89", "12") = "012345673"
+     */
+    public static String stripMiddleOfIndex(String str, String index1, String index2) {
+        int idx1 = str.indexOf(index1);
+        if (idx1 == -1) {
+            return str;
+        }
+        String org = str;
+        String before = org.substring(0, idx1);
+        str = org.substring(idx1 + index1.length(), org.length());
+        int idx2 = str.indexOf(index2);
+        if (idx2 == -1) {
+            return org;
+        }
+        return before + str.substring(idx2 + index2.length(), str.length());
+    }
+    
+    /**
+     * ("01234567890123", "89", "12", "aaa") = "0123456789aaa123"
+     */
+    public static String replaceBetween(String str, String index1, String index2, String newStr) {
+        int idx1 = str.indexOf(index1);
+        if (idx1 == -1) {
+            return str;
+        }
+        String org = str;
+        String before = org.substring(0, idx1);
+        str = org.substring(idx1 + index1.length(), org.length());
+        int idx2 = str.indexOf(index2);
+        if (idx2 == -1) {
+            return org;
+        }
+        return before + index1 + newStr + index2
+                + str.substring(idx2 + index2.length(), str.length());
+    }
+    
+    /**
+     * ("01234567890123", "89", "12", "aaa") = "01234567aaa3"
+     */
+    public static String replaceMiddleOfIndex(String str, String index1, String index2, String newStr) {
+        int idx1 = str.indexOf(index1);
+        if (idx1 == -1) {
+            return str;
+        }
+        String org = str;
+        String before = org.substring(0, idx1);
+        str = org.substring(idx1 + index1.length(), org.length());
+        int idx2 = str.indexOf(index2);
+        if (idx2 == -1) {
+            return org;
+        }
+        return before + newStr + str.substring(idx2 + index2.length(), str.length());
+    }
     
     /**
      * Test whether the given string start with the given substring at the given index.
@@ -593,10 +647,8 @@ public class StringUtils {
     /**
      * Count the occurrences of the substring in string s.
      * 
-     * @param str
-     *            string to search in. Return 0 if this is null.
-     * @param sub
-     *            string to search for. Return 0 if this is null.
+     * @param str string to search in. Return 0 if this is null.
+     * @param sub string to search for. Return 0 if this is null.
      */
     public static int countOccurrencesOf(String str, String sub) {
         if (str == null || sub == null || str.length() == 0 || sub.length() == 0) {
@@ -812,9 +864,6 @@ public class StringUtils {
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
     
     /**
-     * 
-     * @param path
-     * @return
      * @deprecated please use PathUtils
      */
     public static String normalPath(String path) {
@@ -822,12 +871,6 @@ public class StringUtils {
     }
 
     /**
-     * 从路径（url或者目录都可以）中获取文件名称（带后缀，形如 abc.txt） <br>
-     * Extract the filename from the given path, e.g. "mypath/myfile.txt" -> "myfile.txt".
-     * 
-     * @param path
-     *            the file path (may be <code>null</code>)
-     * @return the extracted filename, or <code>null</code> if none
      * @deprecated please use PathUtils
      */
     public static String getFilenameFromPath(String path) {
@@ -835,12 +878,6 @@ public class StringUtils {
     }
 
     /**
-     * 从路径（url或者目录都可以）中剥去文件名，获得文件所在的目录。 <br>
-     * Strip the filename from the given path, e.g. "mypath/myfile.txt" -> "mypath/".
-     * 
-     * @param path
-     *            the file path (may be <code>null</code>)
-     * @return the path with stripped filename, or <code>null</code> if none
      * @deprecated please use PathUtils
      */
     public static String stripFilenameFromPath(String path) {
@@ -848,12 +885,6 @@ public class StringUtils {
     }
 
     /**
-     * 从路径（url或者目录都可以）中获取文件名称（不带后缀，形如 abc） <br>
-     * Extract the filename without it's extension from the given path, e.g. "mypath/myfile.txt" -> "myfile".
-     * 
-     * @param path
-     *            the file path (may be <code>null</code>)
-     * @return the extracted filename, or <code>null</code> if none
      * @deprecated please use PathUtils
      */
     public static String getFilenameWithoutExtension(String path) {
@@ -861,12 +892,6 @@ public class StringUtils {
     }
 
     /**
-     * 从路径（url或者目录都可以）中获取文件后缀（比如 txt）<br>
-     * Extract the filename extension from the given path, e.g. "mypath/myfile.txt" -> "txt".
-     * 
-     * @param path
-     *            the file path (may be <code>null</code>)
-     * @return the extracted filename extension, or <code>null</code> if none
      * @deprecated please use PathUtils
      */
     public static String getFilenameExtension(String path) {
@@ -874,16 +899,6 @@ public class StringUtils {
     }
 
     /**
-     * Apply the given relative path to the given path, assuming standard Java folder separation (i.e. "/" separators).
-     * <p>(org/home/aa.txt, bb.txt) --> org/home/bb.txt
-     * <p>(org/home/cc, bb.txt) --> org/home/bb.txt
-     * <p>(org/home/cc/, bb.txt) --> org/home/cc/bb.txt
-     * 
-     * @param path
-     *            the path to start from (usually a full file path)
-     * @param relativePath
-     *            the relative path to apply (relative to the full file path above)
-     * @return the full file path that results from applying the relative path
      * @deprecated please use PathUtils
      */
     public static String applyRelativePath(String path, String relativePath) {
@@ -891,22 +906,13 @@ public class StringUtils {
     }
     
     /**
-     * 
-     * @param paths
-     * @return
      * @deprecated please use PathUtils
      */
     public static String connectPaths(String ...paths) {
-        return PathUtils.connectPaths(paths);
+        return PathUtils.connectPaths(paths[0], paths[1]);
     }
 
     /**
-     * Normalize the path by suppressing sequences like "path/.." and
-     * inner simple dots.
-     * <p>The result is convenient for path comparison. For other uses,
-     * notice that Windows separators ("\") are replaced by simple slashes.
-     * @param path the original path
-     * @return the normalized path
      * @deprecated please use PathUtils
      */
     public static String cleanPath(String path) {

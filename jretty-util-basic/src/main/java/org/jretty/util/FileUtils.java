@@ -34,7 +34,7 @@ import org.jretty.log.Logger;
 
 /**
  * file utils best practice 
- * {高效的常用文件工具类}
+ * [常用的高性能文件工具类]
  * 
  * @author zollty
  * @since 2013-6-23
@@ -54,48 +54,76 @@ public class FileUtils {
     /**
      * get BufferedWriter output stream
      * 
-     * @param fileFullPath
-     *            the absolute file path
-     * @param append
-     *            true if can append
-     * @param charSet
-     *            assign charSet,null if use the default charSet
+     * @param fileFullPath the absolute file path
+     * @param append true if can append
+     * @param charSet assign charSet,null if use the default charSet
      * @return BufferedWriter
      * @throws IOException
      */
-    public static BufferedWriter getBufferedWriter(String fileFullPath,
-            boolean append, String charSet) throws IOException {
-        
-        return new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(fileFullPath, append), StringUtils.decideCharSet(charSet)));
-    }
+    public static BufferedWriter getBufferedWriter(String fileFullPath, boolean append,
+            String charSet) throws IOException {
 
+        return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileFullPath, append),
+                StringUtils.decideCharSet(charSet)));
+    }
+    
     /**
      * get BufferedReader input stream
      * 
-     * @param fileFullPath
-     *            the absolute file path
-     * @param charSet
-     *            assign charSet,null if use the default charSet
+     * @param fileFullPath the absolute file path
+     * @param charSet assign charSet,null if use the default charSet
      * @return BufferedReader
      * @throws IOException
      */
-    public final static BufferedReader getBufferedReader(String fileFullPath,
-            String charSet) throws IOException {
-        
-        return new BufferedReader(new InputStreamReader(
-                new FileInputStream(fileFullPath), StringUtils.decideCharSet(charSet)));
+    public final static BufferedReader getBufferedReader(String fileFullPath, String charSet)
+            throws IOException {
+
+        return new BufferedReader(new InputStreamReader(new FileInputStream(fileFullPath),
+                StringUtils.decideCharSet(charSet)));
+    }
+    
+    /**
+     * 将字符串写入文件
+     * 
+     * @param fileFullPath 文件全路径（务必保证外层目录存在）
+     * @param str 字符内容
+     * @param charSet null默认为UTP-8
+     * @param append 是否为追加
+     */
+    public static void writeStr2File(String fileFullPath, String str, String charSet,
+            boolean append) {
+        BufferedWriter out = null;
+        try {
+            out = getBufferedWriter(fileFullPath, append, charSet);
+            out.write(str);
+            out.flush();
+        } catch (Exception e) {
+            LOG.error(e);
+        } finally {
+            IOUtils.closeIO(out);
+        }
     }
     
 
     /**
      * deletes file or folder with all subfolders and subfiles.
      * 
-     * @param file
-     *            [file or directory to delete]
+     * @param file [file or directory to delete]
      * @return true [if all files are deleted]
      */
     public static boolean deleteAll(final File file) {
+        if (file.isDirectory()) {
+            for (File subFile : file.listFiles()) {
+                if (!deleteAll(subFile)) {
+                    return false;
+                }
+            }
+        }
+        return file.delete();
+    }
+    
+    public static boolean deleteAll(final String fullPath) {
+        final File file = new File(fullPath);
         if (file.isDirectory()) {
             for (File subFile : file.listFiles()) {
                 if (!deleteAll(subFile)) {
@@ -146,10 +174,8 @@ public class FileUtils {
     /**
      * 复制整个文件夹内容
      * 
-     * @param oldPath
-     *            原文件路径 如：c:/fqf
-     * @param newPath
-     *            复制后路径 如：f:/fqf/ff
+     * @param oldPath 原文件路径 如：c:/fqf
+     * @param newPath 复制后路径 如：f:/fqf/ff
      * @return boolean
      */
     public static boolean copyFolder(String oldPath, String newPath) {
@@ -159,13 +185,12 @@ public class FileUtils {
     /**
      * 复制整个文件夹内容
      * 
-     * @param oldPath
-     *            原文件路径 如：c:/fqf
-     * @param newPath
-     *            复制后路径 如：f:/fqf/ff
-     * @return boolean
+     * @param oldPath 原文件路径 如：c:/fqf
+     * @param newPath 复制后路径 如：f:/fqf/ff
+     * @return true if all success
      */
-    public static boolean copyFolder(String oldPath, String newPath, final boolean discardFileDate) {
+    public static boolean copyFolder(String oldPath, String newPath,
+            final boolean discardFileDate) {
         File oldFile = new File(oldPath);
         if (oldFile.isFile()) {
             try {
@@ -227,7 +252,7 @@ public class FileUtils {
             }
             else if (sourceFile.isDirectory()) {
                 // 如果是子文件夹
-                copyFolder(oldPath + SEPARATOR + fileName, newPath + SEPARATOR + fileName);
+                copyFolder(oldPath + SEPARATOR + fileName, newPath + SEPARATOR + fileName, discardFileDate);
             }
         }
         return ret;
@@ -341,8 +366,8 @@ public class FileUtils {
      * @param srcFile          the validated source file, must not be {@code null}
      * @param destFile         the validated destination file, must not be {@code null}
      * @param preserveFileDate whether to preserve the file date
-     * @throws IOException              if an error occurs
-     * @throws IOException              if the output file length is not the same as the input file length after the
+     * @throws IOException     if an error occurs
+     * @throws IOException     if the output file length is not the same as the input file length after the
      * copy completes
      * @throws IllegalArgumentException "Negative size" if the file is truncated so that the size is less than the
      * position
@@ -395,6 +420,10 @@ public class FileUtils {
         ArrayList<File> result = new ArrayList<File>();
         if (file.isDirectory()) {
             File[] files = file.listFiles();
+            if (files == null) {
+                LOG.warn("cannot read dir " + file.getAbsolutePath());
+                return result;
+            }
             boolean finalDir = true;
             for (File filePath : files) {
                 if (filePath.isFile()) {
@@ -409,18 +438,29 @@ public class FileUtils {
         }
         return result;
     }
+    
+    /**
+     * 获取 目录以及子目录中的所有文件
+     */
+    public static List<File> loopFiles(File file) {
+        return loopFiles(file, null);
+    }
 
     /**
      * 获取 目录以及子目录中的所有文件
      * @param inludeType 文件结尾类型（endsWith），比如 jpg, .jpg 都可以
      */
-    public static List<File> loopFiles(File file, String... inludeType) {
+    public static List<File> loopFiles(File file, String[] inludeType) {
         ArrayList<File> result = new ArrayList<File>();
         if (file.isFile() && checkFileType(file, inludeType)) {
             result.add(file);
         }
         else if (file.isDirectory()) {
             File[] files = file.listFiles();
+            if (files == null) {
+                LOG.warn("cannot read dir " + file.getAbsolutePath());
+                return result;
+            }
             for (File filePath : files) {
                 result.addAll(loopFiles(filePath, inludeType));
             }
@@ -434,6 +474,10 @@ public class FileUtils {
             return folder.getName().equalsIgnoreCase(fileName) ? folder : null;
         } else if (folder.isDirectory()) {
             File[] files = folder.listFiles();
+            if (files == null) {
+                LOG.warn("cannot read dir " + folder.getAbsolutePath());
+                return null;
+            }
             File ret = null;
             for (File filePath : files) {
                 ret = findFile(filePath, fileName);
@@ -453,6 +497,10 @@ public class FileUtils {
     public static boolean deleteEmptyDir(File parent) {
         if (parent.isDirectory()) {
             File[] files = parent.listFiles();
+            if (files == null) {
+                LOG.warn("cannot read dir " + parent.getAbsolutePath());
+                return false;
+            }
             if (files.length == 0) {
                 return true;
             }
@@ -473,24 +521,9 @@ public class FileUtils {
         return false;
     }
     
-    public static void appendStr2File(String fileFullPath, String str, String charSet) {
-        BufferedWriter out = null;
-        try {
-            out = getBufferedWriter(fileFullPath, true, charSet);
-            out.write(str);
-            out.flush();
-        }
-        catch (Exception e) {
-            LOG.error(e);
-        }
-        finally {
-            IOUtils.closeIO(out);
-        }
-    }
-    
-    
     /**
      * 解析文本内容
+     * @deprecated use getTextContent(in, null)
      */
     public static String getTextContent(InputStream in) {
         return getTextContent(in, null);
@@ -498,6 +531,7 @@ public class FileUtils {
     
     /**
      * 按行解析文本文件
+     * @deprecated use getTextFileContent(in, null)
      */
     public static List<String> getTextFileContent(InputStream in) {
         return getTextFileContent(in, null);
@@ -546,7 +580,7 @@ public class FileUtils {
             IOUtils.closeIO(br);
         }
     }
-
+    
     /**
      * 按行解析文本文件
      */
@@ -574,7 +608,6 @@ public class FileUtils {
             List<T> list = new ArrayList<T>();
             while ((lineStr = br.readLine()) != null) {
                 if (StringUtils.isNotEmpty(lineStr)) {
-                    // 读出文件中一行的数据
                     o = parser.parseOneLine(lineStr);
                     if (o != null) {
                         list.add(o);
@@ -589,6 +622,7 @@ public class FileUtils {
         }
         finally {
             IOUtils.closeIO(in);
+            IOUtils.closeIO(br);
         }
     }
 
@@ -604,7 +638,20 @@ public class FileUtils {
         }
         return false;
     }
-
+    
+    /**
+     * 在Java的缓存目录（System.getProperty "java.io.tmpdir"）下创建一个新文件夹（如果已存在，则会清空）
+     */
+    public static File createTempDir(String folderName) {
+        File tmpdir = new File(System.getProperty("java.io.tmpdir"));
+        tmpdir = new File(tmpdir, folderName);
+        if (tmpdir.exists()) {
+            deleteAll(tmpdir);
+        }
+        tmpdir.mkdir();
+        return tmpdir;
+    }
+    
     /**
      * 按文件修改日期降序排列【最新的排在最上面】
      */

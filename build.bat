@@ -4,7 +4,7 @@ setlocal
 echo.
 call java -version
 echo.
-SET JAVA_HOME=D:\C\Program Files\Java\jdk1.7.0_80
+SET JAVA_HOME=D:\__SYNC1\Softwares\Java\jdk1.7.0_79
 echo ------------------------- maven info -------------------------------
 call mvn -v
 

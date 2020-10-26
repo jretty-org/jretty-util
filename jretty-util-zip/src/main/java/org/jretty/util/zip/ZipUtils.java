@@ -234,7 +234,7 @@ public class ZipUtils {
             FileOutputStream output = null;
             try {
                 output = new FileOutputStream(child);
-                IOUtils.clone(in, child.length(), output);
+                IOUtils.cloneWithoutClose(in, ze.getSize(), output);
             }
             catch (IOException e) {
                 if (LOG.isDebugEnabled()) {

@@ -34,7 +34,7 @@ import org.jretty.log.Logger;
 
 /**
  * IO utils best practice 
- * {高效的IO工具类}
+ * [高效的IO工具类]
  * 
  * @author zollty
  * @since 2013-6-15
@@ -58,21 +58,10 @@ public class IOUtils {
      */
     private static final int DEFAULT_BUFFER_SIZE = 4096;
     
-    private static final int EOF = -1;
+    public static final int EOF = -1;
 
     /**
-     * get BufferedWriter output stream
-     * 
      * @deprecated use FileUtils.getBufferedWriter
-     * 
-     * @param fileFullPath
-     *            the absolute file path
-     * @param append
-     *            true if can append
-     * @param charSet
-     *            assign charSet,null if use the default charSet
-     * @return BufferedWriter
-     * @throws IOException
      */
     public static BufferedWriter getBufferedWriter(String fileFullPath,
             boolean append, String charSet) throws IOException {
@@ -82,16 +71,7 @@ public class IOUtils {
     }
 
     /**
-     * get BufferedReader input stream
-     * 
      * @deprecated use FileUtils.getBufferedReader
-     * 
-     * @param fileFullPath
-     *            the absolute file path
-     * @param charSet
-     *            assign charSet,null if use the default charSet
-     * @return BufferedReader
-     * @throws IOException
      */
     public final static BufferedReader getBufferedReader(String fileFullPath,
             String charSet) throws IOException {
@@ -108,8 +88,7 @@ public class IOUtils {
     /**
      * 将字符串转换为 InputStream 输入流
      * 
-     * @param charSet
-     *            指定字符编码
+     * @param charSet 指定字符编码
      */
     public final static InputStream getInputStreamFromString(String str, String charSet) {
         if (str == null) {
@@ -136,11 +115,9 @@ public class IOUtils {
     /**
      * Copy the contents of the given Reader into a String. Closes the reader when done.
      * 
-     * @param in
-     *            the reader to copy from
+     * @param in the reader to copy from
      * @return the String that has been copied to
-     * @throws IOException
-     *             in case of I/O errors
+     * @throws IOException in case of I/O errors
      */
     public static String copyToString(Reader in) throws IOException {
         StringWriter out = new StringWriter();
@@ -163,26 +140,26 @@ public class IOUtils {
     /**
      * Copy the contents of the given Reader to the given Writer. Closes both when done.
      * 
-     * @param in
-     *            the Reader to copy from
-     * @param out
-     *            the Writer to copy to
+     * @param in the Reader to copy from
+     * @param out the Writer to copy to
      * @return the number of characters copied
-     * @throws IOException
-     *             in case of I/O errors
+     * @throws IOException in case of I/O errors
      */
     public static int clone(Reader in, Writer out) throws IOException {
         Assert.notNull(in, "No Reader specified");
         Assert.notNull(out, "No Writer specified");
         try {
-            int byteCount = 0;
+            long byteCount = 0;
             char[] buffer = new char[DEFAULT_BUFFER_SIZE];
             int bytesRead = -1;
             while ((bytesRead = in.read(buffer)) != EOF) {
                 out.write(buffer, 0, bytesRead);
                 byteCount += bytesRead;
             }
-            return byteCount;
+            if (byteCount > Integer.MAX_VALUE) {
+                return -1;
+            }
+            return (int) byteCount;
         } finally {
             try {
                 in.close();
@@ -212,8 +189,7 @@ public class IOUtils {
     }
 
     /**
-     * @param len
-     *            in-source-length e.g. long len = fileIn.length()
+     * @param len in-source-length e.g. long len = fileIn.length()
      */
     public final static int clone(final InputStream in, long len, final OutputStream out) throws IOException {
         Assert.notNull(in, "No InputStream specified");
@@ -234,13 +210,16 @@ public class IOUtils {
                 buf = new byte[DEFAULT_BUFFER_SIZE];
             }
 
-            int byteCount = 0;
+            long byteCount = 0;
             int bytesRead = 0;
             while (EOF != (bytesRead = in.read(buf))) {
                 out.write(buf, 0, bytesRead);
                 byteCount += bytesRead;
             }
-            return byteCount;
+            if (byteCount > Integer.MAX_VALUE) {
+                return -1;
+            }
+            return (int) byteCount;
         } finally {
             try {
                 in.close();
@@ -270,11 +249,10 @@ public class IOUtils {
     }
     
     /**
-     * @param len
-     *            in-source-length e.g. long len = fileIn.length()
+     * @param len in-source-length e.g. long len = fileIn.length()
      */
-    public final static int cloneWithoutClose(
-            final InputStream in, long len, final OutputStream out) throws IOException {
+    public final static int cloneWithoutClose(final InputStream in, long len,
+            final OutputStream out) throws IOException {
         Assert.notNull(in, "No InputStream specified");
         Assert.notNull(out, "No OutputStream specified");
         byte[] buf;
@@ -292,13 +270,16 @@ public class IOUtils {
             buf = new byte[DEFAULT_BUFFER_SIZE];
         }
 
-        int byteCount = 0;
+        long byteCount = 0;
         int bytesRead = 0;
         while (EOF != (bytesRead = in.read(buf))) {
             out.write(buf, 0, bytesRead);
             byteCount += bytesRead;
         }
-        return byteCount;
+        if (byteCount > Integer.MAX_VALUE) {
+            return -1;
+        }
+        return (int) byteCount;
     }
 
     
