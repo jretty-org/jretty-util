@@ -58,7 +58,7 @@ public class DateFormatUtils {
      */
     public DateFormatUtils(final String datePattern) {
         threadLocal = new ThreadLocal<SimpleDateFormat>() {
-            protected SimpleDateFormat initialValue() {
+            @Override protected SimpleDateFormat initialValue() {
                 return new SimpleDateFormat(datePattern);
             }
         };
@@ -69,7 +69,7 @@ public class DateFormatUtils {
      */
     public DateFormatUtils() {
         threadLocal = new ThreadLocal<SimpleDateFormat>() {
-            protected SimpleDateFormat initialValue() {
+            @Override protected SimpleDateFormat initialValue() {
                 return new SimpleDateFormat(yyyy_MM_dd_HH_mm_ss);
             }
         };
@@ -105,7 +105,7 @@ public class DateFormatUtils {
      * 获得一个含详细时间信息的对象，可以根据需要自由组合。
      */
     public static DateInfo format() {
-        return uniformat(new Date());
+        return uniformat(System.currentTimeMillis());
     }
 
     /**
@@ -120,20 +120,28 @@ public class DateFormatUtils {
      * 需要其他格式，请自行添加(参照如上的写法)
      */
     public static DateInfo formatDate(Date date) {
+        return uniformat(date.getTime());
+    }
+    
+    public static DateInfo formatDate(long date) {
         return uniformat(date);
     }
 
     /**
      * format成 yyyy-MM-dd 格式
      */
+    public static String format_yyyy_MM_dd(long date) {
+        return format_yyyy_MM_dd(date, DateInfo.SEP_MS);
+    }
+    
     public static String format_yyyy_MM_dd(Date date) {
-        return format_yyyy_MM_dd(date, DateInfo._SEP_MS);
+        return format_yyyy_MM_dd(date.getTime(), DateInfo.SEP_MS);
     }
 
     /**
      * @param spitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
-    public static String format_yyyy_MM_dd(Date date, String spitChar) {
+    public static String format_yyyy_MM_dd(long date, String spitChar) {
         DateInfo dinfo = uniformat(date);
         StringBuilder sbu = new StringBuilder(10);
         sbu.append(dinfo.year);
@@ -147,14 +155,18 @@ public class DateFormatUtils {
         return sbu.toString();
     }
 
+    public static String format_yyyy_MM_dd_HH_mm(long date) {
+        return format_yyyy_MM_dd_HH_mm_ss(date, DateInfo.SEP_MS);
+    }
+    
     public static String format_yyyy_MM_dd_HH_mm(Date date) {
-        return format_yyyy_MM_dd_HH_mm_ss(date, DateInfo._SEP_MS);
+        return format_yyyy_MM_dd_HH_mm_ss(date.getTime(), DateInfo.SEP_MS);
     }
 
     /**
      * @param dateSpitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
-    public static String format_yyyy_MM_dd_HH_mm(Date date, String dateSpitChar) {
+    public static String format_yyyy_MM_dd_HH_mm(long date, String dateSpitChar) {
         DateInfo dinfo = uniformat(date);
         StringBuilder sbu = new StringBuilder(20);
         sbu.append(dinfo.year);
@@ -172,7 +184,7 @@ public class DateFormatUtils {
         }
         sbu.append(dinfo.hour);
 
-        sbu.append(DateInfo._SEP_CO);
+        sbu.append(DateInfo.SEP_CO);
         if (dinfo.mins < 10) {
             sbu.append('0');
         }
@@ -181,14 +193,18 @@ public class DateFormatUtils {
         return sbu.toString();
     }
 
+    public static String format_yyyy_MM_dd_HH_mm_ss(long date) {
+        return format_yyyy_MM_dd_HH_mm_ss(date, DateInfo.SEP_MS);
+    }
+    
     public static String format_yyyy_MM_dd_HH_mm_ss(Date date) {
-        return format_yyyy_MM_dd_HH_mm_ss(date, DateInfo._SEP_MS);
+        return format_yyyy_MM_dd_HH_mm_ss(date.getTime(), DateInfo.SEP_MS);
     }
 
     /**
      * @param dateSpitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
-    public static String format_yyyy_MM_dd_HH_mm_ss(Date date, String dateSpitChar) {
+    public static String format_yyyy_MM_dd_HH_mm_ss(long date, String dateSpitChar) {
         DateInfo dinfo = uniformat(date);
         StringBuilder sbu = new StringBuilder(20);
         sbu.append(dinfo.year);
@@ -206,13 +222,13 @@ public class DateFormatUtils {
         }
         sbu.append(dinfo.hour);
 
-        sbu.append(DateInfo._SEP_CO);
+        sbu.append(DateInfo.SEP_CO);
         if (dinfo.mins < 10) {
             sbu.append('0');
         }
         sbu.append(dinfo.mins);
 
-        sbu.append(DateInfo._SEP_CO);
+        sbu.append(DateInfo.SEP_CO);
         if (dinfo.secs < 10) {
             sbu.append('0');
         }
@@ -221,14 +237,18 @@ public class DateFormatUtils {
         return sbu.toString();
     }
 
+    public static String format_yyyy_MM_dd_HH_mm_ss_SSS(long date) {
+        return format_yyyy_MM_dd_HH_mm_ss_SSS(date, DateInfo.SEP_MS);
+    }
+    
     public static String format_yyyy_MM_dd_HH_mm_ss_SSS(Date date) {
-        return format_yyyy_MM_dd_HH_mm_ss_SSS(date, DateInfo._SEP_MS);
+        return format_yyyy_MM_dd_HH_mm_ss_SSS(date.getTime(), DateInfo.SEP_MS);
     }
 
     /**
      * @param spitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
-    public static String format_yyyy_MM_dd_HH_mm_ss_SSS(Date date, String dateSpitChar) {
+    public static String format_yyyy_MM_dd_HH_mm_ss_SSS(long date, String dateSpitChar) {
         DateInfo dinfo = uniformat(date);
         StringBuilder sbu = new StringBuilder(24);
         sbu.append(dinfo.year);
@@ -246,23 +266,23 @@ public class DateFormatUtils {
         }
         sbu.append(dinfo.hour);
 
-        sbu.append(DateInfo._SEP_CO);
+        sbu.append(DateInfo.SEP_CO);
         if (dinfo.mins < 10) {
             sbu.append('0');
         }
         sbu.append(dinfo.mins);
 
-        sbu.append(DateInfo._SEP_CO);
+        sbu.append(DateInfo.SEP_CO);
         if (dinfo.secs < 10) {
             sbu.append('0');
         }
         sbu.append(dinfo.secs);
 
         sbu.append(',');
-        long now = dinfo.date.getTime();
-        int millis = (int) (now % 1000L);
-        if (millis < 100)
+        int millis = (int) (dinfo.time % 1000L);
+        if (millis < 100) {
             sbu.append('0');
+        }
         if (millis < 10) {
             sbu.append('0');
         }
@@ -271,14 +291,18 @@ public class DateFormatUtils {
         return sbu.toString();
     }
 
+    public static String format_dd_MM_yyyy(long date) {
+        return format_dd_MM_yyyy(date, DateInfo.SEP_MS);
+    }
+    
     public static String format_dd_MM_yyyy(Date date) {
-        return format_dd_MM_yyyy(date, DateInfo._SEP_MS);
+        return format_dd_MM_yyyy(date.getTime(), DateInfo.SEP_MS);
     }
 
     /**
      * @param spitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
-    public static String format_dd_MM_yyyy(Date date, String spitChar) {
+    public static String format_dd_MM_yyyy(long date, String spitChar) {
         DateInfo dinfo = uniformat(date);
         StringBuilder sbu = new StringBuilder(10);
         if (dinfo.day < 10) {
@@ -293,13 +317,17 @@ public class DateFormatUtils {
     }
 
     public static String format_dd_MM_yyyy_HH_mm_ss(Date date) {
-        return format_dd_MM_yyyy_HH_mm_ss(date, DateInfo._SEP_MS);
+        return format_dd_MM_yyyy_HH_mm_ss(date.getTime(), DateInfo.SEP_MS);
+    }
+    
+    public static String format_dd_MM_yyyy_HH_mm_ss(long date) {
+        return format_dd_MM_yyyy_HH_mm_ss(date, DateInfo.SEP_MS);
     }
 
     /**
      * @param dateSpitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
-    public static String format_dd_MM_yyyy_HH_mm_ss(Date date, String dateSpitChar) {
+    public static String format_dd_MM_yyyy_HH_mm_ss(long date, String dateSpitChar) {
         DateInfo dinfo = uniformat(date);
         StringBuilder sbu = new StringBuilder(20);
         if (dinfo.day < 10) {
@@ -317,13 +345,13 @@ public class DateFormatUtils {
         }
         sbu.append(dinfo.hour);
 
-        sbu.append(DateInfo._SEP_CO);
+        sbu.append(DateInfo.SEP_CO);
         if (dinfo.mins < 10) {
             sbu.append('0');
         }
         sbu.append(dinfo.mins);
 
-        sbu.append(DateInfo._SEP_CO);
+        sbu.append(DateInfo.SEP_CO);
         if (dinfo.secs < 10) {
             sbu.append('0');
         }
@@ -336,16 +364,16 @@ public class DateFormatUtils {
      * 生成一个独一无二的字符串（适用于单服务器），格式为yyMMdd_HHmmssSSS，长度为16，按时间先后. <br>
      * 要想适用于多服务器的话，要加上服务器标识（可为每个服务器设置不同的JVM参数作为“服务器标识”）
      */
-    public static String getUniqueDatePattern_TimeMillis() {
-        return uniqueDatePattern(new Date(genUniqueDate_TimeMillis()), true);
+    public static String getUniqueDatePatternTimeMillis() {
+        return uniqueDatePattern(genUniqueDateTimeMillis(), true);
     }
 
     /**
      * 生成一个独一无二的字符串（适用于单服务器），格式为yyMMddHHmmssSSS，长度为15，按时间先后. <br>
      * 要想适用于多服务器的话，要加上服务器标识（可为每个服务器设置不同的JVM参数作为“服务器标识”）
      */
-    public static String getUniqueDatePattern_TimeMillis_noSplit() {
-        return uniqueDatePattern(new Date(genUniqueDate_TimeMillis()), false);
+    public static String getUniqueDatePatternTimeMillisNoSplit() {
+        return uniqueDatePattern(genUniqueDateTimeMillis(), false);
     }
 
     private static long lastTime = System.currentTimeMillis();
@@ -354,7 +382,7 @@ public class DateFormatUtils {
     /**
      * 产生一个独一无二的long类型的TimeMillis，长度为13，按时间先后 依赖于系统时间的不可重复性（系统时间可以延后，但是不能提前）。
      */
-    public static long genUniqueDate_TimeMillis() {
+    public static long genUniqueDateTimeMillis() {
         synchronized (synO4GUDT) {
             long nextTime = System.currentTimeMillis();
             if (nextTime <= lastTime) {
@@ -369,9 +397,8 @@ public class DateFormatUtils {
      * 生成一个独一无二的字符串（适用于单服务器），格式为MMddHHmmssSS，长度为12，按时间先后. <br>
      * 要想适用于多服务器的话，要加上服务器标识（可为每个服务器设置不同的JVM参数作为“服务器标识”）
      */
-    public static String getShortUniqueDate_TimeMillis() {
-        Date date = new Date(genShortUniqueTimeMillis());
-        DateInfo dinfo = uniformat(date);
+    public static String getShortUniqueDateTimeMillis() {
+        DateInfo dinfo = uniformat(genShortUniqueTimeMillis());
         StringBuilder sbu = new StringBuilder(12);
         sbu.append(getMonth(dinfo.month));
         if (dinfo.day < 10) {
@@ -393,8 +420,7 @@ public class DateFormatUtils {
         }
         sbu.append(dinfo.secs);
 
-        long now = dinfo.date.getTime();
-        int millis = (int) (now % 1000L);
+        int millis = (int) (dinfo.time % 1000L);
         millis = millis / 10;
         if (millis < 10) {
             sbu.append('0');
@@ -433,11 +459,11 @@ public class DateFormatUtils {
     // 缓存calendar对象，但是使用时要线程同步，实测比每次都new calendar效率要高很多
     private static Calendar calendar = Calendar.getInstance();
 
-    protected static DateInfo uniformat(Date date) {
+    protected static DateInfo uniformat(long dateTime) {
         DateInfo dinfo = new DateInfo();
         // 如此同步效率高得多，同步块内没有复杂的运算过程
         synchronized (calendar) {
-            calendar.setTime(date);
+            calendar.setTimeInMillis(dateTime);
             dinfo.year = calendar.get(1);
             dinfo.month = calendar.get(2);
             dinfo.day = calendar.get(5);
@@ -445,7 +471,7 @@ public class DateFormatUtils {
             dinfo.mins = calendar.get(12);
             dinfo.secs = calendar.get(13);
         }
-        dinfo.date = date;
+        dinfo.time = dateTime;
         return dinfo;
     }
 
@@ -497,7 +523,7 @@ public class DateFormatUtils {
     /**
      * yyMMdd_HHmmssSSS 定制格式，主要用于获取唯一的时间字符串
      */
-    protected static String uniqueDatePattern(Date date, boolean split) {
+    protected static String uniqueDatePattern(long date, boolean split) {
         DateInfo dinfo = uniformat(date);
         StringBuilder sbu = new StringBuilder(16);
         sbu.append(dinfo.year % 100);
@@ -507,7 +533,7 @@ public class DateFormatUtils {
         }
         sbu.append(dinfo.day);
         if (split) {
-            sbu.append(DateInfo._SEP_MS);
+            sbu.append(DateInfo.SEP_MS);
         }
         if (dinfo.hour < 10) {
             sbu.append('0');
@@ -524,8 +550,7 @@ public class DateFormatUtils {
         }
         sbu.append(dinfo.secs);
 
-        long now = dinfo.date.getTime();
-        int millis = (int) (now % 1000L);
+        int millis = (int) (dinfo.time % 1000L);
         if (millis < 100) {
             sbu.append('0');
         }
@@ -544,9 +569,9 @@ public class DateFormatUtils {
      * @author zollty
      */
     public static class DateInfo {
-        public static final String _SEP_MS = "-";
-        public static final String _SEP_SL = "/";
-        public static final String _SEP_CO = ":";
+        public static final String SEP_MS = "-";
+        public static final String SEP_SL = "/";
+        public static final String SEP_CO = ":";
 
         public int year;
         public int month;
@@ -554,7 +579,7 @@ public class DateFormatUtils {
         public int hour;
         public int mins;
         public int secs;
-        public Date date;
+        public long time;
 
         private String yyyy;
         private String MM;
@@ -636,8 +661,7 @@ public class DateFormatUtils {
          * @return the sSS
          */
         public String getSss() {
-            long now = date.getTime();
-            int millis = (int) (now % 1000L);
+            int millis = (int) (time % 1000L);
             sss = "";
             if (millis < 100) {
                 sss = "0";

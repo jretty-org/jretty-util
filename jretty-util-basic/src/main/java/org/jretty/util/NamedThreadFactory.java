@@ -58,7 +58,7 @@ public class NamedThreadFactory implements ThreadFactory {
         }
         name = name + "-" + poolNumber.getAndIncrement();
         if(addTimestamps) {
-            name = name + "$" + DateFormatUtils.getUniqueDatePattern_TimeMillis_noSplit();
+            name = name + "$" + DateFormatUtils.getUniqueDatePatternTimeMillisNoSplit();
         }
         
         Thread t = new Thread(r, name);

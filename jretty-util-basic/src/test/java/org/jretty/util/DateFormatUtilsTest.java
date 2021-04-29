@@ -8,8 +8,13 @@ import org.jretty.tesper.TestTools;
 
 public class DateFormatUtilsTest {
 
-    
     public static void main(String[] args) throws Exception {
+        final Date date = new Date();
+        // 效率最高，且高得多，而且线程安全
+        System.out.println(DateFormatUtils.format_yyyy_MM_dd_HH_mm_ss(date));
+    }
+    
+    public static void main1(String[] args) throws Exception {
         final Date date = new Date();
 
         // 效率最高，且高得多，而且线程安全
@@ -41,8 +46,9 @@ public class DateFormatUtilsTest {
 
                 DateFormatUtils.format_yyyy_MM_dd_HH_mm_ss(date);
             }
-        });
+        }, "DateFormatUtils-01");
         
+        final SimpleDateFormat sformat = new SimpleDateFormat(DateFormatUtils.yyyy_MM_dd_HH_mm_ss);
         TestTools.loopExecute(new LoopExecute() {
 
             @Override
@@ -54,10 +60,11 @@ public class DateFormatUtilsTest {
             @Override
             public void execute() throws Exception {
 
-                new SimpleDateFormat(DateFormatUtils.yyyy_MM_dd_HH_mm_ss).format(date);
+                sformat.format(date);
             }
-        });
+        }, "SimpleDateFormat-01");
 
+        final DateFormatUtils format = new DateFormatUtils();
         TestTools.loopExecute(new LoopExecute() {
 
             @Override
@@ -69,9 +76,9 @@ public class DateFormatUtilsTest {
             @Override
             public void execute() throws Exception {
 
-                new DateFormatUtils().format(date);
+                format.format(date);
             }
-        });
+        }, "DateFormatUtils-02");
     }
 
 }
