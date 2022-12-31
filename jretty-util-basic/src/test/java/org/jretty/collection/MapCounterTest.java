@@ -1,9 +1,8 @@
-/**
- * 
- */
-package org.jretty.util;
+package org.jretty.collection;
 
+import org.jretty.util.MapCounter;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -20,7 +19,8 @@ public class MapCounterTest {
         mc.add("bbb");
         mc.add("aaa");
         
-        System.out.println(mc);
+        assertEquals(mc.getMap().get("aaa").get(), 3);
+        assertEquals(mc.getMap().get("bbb").get(), 1);
         
     }
 

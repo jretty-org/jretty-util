@@ -13,6 +13,7 @@
 package org.jretty.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.jretty.tesper.LoopExecute;
@@ -49,7 +50,7 @@ public class FileUtilsTest {
         // testGetFileLength();
         
         
-        findFileTest();
+        getTextContentTest();
         
         
     }
@@ -94,4 +95,11 @@ public class FileUtilsTest {
         System.out.println(count/1024/1024/1024);
     }
 
+    static void getTextContentTest() throws IOException {
+        final String path = "D:\\test1\\aa.txt";
+        System.out.println(FileUtils.loopFiles(new File(path)));
+        System.out.println("---------------");
+        System.out.println(FileUtils.getTextContent(new FileInputStream(path), null));
+        System.out.println("---------------");
+    }
 }

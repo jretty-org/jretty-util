@@ -167,6 +167,17 @@ public class ExceptionUtils {
         }
         return errorMsgCut(e.toString(), errorLen);
     }
+    
+    /**
+     * 获取一个最长为Name+32的string作为Exception对象的标识
+     */
+    public static String getExceptionSign(Throwable ex) {
+        String key = ex.getMessage();
+        if (key != null && key.length() > 36) {
+            key = key.substring(0, 24) + key.substring(key.length() - 12, key.length());
+        }
+        return ex.getClass().getSimpleName() + " " + key;
+    }
 
     /**
      * 裁剪错误信息，最多只取 maxLen 个字符(maxLen>=200)，规则如下： <br>

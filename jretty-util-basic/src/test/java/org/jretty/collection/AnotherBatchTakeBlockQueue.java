@@ -1,4 +1,4 @@
-package org.jretty.util;
+package org.jretty.collection;
 
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;

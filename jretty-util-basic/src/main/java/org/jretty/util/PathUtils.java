@@ -318,7 +318,7 @@ public class PathUtils {
     /**
      * 替换路径中的某一段，返回替换后并标准化后的路径
      */
-    public static String replacePath(String fullPath, String oldPart, String newPart) {
+    public static String replace(String fullPath, String oldPart, String newPart) {
         if (StringUtils.isNullOrEmpty(fullPath) || StringUtils.isNullOrEmpty(oldPart)
                 || newPart == null) {
             return fullPath;

@@ -19,16 +19,14 @@
     <groupId>org.jretty</groupId>
     <artifactId>jretty</artifactId>
     <version>21</version>
-    <!-- <relativePath>lib/pom-1.0.xml</relativePath> -->
   </parent>
   <artifactId>jretty-util-parent</artifactId>
-  <version>1.2.0-RELEASE</version>
+  <version>1.2.1-RELEASE</version>
   <packaging>pom</packaging>
   <name>jretty-util-parent</name>
   <description>A simple Java util's libraries. See the sub modules.</description>
 
   <modules>
-    <!-- <module>jretty-util</module> -->
     <module>jretty-util-basic</module>
     <module>jretty-util-json</module>
     <module>jretty-util-zip</module>
@@ -63,13 +61,13 @@
       <dependency>
         <groupId>org.jretty</groupId>
         <artifactId>jretty-util-basic</artifactId>
-        <version>1.2.0</version>
+        <version>1.4.2</version>
       </dependency>
       
       <dependency>
         <groupId>org.jretty</groupId>
         <artifactId>jretty-util-ext</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
       </dependency>
       
       <dependency>
@@ -105,7 +103,7 @@
       <dependency>
         <groupId>org.jretty</groupId>
         <artifactId>jretty-util-web</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1</version>
       </dependency>
       
       <dependency>
@@ -194,7 +192,17 @@
     </pluginManagement>
 
   </build>
-
+  <!-- 私有maven仓库
+  <distributionManagement>
+    <repository>
+      <id>diy-nexus-releases</id>
+      <url>http://10.10.2.182/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>diy-nexus-snapshots</id>
+      <url>http://10.10.2.182/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement> -->
   <!--项目开发者列表 -->
   <developers>
     <developer>

@@ -27,8 +27,6 @@ public class IpUtils {
     
     private static final Logger LOG = LogFactory.getLogger(IpUtils.class);
     
-    private IpUtils() {}
-
     /**
      * 智能分析，精确获取本机网卡，并转换成十六进制
      */

@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.jretty</groupId>
     <artifactId>jretty-util-parent</artifactId>
-    <version>1.2.0-RELEASE</version>
+    <version>1.2.1-RELEASE</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>jretty-util-ext</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>jretty-util-ext</name>
   <description>jretty util extentions.</description>
 

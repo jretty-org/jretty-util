@@ -30,6 +30,24 @@ import java.util.Map;
 public class ObjectUtils {
     
     /**
+     * 比较两个值的大小，支持null
+     */
+    public static <T> int compareTo(Comparable<T> obj, T other) {
+        if (obj != null) {
+            if (other != null) {
+                return obj.compareTo(other);
+            }
+            return 1;
+        }
+        else {
+            if (other != null) {
+                return -1;
+            }
+            return 0;
+        }
+    }
+    
+    /**
      * Determine whether the given object is an array:
      * either an Object array or a primitive array.
      * @param obj the object to check

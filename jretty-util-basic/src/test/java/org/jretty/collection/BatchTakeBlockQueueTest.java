@@ -1,4 +1,4 @@
-package org.jretty.util;
+package org.jretty.collection;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,6 +8,8 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.jretty.util.BatchTakeBlockQueue;
 
 public class BatchTakeBlockQueueTest {
     

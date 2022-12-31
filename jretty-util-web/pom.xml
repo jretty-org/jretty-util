@@ -18,12 +18,12 @@
   <parent>
     <groupId>org.jretty</groupId>
     <artifactId>jretty-util-parent</artifactId>
-    <version>1.2.0-RELEASE</version>
+    <version>1.2.1-RELEASE</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>jretty-util-web</artifactId>
   <packaging>jar</packaging>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
   <name>jretty-util-web</name>
   <description>Java utils use under web servlet environment. See the parent pom for more infomation.</description>
 
@@ -44,7 +44,6 @@
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    
 
     <!-- For Test -->
     

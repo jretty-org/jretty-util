@@ -335,7 +335,7 @@ public class CollectionUtils {
         return (Map<String, T>) sortMap;
     }
     
-    public static <K, V> K getMapKeyByValue(Map<K, V> map, V value) {
+    public static <K, V> K getKeyByValue(Map<K, V> map, V value) {
         Iterator<Entry<K, V>> i = map.entrySet().iterator();
         if (value != null) {
             while (i.hasNext()) {

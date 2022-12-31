@@ -1,8 +1,6 @@
 package org.jretty.util;
 import java.net.InetAddress;
 
-import org.jretty.util.InetAddressHelper;
-
 public class InetAddressHelperTest {
     
     

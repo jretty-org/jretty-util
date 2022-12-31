@@ -538,6 +538,34 @@ public class FileUtils {
     }
 
     /**
+     * 解析文本内容
+     */
+    public static String getTextContent(InputStream in, String charSet) {
+        List<String> ret = getTextFileContent(in, charSet);
+        return CollectionUtils.toString(ret, Const.CRLF);
+    }
+    
+    /**
+     * 解析文本内容
+     */
+    public static String getTextContent(String fileFullPath, String charSet) {
+        List<String> ret = getTextFileContent(fileFullPath, charSet);
+        return CollectionUtils.toString(ret, Const.CRLF);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static List<String> getTextFileContent(String fileFullPath, String charSet) {
+        InputStream in;
+        try {
+            in = new FileInputStream(fileFullPath);
+        }
+        catch (FileNotFoundException e) {
+            return Collections.EMPTY_LIST;
+        }
+        return getTextFileContent(in, charSet);
+    }
+    
+    /**
      * 按行解析文本文件
      */
     public static List<String> getTextFileContent(InputStream in, String charSet) {
@@ -550,28 +578,6 @@ public class FileUtils {
                 ret.add(buf);
             }
             return ret;
-        }
-        catch (Exception e) {
-            throw new NestedRuntimeException(e);
-        }
-        finally {
-            IOUtils.closeIO(br);
-        }
-    }
-    
-    /**
-     * 解析文本内容
-     */
-    public static String getTextContent(InputStream in, String charSet) {
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(in, StringUtils.decideCharSet(charSet)));
-            String buf = null;
-            StringBuilder builder = new StringBuilder();
-            while (null != (buf = br.readLine())) {
-                builder.append(buf).append(Const.CRLF);
-            }
-            return builder.toString();
         }
         catch (Exception e) {
             throw new NestedRuntimeException(e);

@@ -62,7 +62,7 @@ public class PathUtilsTest {
     public void testReplacePath() {
         String oldPath = "D:\\C\\__SYNC1\\2332\\aaa.zip";
         String newPath = "D:/__SYNC0/aaa.zip";
-        assertEquals(newPath, PathUtils.replacePath(oldPath, "C/__SYNC1/2332", "__SYNC0"));
+        assertEquals(newPath, PathUtils.replace(oldPath, "C/__SYNC1/2332", "__SYNC0"));
     }
 
 }

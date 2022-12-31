@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * 一种特殊的容器，其作用是，将某key & value保留一段时间，比如5秒，
+ * 一种特殊的容器，其作用是将某key & value保留一段时间，比如5秒，
  * 在这段时间内，相同的key无法再添加进来，只有key过期之后，才能重新加进来。
- * 另外，容器有容量限制，超过容量，则不再添加元素 且 putIfAbsent 返回true（相当于每次都是新元素，只是不保存，直接丢弃）
+ * 另外，容器有容量限制，超过容量，则不再添加元素 且putIfAbsent返回true（相当于每次都是新元素，只是不保存，直接丢弃）
  * 
  * @see #putIfAbsent(String, Object, int)
  * 
@@ -29,7 +29,6 @@ import java.util.WeakHashMap;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class JrettyCache {
-
     private static int DEFAULT_CAPACITY = 2048;
     // 默认过期时间 20秒
     private static final long DEFUALT_EXPIRE_TIME = 20 * 1000;
@@ -41,14 +40,24 @@ public class JrettyCache {
         this(DEFAULT_CAPACITY);
     }
 
+    /**
+     * @param expireTime 默认过期时间 20秒
+     */
     public JrettyCache(long expireTime) {
         this(DEFAULT_CAPACITY, expireTime);
     }
 
+    /**
+     * @param initialCapacity 初始HashMap容量，默认2048
+     */
     public JrettyCache(int initialCapacity) {
         this(initialCapacity, DEFUALT_EXPIRE_TIME);
     }
 
+    /**
+     * @param initialCapacity 初始HashMap容量，默认2048
+     * @param expireTime 默认过期时间 20秒
+     */
     public JrettyCache(int initialCapacity, long expireTime) {
         int capacity = 1;
         while (capacity < initialCapacity) {
@@ -66,12 +75,7 @@ public class JrettyCache {
         if (get(key) != null) {
             return false;
         }
-//        System.out.println("-----------------st");
-//        System.out.println(cacheEntry.get(key));
         put(key, value);
-//        System.out.println(cacheEntry.get(key));
-//        System.out.println(size());
-//        System.out.println("-----------------end");
         return true;
     }
 
@@ -85,20 +89,36 @@ public class JrettyCache {
         put(key, value, expireTimeMs);
         return true;
     }
-
-    public synchronized void clear() {
-        cacheEntry.clear();
-    }
-
-    public synchronized int size() {
-        return cacheEntry.size();
-    }
-
+    
+    /**
+     * 根据key查询数据
+     */
     public synchronized <T> T getData(Object key) {
         CacheEntry<T> en = get(key);
         return en != null ? en.getData() : null;
     }
 
+    /**
+     * 清空
+     */
+    public synchronized void clear() {
+        cacheEntry.clear();
+    }
+
+    /**
+     * 获取size
+     */
+    public synchronized int size() {
+        return cacheEntry.size();
+    }
+
+    /**
+     * 移除指定数据
+     */
+    public synchronized void remove(Object key) {
+        cacheEntry.remove(key);
+    }
+    
     protected boolean exits(Object key) {
         return get(key) != null;
     }

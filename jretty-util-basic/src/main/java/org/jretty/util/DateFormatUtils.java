@@ -17,6 +17,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 日期格式化工具类（高效的、线程安全的）
@@ -57,29 +59,62 @@ public class DateFormatUtils {
      * @param datePattern
      */
     public DateFormatUtils(final String datePattern) {
-        threadLocal = new ThreadLocal<SimpleDateFormat>() {
-            @Override protected SimpleDateFormat initialValue() {
-                return new SimpleDateFormat(datePattern);
+        this.defaultDatePattern = datePattern;
+        threadLocal = new ThreadLocal<Map<String, SimpleDateFormat>>() {
+            @Override protected Map<String, SimpleDateFormat> initialValue() {
+                Map<String, SimpleDateFormat> map = new HashMap<>();
+                map.put(datePattern, new SimpleDateFormat(datePattern));
+                return map;
             }
         };
     }
+    
+    private final String defaultDatePattern;
 
     /**
-     * 默认为：yyyy-MM-dd HH:mm:ss格式
+     * deprecated: use parse(s, s)
+     * <p>默认为：yyyy-MM-dd HH:mm:ss格式
      */
     public DateFormatUtils() {
-        threadLocal = new ThreadLocal<SimpleDateFormat>() {
-            @Override protected SimpleDateFormat initialValue() {
-                return new SimpleDateFormat(yyyy_MM_dd_HH_mm_ss);
+        this(yyyy_MM_dd_HH_mm_ss);
+    }
+    
+    private static volatile DateFormatUtils instance;
+    
+    public static Date parse(String dateStr, String dateFormat) {
+        if (instance == null) {
+            synchronized (DateFormatUtils.class) {
+                if (instance == null) {
+                    instance = new DateFormatUtils(dateFormat);
+                }
             }
-        };
+        }
+        try {
+            return instance.getFormat(dateFormat).parse(dateStr);
+        }
+        catch (ParseException e) {
+            throw new NestedRuntimeException(e);
+        }
+    }
+    
+    /**
+     * 获取线程安全的DateFormat对象
+     */
+    public DateFormat getFormat(String datePattern) {
+        DateFormat d = (DateFormat) threadLocal.get().get(datePattern);
+        if (d != null) {
+            return d;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+        threadLocal.get().put(datePattern, sdf);
+        return sdf;
     }
 
     /**
      * 获取线程安全的DateFormat对象
      */
     public DateFormat getFormat() {
-        return (DateFormat) threadLocal.get();
+        return (DateFormat) threadLocal.get().get(defaultDatePattern);
     }
 
     /**
@@ -453,7 +488,7 @@ public class DateFormatUtils {
     ////////////////////////下面是内部实现方法/////////////////////////////////
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    protected ThreadLocal<SimpleDateFormat> threadLocal;
+    protected ThreadLocal<Map<String, SimpleDateFormat>> threadLocal;
 
     ///////////////////////////////////////////////////////////////////////////////
     // 缓存calendar对象，但是使用时要线程同步，实测比每次都new calendar效率要高很多

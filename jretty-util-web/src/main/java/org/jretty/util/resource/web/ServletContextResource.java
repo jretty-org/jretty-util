@@ -26,7 +26,7 @@ import java.net.URL;
 import javax.servlet.ServletContext;
 
 import org.jretty.util.Assert;
-import org.jretty.util.StringUtils;
+import org.jretty.util.PathUtils;
 import org.jretty.util.UrlUtils;
 import org.jretty.util.WebUtils;
 import org.jretty.util.resource.AbstractFileResolvingResource;
@@ -71,7 +71,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 
 		// check path
 		Assert.notNull(path, "Path is required");
-		String pathToUse = StringUtils.cleanPath(path);
+		String pathToUse = PathUtils.cleanPath(path);
 		if (!pathToUse.startsWith("/")) {
 			pathToUse = "/" + pathToUse;
 		}
@@ -185,7 +185,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	 */
 	@Override
 	public Resource createRelative(String relativePath) {
-		String pathToUse = StringUtils.applyRelativePath(this.path, relativePath);
+		String pathToUse = PathUtils.applyRelativePath(this.path, relativePath);
 		return new ServletContextResource(this.servletContext, pathToUse);
 	}
 
@@ -196,7 +196,7 @@ public class ServletContextResource extends AbstractFileResolvingResource implem
 	 */
 	@Override
 	public String getFilename() {
-		return StringUtils.getFilenameFromPath(this.path);
+		return PathUtils.getFilenameFromPath(this.path);
 	}
 
 	/**

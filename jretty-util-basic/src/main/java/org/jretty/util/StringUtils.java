@@ -859,6 +859,38 @@ public class StringUtils {
     }
     
     
+    /**
+     * Returns a string representation of the "deep contents" of the specified array.
+     *   Adjacent elements are separated by the characters <tt>","</tt> (a comma).
+     *   Elements are converted to strings as by
+     * <tt>String.valueOf(Object)</tt>.
+     * 
+     * <p>e.g.</p>
+     * <p>Object[]{2L,8L,5L} ==&gt; String "2,5,8" </p>
+     * 
+     */
+    public static String toSQLString(Object[] a) {
+        if (a == null || a.length==0)
+            return "";
+
+        int bufLen = 20 * a.length;
+        if (bufLen <= 0)
+            bufLen = Integer.MAX_VALUE;
+        StringBuilder buf = new StringBuilder(bufLen);
+        int iMax = a.length - 1;
+        for (int i = 0; ; i++) {
+            Object element = a[i];
+            if (element != null) {
+                buf.append(element.toString());
+            }
+            if (i == iMax)
+                break;
+            buf.append(",");
+        }
+        return buf.toString();
+    }
+    
+    
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
     // String fileName and Path 相关工具
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛

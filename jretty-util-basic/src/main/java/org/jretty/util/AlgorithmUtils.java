@@ -23,19 +23,23 @@ import java.security.NoSuchAlgorithmException;
  * @since 2013-10-27
  */
 public class AlgorithmUtils {
+    /** MessageDigest Algorithm: MD5 */
+    public static final String MD5 = "MD5";
+    /** MessageDigest Algorithm: SHA1 */
+    public static final String SHA1 = "SHA1";
     
     /**
-     * Use MD5 algorithm to encode a string 
+     * Use the algorithm to encode a string (to hex string)
      * 
      * @param str String to encode
-     * @return Encoded String
+     * @return Encoded String (use hex)
      */
-    public static String md5Crypt(String str) {
+    public static String crypt(String str, String algorithm) {
         if (StringUtils.isNullOrEmpty(str)) {
             throw new IllegalArgumentException("String to encrypt cannot be null or zero length");
         }
         try {
-            MessageDigest msgdig = MessageDigest.getInstance("MD5");
+            MessageDigest msgdig = MessageDigest.getInstance(algorithm);
             msgdig.update(str.getBytes("UTF-8"));
             byte[] hash = msgdig.digest();
             
@@ -46,6 +50,26 @@ public class AlgorithmUtils {
         catch (UnsupportedEncodingException e) {
             throw new BasicRuntimeException(e.toString());
         }
+    }
+    
+    /**
+     * Use MD5 algorithm to encode a string (to hex string)
+     * 
+     * @param str String to encode
+     * @return Encoded String (use hex)
+     */
+    public static String md5Crypt(String str) {
+        return crypt(str, MD5);
+    }
+    
+    /**
+     * Use SHA1 algorithm to encode a string (to hex string)
+     * 
+     * @param str String to encode
+     * @return Encoded String (use hex)
+     */
+    public static String sha1Crypt(String str) {
+        return crypt(str, SHA1);
     }
     
     public static String toHexStr(byte[] data) {
