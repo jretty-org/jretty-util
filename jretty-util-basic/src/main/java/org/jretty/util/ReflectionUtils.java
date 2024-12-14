@@ -31,6 +31,30 @@ import java.util.Map;
  */
 public class ReflectionUtils extends ReflectionMethodUtils {
     
+    public static Map<String, Object> toMap(final Object source) {
+        return toMap(source, false);
+    }
+    
+    public static Map<String, Object> toMap(final Object source, boolean ignoreNul) {
+        Assert.notNull(source, "Source cannot be null");
+        final Map<String, Field> sourceMap = getAllNonStaticFields(source.getClass());
+        Map<String, Object> ret = new HashMap<String, Object>();
+        for(Map.Entry<String, Field> entry: sourceMap.entrySet()) {
+            Field sourceField = entry.getValue();
+            makeAccessible(sourceField);
+            if (ignoreNul) {
+                Object obj = getField(sourceField, source);
+                if (obj != null) {
+                    ret.put(entry.getKey(), obj);
+                }
+            } else {
+                ret.put(entry.getKey(), getField(sourceField, source));
+            }
+        }
+        return ret;
+    }
+    
+    
     //━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
     // 静默调用反射方法
     //━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -185,7 +209,7 @@ public class ReflectionUtils extends ReflectionMethodUtils {
                     + "] must be same or subclass as source class [" + parentSource.getClass().getName() + "]");
         }
         doWithFields(parentSource.getClass(), new FieldCallback() {
-            
+            @Override
             public void doWith(Field field) {
                 makeAccessible(field);
                 Object srcValue = getField(field, parentSource);
@@ -211,7 +235,7 @@ public class ReflectionUtils extends ReflectionMethodUtils {
         Assert.notNull(target, "Destination for field copy cannot be null");
         final Map<String, Field> sourceMap = getAllNonStaticFields(source.getClass());
         doWithFields(target.getClass(), new FieldCallback() {
-            
+            @Override
             public void doWith(Field targetField) {
                 Field sourceField = sourceMap.get(targetField.getName());
                 if (sourceField != null && 
@@ -240,7 +264,7 @@ public class ReflectionUtils extends ReflectionMethodUtils {
         Assert.isTrue(CollectionUtils.isNotEmpty(sourceMap), "source map for field copy cannot be empty");
         Assert.notNull(target, "Destination for field copy cannot be null");
         doWithFields(target.getClass(), new FieldCallback() {
-
+            @Override
             public void doWith(Field targetField) {
                 Object sourceField = sourceMap.get(targetField.getName());
                 if (sourceField != null && Number.class.isAssignableFrom(sourceField.getClass())) {
@@ -258,18 +282,6 @@ public class ReflectionUtils extends ReflectionMethodUtils {
         }, COPYABLE_FIELDS);
         
         return target;
-    }
-    
-    public static Map<String, Object> toMap(final Object source) {
-        Assert.notNull(source, "Source cannot be null");
-        final Map<String, Field> sourceMap = getAllNonStaticFields(source.getClass());
-        Map<String, Object> ret = new HashMap<String, Object>();
-        for(Map.Entry<String, Field> entry: sourceMap.entrySet()) {
-            Field sourceField = entry.getValue();
-            makeAccessible(sourceField);
-            ret.put(entry.getKey(), getField(sourceField, source));
-        }
-        return ret;
     }
     
     public static Map<String, Field> getAllNonStaticFields(Class<?> clazz) {
@@ -416,7 +428,7 @@ public class ReflectionUtils extends ReflectionMethodUtils {
      * Pre-built FieldFilter that matches all non-static, non-final fields.
      */
     public static final FieldFilter COPYABLE_FIELDS = new FieldFilter() {
-
+        @Override
         public boolean matches(Field field) {
             return !(Modifier.isStatic(field.getModifiers()) || Modifier.isFinal(field.getModifiers()));
         }

@@ -166,25 +166,24 @@ public class CollectionUtils {
     @SuppressWarnings("rawtypes")
     public static Collection getCollectionObj(Class<?> clazz) {
         if (clazz.isInterface()) {
-            if (clazz.isAssignableFrom(List.class))
+            if (clazz.isAssignableFrom(List.class)) {
                 return new ArrayList();
-            else if (clazz.isAssignableFrom(Set.class))
+            } else if (clazz.isAssignableFrom(Set.class)) {
                 return new HashSet();
-            else if (clazz.isAssignableFrom(Queue.class))
+            } else if (clazz.isAssignableFrom(Queue.class)) {
                 return new ArrayDeque();
-            else if (clazz.isAssignableFrom(SortedSet.class))
+            } else if (clazz.isAssignableFrom(SortedSet.class)) {
                 return new TreeSet();
-            else if (clazz.isAssignableFrom(BlockingQueue.class))
+            } else if (clazz.isAssignableFrom(BlockingQueue.class)) {
                 return new LinkedBlockingDeque();
-            else
+            } else {
                 return null;
-        }
-        else {
+            }
+        } else {
             Collection collection = null;
             try {
                 collection = (Collection) clazz.newInstance();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new NestedRuntimeException(e);
             }
             return collection;
@@ -197,25 +196,24 @@ public class CollectionUtils {
     @SuppressWarnings("rawtypes")
     public static Map getMapObj(Class<?> clazz) {
         if (clazz.isInterface()) {
-            if (clazz.isAssignableFrom(Map.class))
+            if (clazz.isAssignableFrom(Map.class)) {
                 return new HashMap();
-            else if (clazz.isAssignableFrom(ConcurrentMap.class))
+            } else if (clazz.isAssignableFrom(ConcurrentMap.class)) {
                 return new ConcurrentHashMap();
-            else if (clazz.isAssignableFrom(SortedMap.class))
+            } else if (clazz.isAssignableFrom(SortedMap.class)) {
                 return new TreeMap();
-            else if (clazz.isAssignableFrom(NavigableMap.class))
+            } else if (clazz.isAssignableFrom(NavigableMap.class)) {
                 return new TreeMap();
-            else if (clazz.isAssignableFrom(ConcurrentNavigableMap.class))
+            } else if (clazz.isAssignableFrom(ConcurrentNavigableMap.class)) {
                 return new ConcurrentSkipListMap();
-            else
+            } else {
                 return null;
-        }
-        else {
+            }
+        } else {
             Map map = null;
             try {
                 map = (Map) clazz.newInstance();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new NestedRuntimeException(e);
             }
             return map;
@@ -245,6 +243,24 @@ public class CollectionUtils {
         for (int i = 0; i < size; i++) {
             T element = iterator.next();
             newArray[i] = element;
+        }
+        return newArray;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> T[] toArray(Collection<T> collection) {
+        if (collection == null || collection.isEmpty()) {
+            return null;
+        }
+        int size = collection.size();
+        Iterator<T> iterator = collection.iterator();
+        T element = iterator.next();
+        // Allocate a new Array
+        T[] newArray = (T[]) Array.newInstance(element.getClass(), size);
+        newArray[0] = element;
+        // Convert and set each element in the new Array
+        for (int i = 1; i < size; i++) {
+            newArray[i] = iterator.next();
         }
         return newArray;
     }
@@ -334,20 +350,22 @@ public class CollectionUtils {
         sortMap.putAll(map);
         return (Map<String, T>) sortMap;
     }
-    
+
     public static <K, V> K getKeyByValue(Map<K, V> map, V value) {
         Iterator<Entry<K, V>> i = map.entrySet().iterator();
         if (value != null) {
             while (i.hasNext()) {
                 Entry<K, V> e = i.next();
-                if (value.equals(e.getValue()))
+                if (value.equals(e.getValue())) {
                     return e.getKey();
+                }
             }
         } else {
             while (i.hasNext()) {
                 Entry<K, V> e = i.next();
-                if (e.getValue() == null)
+                if (e.getValue() == null) {
                     return e.getKey();
+                }
             }
         }
         return null;

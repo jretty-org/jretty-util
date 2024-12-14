@@ -14,26 +14,35 @@ public class ArrayUtils {
     /**
      * Convenience method to return a String array as a delimited (e.g. CSV)
      * String. E.g. useful for <code>toString()</code> implementations.
+     * <p>Elements are converted to strings as by</p>
+     * <tt>String.valueOf(Object)</tt>.
+     * 
+     * <p>e.g.（注意double可能会被转换成科学计数）</p>
+     * <p>Object[]{2L,8L,5L} ==&gt; String "2,5,8" </p>
+     * <p>Double[] {0.000001, 3.1215926} ==&gt; String "1.0E-6,3.1215926" </p>
      * @param arr the array to display
      * @param delim the delimiter to use (probably a ",")
      * @return the delimited String (if null return "")
      */
     public static String toString(Object[] arr, String delim) {
-        if ( arr == null || arr.length == 0 ) {
+        if (arr == null || arr.length == 0) {
             return "";
         }
         if (arr.length == 1) {
             return String.valueOf(arr[0]);
         }
-        StringBuilder sb = new StringBuilder();
-        boolean append = false;
-        for (int i = 0; i < arr.length; i++) {
-            if(append) {
-                sb.append(delim);
-            } else {
-                append = true;
-            }
+        int bufLen = 20 * arr.length; // 将StringBuilder默认16扩大到len的20倍
+        if (bufLen <= 0) {
+            bufLen = Integer.MAX_VALUE;
+        }
+        StringBuilder sb = new StringBuilder(bufLen);
+        int max = arr.length - 1;
+        for (int i = 0;; i++) {
             sb.append(arr[i]);
+            if (i == max) {
+                break;
+            }
+            sb.append(delim);
         }
         return sb.toString();
     }

@@ -20,7 +20,7 @@ import java.util.Map;
  * 
  * 利用MutableInteger实现，参见{@link MutableInteger}<br>
  * 
- * 注意，此为非线程安全的实现，不支持并发
+ * 注意，此为非线程安全的实现，不支持并发。可以将 add() 方法synchronized来支持线程安全。
  * 
  * @author zollty
  * @since 2016-09-14
@@ -29,22 +29,28 @@ public class MapCounter<T> {
 
     private Map<T, MutableInteger> map = new HashMap<T, MutableInteger>();
 
-    public void add(T key) {
+    public int add(T key) {
         MutableInteger tmp = map.get(key);
         if (tmp == null) {
             map.put(key, new MutableInteger(1));
+            return 1;
         } else {
-            tmp.getAndIncrement();
+            return tmp.getAndIncrement();
         }
     }
     
-    public void add(T key, int delta) {
+    public int add(T key, int delta) {
         MutableInteger tmp = map.get(key);
         if (tmp == null) {
             map.put(key, new MutableInteger(delta));
+            return delta;
         } else {
-            tmp.getAndAdd(delta);
+            return tmp.getAndAdd(delta);
         }
+    }
+    
+    public void remove(T key) {
+        map.remove(key);
     }
     
     public int size() {
@@ -58,7 +64,11 @@ public class MapCounter<T> {
     public Map<T, MutableInteger> getMap() {
         return map;
     }
-    
+
+    public int getValue(T key) {
+        return map.get(key).get();
+    }
+
     /**
      * 转换成Map&ltString, Integer&gt
      */

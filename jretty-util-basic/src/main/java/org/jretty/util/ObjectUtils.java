@@ -98,7 +98,8 @@ public class ObjectUtils {
                 }
                 Method mSet = pd.getWriteMethod();
                 if (mSet == null) {
-                    if (allowIncompleteInit) { // 跳过
+                    if (allowIncompleteInit) {
+                        // 跳过
                         continue;
                     }
                     throw new IllegalArgumentException(
@@ -115,36 +116,36 @@ public class ObjectUtils {
                 }
 
                 // 不重载旧值
-                if (value != null && !overwrittenOldValue) {
+                if (value != null) {
                     continue;
                 }
 
                 String type = pd.getPropertyType().toString();
-                if (type.equals("class java.lang.String")) {
+                if ("class java.lang.String".equals(type)) {
                     mSet.invoke(standardBean, "");
                 }
-                else if (type.equals("class java.lang.Integer")) {
+                else if ("class java.lang.Integer".equals(type)) {
                     mSet.invoke(standardBean, new Integer(0));
                 }
-                else if (type.equals("class java.lang.Byte")) {
+                else if ("class java.lang.Byte".equals(type)) {
                     mSet.invoke(standardBean, (byte) 0);
                 }
-                else if (type.equals("class java.lang.Boolean")) {
+                else if ("class java.lang.Boolean".equals(type)) {
                     mSet.invoke(standardBean, false);
                 }
-                else if (type.equals("class java.util.Date")) {
+                else if ("class java.util.Date".equals(type)) {
                     mSet.invoke(standardBean, new Date(0));
                 }
-                else if (type.equals("class java.math.BigDecimal")) {
+                else if ("class java.math.BigDecimal".equals(type)) {
                     mSet.invoke(standardBean, new BigDecimal(0));
                 }
-                else if (type.equals("class java.lang.Float")) {
+                else if ("class java.lang.Float".equals(type)) {
                     mSet.invoke(standardBean, new Float(0.0));
                 }
-                else if (type.equals("class java.lang.Double")) {
+                else if ("class java.lang.Double".equals(type)) {
                     mSet.invoke(standardBean, new Double(0.0));
                 }
-                else if (type.equals("class java.lang.Short")) {
+                else if ("class java.lang.Short".equals(type)) {
                     mSet.invoke(standardBean, (short) 0);
                 }
             }
@@ -185,12 +186,6 @@ public class ObjectUtils {
      * supported types, this method returns {@code false}.
      * @param obj the object to check
      * @return {@code true} if the object is {@code null} or <em>empty</em>
-     * @since 4.2
-     * @see ObjectUtils#isEmpty(Object[])
-     * @see StringUtils#hasLength(CharSequence)
-     * @see StringUtils#isEmpty(Object)
-     * @see CollectionUtils#isEmpty(java.util.Collection)
-     * @see CollectionUtils#isEmpty(java.util.Map)
      */
     @SuppressWarnings("rawtypes")
     public static boolean isEmpty(Object obj) {
@@ -212,6 +207,21 @@ public class ObjectUtils {
         }
 
         // else
+        return false;
+    }
+    
+    /**
+     * null 或者 空字符串 视为空，其他视为有值！
+     */
+    public static boolean hasEmpty(Object... objs) {
+        for (Object obj : objs) {
+            if (obj == null) {
+                return true;
+            }
+            if (obj instanceof String && StringUtils.isBlank((String) obj)) {
+                return true;
+            }
+        }
         return false;
     }
     

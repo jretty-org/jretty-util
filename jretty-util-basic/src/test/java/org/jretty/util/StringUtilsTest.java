@@ -120,6 +120,11 @@ public class StringUtilsTest {
         assertTrue(StringUtils.charEqualIgnoreCase('额', '额'));
         assertFalse(StringUtils.charEqualIgnoreCase('额', '饿'));
         assertTrue(StringUtils.charEqualIgnoreCase('-', '-'));
+        assertTrue(StringUtils.charEqualIgnoreCase('.', '.'));
+        assertTrue(StringUtils.charEqualIgnoreCase('2', '2'));
+        assertTrue(StringUtils.charEqualIgnoreCase('▓', '▓'));
+        assertTrue(StringUtils.charEqualIgnoreCase('@', '@'));
+        assertTrue(StringUtils.charEqualIgnoreCase('/', '/'));
     }
     
     
@@ -132,15 +137,15 @@ public class StringUtilsTest {
         assertEquals(StringUtils.indexIgnoreCase("", "xxx", 1), -1);
         assertEquals(StringUtils.indexIgnoreCase("xxx", "", 1), 1);
         assertEquals(StringUtils.indexIgnoreCase("", "", 1), 1);
-        
-        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "a") == 0);
-        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "b") == 2);
-        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "ab") == 1);
-        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "A") == 0);
-        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "B") == 2);
-        assertTrue(StringUtils.indexIgnoreCase("aabaabaa", "AB") == 1);
-        assertTrue(StringUtils.indexIgnoreCase("aaba\r\nabaa", "\r\n") == 4);
-        assertTrue(StringUtils.indexIgnoreCase("aaba\r\nabaa╋ふ▒㊧❀", "╋ふ▒㊧❀") == 10);
+
+        assertEquals(0, StringUtils.indexIgnoreCase("aabaabaa", "a"));
+        assertEquals(2, StringUtils.indexIgnoreCase("aabaabaa", "b"));
+        assertEquals(1, StringUtils.indexIgnoreCase("aabaabaa", "ab"));
+        assertEquals(0, StringUtils.indexIgnoreCase("aabaabaa", "A"));
+        assertEquals(2, StringUtils.indexIgnoreCase("aabaabaa", "B"));
+        assertEquals(1, StringUtils.indexIgnoreCase("aabaabaa", "AB"));
+        assertEquals(4, StringUtils.indexIgnoreCase("aaba\r\nabaa", "\r\n"));
+        assertEquals(10, StringUtils.indexIgnoreCase("aaba\r\nabaa╋ふ▒㊧❀", "╋ふ▒㊧❀"));
     }
     
     @Test
@@ -182,7 +187,7 @@ public class StringUtilsTest {
     @Test
     public void testMiddleOfIndex() {
         assertEquals("3456789", StringUtils.middleOfIndex(TEST_STR, "012", "012"));
-        assertEquals(null, StringUtils.middleOfIndex(TEST_STR, "012", "46"));
+        assertNull(StringUtils.middleOfIndex(TEST_STR, "012", "46"));
     }
     
     @Test

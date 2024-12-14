@@ -1,3 +1,5 @@
+jretty-core-all/
+.idea
 # ----------java---------
 *.class
 # Package Files #

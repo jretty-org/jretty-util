@@ -77,9 +77,9 @@ public class ZolltyPathMatcher {
      * @return matched values in array
      */
     public List<String> match(String path) {
-
-        if (null == path)
+        if (null == path) {
             return null;
+        }
 
         if (notPattern) {
             if (pattern.equals(path)) {
@@ -148,6 +148,7 @@ public class ZolltyPathMatcher {
         }
 
         if (pattern.endsWith("**")) {
+            // No additional checks needed for '**' ending
         } else if (pattern.endsWith("*")) {
             if (src.indexOf("/", b[i]) != -1) {
                 return false;
@@ -236,13 +237,12 @@ public class ZolltyPathMatcher {
         return true;
     }
 
-    private final void check() {
+    private void check() {
         LOG.trace("begin init pattern[{}]", pattern);
         char[] pchar = pattern.toCharArray();
         pchar = ArrayUtils.add(pchar, '$');
         int p1 = -1, p2 = -1;
         String val1;
-        int mf = -1; // mf标记，1代表“**匹配”, 0代表“*匹配”
         for (int i = 0; i < pchar.length - 1; i++) {
             if (pchar[i] == '*' && pchar[i + 1] == '*') {
                 if (p1 == -1) {
@@ -251,13 +251,7 @@ public class ZolltyPathMatcher {
                 } else {
                     p2 = i;
                     val1 = pattern.substring(p1, p2);
-                    if (p1 > 1 && pchar[p1 - 2] == '*' && pchar[p1 - 1] == '*') {
-                        mf = 1;
-                    } else {
-                        mf = 0;
-                    }
-                    // System.out.println(new MatchFlag(mf, val1));
-                    miList.add(new MatchInfo(mf, val1));
+                    addMatchInfo(p1, val1, pchar);
                     p1 = -1;
                     i++;
                 }
@@ -267,25 +261,13 @@ public class ZolltyPathMatcher {
                 } else {
                     p2 = i;
                     val1 = pattern.substring(p1, p2);
-                    if (p1 > 1 && pchar[p1 - 2] == '*' && pchar[p1 - 1] == '*') {
-                        mf = 1;
-                    } else {
-                        mf = 0;
-                    }
-                    // System.out.println(new MatchFlag(mf, val1));
-                    miList.add(new MatchInfo(mf, val1));
+                    addMatchInfo(p1, val1, pchar);
                     p1 = -1;
                 }
             } else if (pchar[i + 1] == '$' && p1 != -1) { // !a
                 p2 = i;
                 val1 = pattern.substring(p1, p2 + 1);
-                if (p1 > 1 && pchar[p1 - 2] == '*' && pchar[p1 - 1] == '*') {
-                    mf = 1;
-                } else {
-                    mf = 0;
-                }
-                // System.out.println(new MatchFlag(mf, val1));
-                miList.add(new MatchInfo(mf, val1));
+                addMatchInfo(p1, val1, pchar);
                 p1 = -1;
             } else if (p1 == -1) {
                 p1 = i;
@@ -294,16 +276,21 @@ public class ZolltyPathMatcher {
         if (p1 != -1) {
             p2 = pchar.length - 1;
             val1 = pattern.substring(p1, p2);
-            if (p1 > 1 && pchar[p1 - 2] == '*' && pchar[p1 - 1] == '*') {
-                mf = 1;
-            } else {
-                mf = 0;
-            }
-            // System.out.println(new MatchFlag(mf, val1));
-            miList.add(new MatchInfo(mf, val1));
+            addMatchInfo(p1, val1, pchar);
             p1 = -1;
         }
         LOG.trace("MatchInfo List = {}", miList);
+    }
+
+    private void addMatchInfo(int p1, String val, char[] pchar) {
+        int mf; // mf标记，1代表“**匹配”, 0代表“*匹配”
+        if (p1 > 1 && pchar[p1 - 2] == '*' && pchar[p1 - 1] == '*') {
+            mf = 1;
+        } else {
+            mf = 0;
+        }
+        // System.out.println(new MatchFlag(mf, val1));
+        miList.add(new MatchInfo(mf, val));
     }
 
     /**
@@ -391,7 +378,7 @@ public class ZolltyPathMatcher {
             this.matchType = matchType;
             this.matchStr = matchStr;
         }
-
+        @Override
         public String toString() {
             return "MatchInfo(matchStr=" + matchStr + ", type=" + matchType + ")";
         }

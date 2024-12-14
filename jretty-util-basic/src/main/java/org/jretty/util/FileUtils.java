@@ -553,6 +553,17 @@ public class FileUtils {
         return CollectionUtils.toString(ret, Const.CRLF);
     }
     
+    /**
+     * 解析文本内容
+     */
+    public static String getTextContent(java.io.File file, String charSet) {
+        try {
+            return getTextContent(new FileInputStream(file), charSet);
+        } catch (FileNotFoundException e) {
+            throw new NestedRuntimeException(e);
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     public static List<String> getTextFileContent(String fileFullPath, String charSet) {
         InputStream in;
@@ -632,7 +643,7 @@ public class FileUtils {
         }
     }
 
-    private static boolean checkFileType(File file, String inludeType[]) {
+    private static boolean checkFileType(File file, String[] inludeType) {
         if (inludeType == null) {
             return true;
         }

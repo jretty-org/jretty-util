@@ -65,6 +65,13 @@ public class MutableInteger {
     }
 
     /**
+     * 重置为n
+     */
+    public final void reset(int n) {
+        value = n;
+    }
+
+    /**
      * 获取当前的值，并加上预期的值
      * @param delta
      * @return 增加之前的值

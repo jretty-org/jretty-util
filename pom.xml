@@ -18,13 +18,13 @@
   <parent>
     <groupId>org.jretty</groupId>
     <artifactId>jretty</artifactId>
-    <version>21</version>
+    <version>22</version>
   </parent>
   <artifactId>jretty-util-parent</artifactId>
-  <version>1.2.1-RELEASE</version>
+  <version>1.2.2-RELEASE</version>
   <packaging>pom</packaging>
   <name>jretty-util-parent</name>
-  <description>A simple Java util's libraries. See the sub modules.</description>
+  <description>A simple Java util's libraries. See the submodules.</description>
 
   <modules>
     <module>jretty-util-basic</module>
@@ -36,8 +36,6 @@
     <module>jretty-util-order</module>
     <module>jretty-util-web</module>
     <module>jretty-util-ext</module>
-    <module>jretty-core-starter-mvc</module>
-    <module>jretty-core-starter-all</module>
   </modules>
 
   <!-- CONST -->
@@ -61,7 +59,7 @@
       <dependency>
         <groupId>org.jretty</groupId>
         <artifactId>jretty-util-basic</artifactId>
-        <version>1.4.2</version>
+        <version>2.0.3</version>
       </dependency>
       
       <dependency>
@@ -124,7 +122,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.11</version>
+        <version>4.13.1</version>
         <scope>test</scope>
       </dependency>
 
@@ -138,7 +136,14 @@
       <dependency>
         <groupId>com.alibaba</groupId>
         <artifactId>fastjson</artifactId>
-        <version>1.2.52</version>
+        <version>1.2.67_noneautotype2</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.8.9</version>
         <scope>test</scope>
       </dependency>
 
@@ -192,17 +197,7 @@
     </pluginManagement>
 
   </build>
-  <!-- 私有maven仓库
-  <distributionManagement>
-    <repository>
-      <id>diy-nexus-releases</id>
-      <url>http://10.10.2.182/repository/maven-releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>diy-nexus-snapshots</id>
-      <url>http://10.10.2.182/repository/maven-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement> -->
+
   <!--项目开发者列表 -->
   <developers>
     <developer>
