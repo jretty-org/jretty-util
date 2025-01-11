@@ -11,11 +11,15 @@ import java.util.Arrays;
 import java.util.List;
 
 
+/**
+ * @author zollty
+ */
 public class ReflectionMethodUtils {
-    
+
     /**
      * Return the qualified name of the given method, consisting of
      * fully qualified interface/class name + "." + method name.
+     *
      * @param method the method
      * @return the qualified name of the method
      */
@@ -23,13 +27,14 @@ public class ReflectionMethodUtils {
         Assert.notNull(method, "Method must not be null");
         return method.getDeclaringClass().getName() + "." + method.getName();
     }
-    
+
     /**
      * Determine whether the given method is an "equals" method.
+     *
      * @see java.lang.Object#equals(Object)
      */
     public static boolean isEqualsMethod(Method method) {
-        if (method == null || !method.getName().equals("equals")) {
+        if (method == null || !"equals".equals(method.getName())) {
             return false;
         }
         Class<?>[] paramTypes = method.getParameterTypes();
@@ -38,18 +43,20 @@ public class ReflectionMethodUtils {
 
     /**
      * Determine whether the given method is a "hashCode" method.
+     *
      * @see java.lang.Object#hashCode()
      */
     public static boolean isHashCodeMethod(Method method) {
-        return (method != null && method.getName().equals("hashCode") && method.getParameterTypes().length == 0);
+        return (method != null && "hashCode".equals(method.getName()) && method.getParameterTypes().length == 0);
     }
 
     /**
      * Determine whether the given method is a "toString" method.
+     *
      * @see java.lang.Object#toString()
      */
     public static boolean isToStringMethod(Method method) {
-        return (method != null && method.getName().equals("toString") && method.getParameterTypes().length == 0);
+        return (method != null && "toString".equals(method.getName()) && method.getParameterTypes().length == 0);
     }
 
     /**
@@ -65,11 +72,12 @@ public class ReflectionMethodUtils {
             return false;
         }
     }
-    
+
     /**
      * 获取 方法的泛型参数的 实际元素类型
      * <p> 例如 method(java.util.List<java.lang.Character> list) 得到：[java.lang.Character]
      * <p> 再如 method(java.util.Map<java.lang.String, java.lang.Integer> map) 得到：[java.lang.String, java.lang.Integer]
+     *
      * @param pos 要获取的Method参数的位置，从0开始
      */
     public static Class<?>[] getMethodParamGenericActualType(Method method, int pos) {
@@ -82,18 +90,19 @@ public class ReflectionMethodUtils {
             }
             return ret;
         } else {// 非泛型
-            return new Class<?>[] { (Class<?>) genericTypes[pos] };
+            return new Class<?>[]{(Class<?>) genericTypes[pos]};
         }
     }
-    
+
     /**
      * Invoke the specified {@link Method} against the supplied target object with the
      * supplied arguments. The target object can be <code>null</code> when invoking a
      * static {@link Method}.
      * <p> Please invoke "ReflectionUtils.makeAccessible(method);" first.
+     *
      * @param method the method to invoke
      * @param target the target object to invoke the method on
-     * @param args the invocation arguments (may be <code>null</code>)
+     * @param args   the invocation arguments (may be <code>null</code>)
      * @return the invocation result, if any
      */
     public static Object invokeMethod(Method method, Object target, Object... args) {
@@ -107,41 +116,39 @@ public class ReflectionMethodUtils {
             throw new NestedRuntimeException(e.getCause());
         }
     }
-    
+
     public static Object invokeMethod(String methodName, Object target, Object... args) {
         return invokeMethod(methodName, new Class<?>[0], target, args);
     }
 
     public static Object invokeMethod(String methodName, Class<?>[] parameterTypes,
-            Object target, Object... args) {
-        
+                                      Object target, Object... args) {
+
         Assert.notNull(target, "Object must not be null");
         Assert.notNull(methodName, "Method name must not be null");
         Method method;
         try {
             method = target.getClass().getDeclaredMethod(methodName, parameterTypes);
-        }
-        catch (NoSuchMethodException ex) {
+        } catch (NoSuchMethodException ex) {
             throw new NestedRuntimeException(ex);
         }
-        
+
         ReflectionUtils.makeAccessible(method);
         return invokeMethod(method, target, args);
     }
-    
+
     public static Object invokeStaticMethod(String methodName, Class<?> clazz, Object... args) {
         return invokeStaticMethod(methodName, new Class<?>[0], clazz, args);
     }
-    
+
     public static Object invokeStaticMethod(String methodName, Class<?>[] parameterTypes,
-            Class<?> target, Object... args) {
+                                            Class<?> target, Object... args) {
         Assert.notNull(target, "Object must not be null");
         Assert.notNull(methodName, "Method name must not be null");
         Method method;
         try {
-            method = target.getClass().getDeclaredMethod(methodName, parameterTypes);
-        }
-        catch (NoSuchMethodException ex) {
+            method = target.getDeclaredMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException ex) {
             throw new NestedRuntimeException(ex);
         }
         ReflectionUtils.makeAccessible(method);
@@ -165,16 +172,20 @@ public class ReflectionMethodUtils {
 
     public static Object invokeConstructor(Class<?> clazz, Class<?>[] parameterTypes, Object... args) {
         Constructor<?> constructor = getDeclaredConstructor(clazz, parameterTypes);
+        if (constructor == null) {
+            throw new IllegalArgumentException("No such constructor: " + clazz.getName());
+        }
         ReflectionUtils.makeAccessible(constructor);
         return invokeConstructor(constructor, args);
     }
-    
+
 
     /**
      * Return a public static method of a class.
+     *
      * @param methodName the static method name
-     * @param clazz the class which defines the method
-     * @param args the parameter types to the method
+     * @param clazz      the class which defines the method
+     * @param args       the parameter types to the method
      * @return the static method, or <code>null</code> if no static method was found
      * @throws IllegalArgumentException if the method name is blank or the clazz is null
      */
@@ -188,13 +199,14 @@ public class ReflectionMethodUtils {
             return null;
         }
     }
-    
-    
+
+
     /**
      * Determine whether the given class has a method with the given signature,
      * and return it if available (else return <code>null</code>).
      * <p>Essentially translates <code>NoSuchMethodException</code> to <code>null</code>.
-     * @param clazz the clazz to analyze
+     *
+     * @param clazz      the clazz to analyze
      * @param methodName the name of the method
      * @param paramTypes the parameter types of the method
      * @return the method, or <code>null</code> if not found
@@ -205,31 +217,30 @@ public class ReflectionMethodUtils {
         Assert.notNull(methodName, "Method name must not be null");
         try {
             return clazz.getMethod(methodName, paramTypes);
-        }
-        catch (NoSuchMethodException ex) {
+        } catch (NoSuchMethodException ex) {
             return null;
         }
     }
-    
+
     public static Method getDeclaredMethod(Class<?> clazz, String methodName, Class<?>... paramTypes) {
         Assert.notNull(clazz, "Class must not be null");
         Assert.notNull(methodName, "Method name must not be null");
         try {
             return clazz.getDeclaredMethod(methodName, paramTypes);
-        }
-        catch (NoSuchMethodException ex) {
+        } catch (NoSuchMethodException ex) {
             return null;
         }
     }
-    
+
     /**
      * Attempt to find a {@link Method} on the supplied class with the supplied name
      * and parameter types. Searches all superclasses up to <code>Object</code>.
      * <p>Returns <code>null</code> if no {@link Method} can be found.
-     * @param clazz the class to introspect
-     * @param name the name of the method
+     *
+     * @param clazz      the class to introspect
+     * @param name       the name of the method
      * @param paramTypes the parameter types of the method
-     * (may be <code>null</code> to indicate any signature)
+     *                   (may be <code>null</code> to indicate any signature)
      * @return the Method object, or <code>null</code> if none found
      */
     public static Method findMethod(Class<?> clazz, String name, Class<?>... paramTypes) {
@@ -253,7 +264,8 @@ public class ReflectionMethodUtils {
      * Determine whether the given class has a public constructor with the given signature,
      * and return it if available (else return <code>null</code>).
      * <p>Essentially translates <code>NoSuchMethodException</code> to <code>null</code>.
-     * @param clazz the clazz to analyze
+     *
+     * @param clazz      the clazz to analyze
      * @param paramTypes the parameter types of the method
      * @return the constructor, or <code>null</code> if not found
      * @see java.lang.Class#getConstructor
@@ -262,23 +274,21 @@ public class ReflectionMethodUtils {
         Assert.notNull(clazz, "Class must not be null");
         try {
             return clazz.getConstructor(paramTypes);
-        }
-        catch (NoSuchMethodException ex) {
+        } catch (NoSuchMethodException ex) {
             return null;
         }
     }
-    
+
     public static <T> Constructor<T> getDeclaredConstructor(Class<T> clazz, Class<?>... paramTypes) {
         Assert.notNull(clazz, "Class must not be null");
         try {
             return clazz.getDeclaredConstructor(paramTypes);
-        }
-        catch (NoSuchMethodException ex) {
+        } catch (NoSuchMethodException ex) {
             return null;
         }
     }
-    
-    
+
+
     /**
      * Get all declared methods on the leaf class and all superclasses. Leaf
      * class methods are included first.
@@ -286,6 +296,7 @@ public class ReflectionMethodUtils {
     public static List<Method> getAllDeclaredMethods(Class<?> leafClass) {
         final List<Method> methods = new ArrayList<Method>(32);
         doWithMethods(leafClass, new MethodCallback() {
+            @Override
             public void doWith(Method method) {
                 methods.add(method);
             }
@@ -301,6 +312,7 @@ public class ReflectionMethodUtils {
     public static List<Method> getUniqueDeclaredMethods(Class<?> leafClass) {
         final List<Method> methods = new ArrayList<Method>(32);
         doWithMethods(leafClass, new MethodCallback() {
+            @Override
             public void doWith(Method method) {
                 boolean knownSignature = false;
                 Method methodBeingOverriddenWithCovariantReturnType = null;
@@ -329,12 +341,13 @@ public class ReflectionMethodUtils {
         return methods;
     }
 
-    
+
     /**
      * Determine whether the given method explicitly declares the given
      * exception or one of its superclasses, which means that an exception of
      * that type can be propagated as-is within a reflective invocation.
-     * @param method the declaring method
+     *
+     * @param method        the declaring method
      * @param exceptionType the exception to throw
      * @return <code>true</code> if the exception can be thrown as-is;
      * <code>false</code> if it needs to be wrapped
@@ -349,8 +362,8 @@ public class ReflectionMethodUtils {
         }
         return false;
     }
-    
-    
+
+
     /**
      * @see #doWithMethods(Class, MethodCallback, MethodFilter)
      */
@@ -363,9 +376,10 @@ public class ReflectionMethodUtils {
      * class and superclasses (or given interface and super-interfaces).
      * <p>The same named method occurring on subclass and superclass will appear
      * twice, unless excluded by the specified {@link MethodFilter}.
+     *
      * @param clazz class to start looking at
-     * @param mc the callback to invoke for each method
-     * @param mf the filter that determines the methods to apply the callback to
+     * @param mc    the callback to invoke for each method
+     * @param mf    the filter that determines the methods to apply the callback to
      */
     public static void doWithMethods(Class<?> clazz, MethodCallback mc, MethodFilter mf) {
         // Keep backing up the inheritance hierarchy.
@@ -378,15 +392,15 @@ public class ReflectionMethodUtils {
         }
         if (clazz.getSuperclass() != null) {
             doWithMethods(clazz.getSuperclass(), mc, mf);
-            
+
         } else if (clazz.isInterface()) {
             for (Class<?> superIfc : clazz.getInterfaces()) {
                 doWithMethods(superIfc, mc, mf);
             }
         }
     }
-    
-    
+
+
     /**
      * Action to take on each method.
      */
@@ -394,6 +408,7 @@ public class ReflectionMethodUtils {
 
         /**
          * Perform an operation using the given method.
+         *
          * @param method the method to operate on
          */
         void doWith(Method method);
@@ -407,17 +422,19 @@ public class ReflectionMethodUtils {
 
         /**
          * Determine whether the given method matches.
+         *
          * @param method the method to check
          */
         boolean matches(Method method);
     }
 
-    
+
     /**
      * Pre-built MethodFilter that matches all non-bridge methods.
      */
     public static final MethodFilter NON_BRIDGED_METHODS = new MethodFilter() {
 
+        @Override
         public boolean matches(Method method) {
             return !method.isBridge();
         }
@@ -430,6 +447,7 @@ public class ReflectionMethodUtils {
      */
     public static final MethodFilter USER_DECLARED_METHODS = new MethodFilter() {
 
+        @Override
         public boolean matches(Method method) {
             return (!method.isBridge() && method.getDeclaringClass() != Object.class);
         }

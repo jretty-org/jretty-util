@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2013-2015 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,9 +33,9 @@ import org.jretty.log.LogFactory;
 import org.jretty.log.Logger;
 
 /**
- * file utils best practice 
+ * file utils best practice
  * [常用的高性能文件工具类]
- * 
+ *
  * @author zollty
  * @since 2013-6-23
  */
@@ -44,34 +44,34 @@ public class FileUtils {
     private static final Logger LOG = LogFactory.getLogger(FileUtils.class);
 
     public static final char SEPARATOR = '/';
-    
+
     /**
      * The file copy buffer size (30 MB)
      */
     private static final long FILE_COPY_BUFFER_SIZE = 1024 * 1024 * 30;
-    
-    
+
+
     /**
      * get BufferedWriter output stream
-     * 
+     *
      * @param fileFullPath the absolute file path
-     * @param append true if can append
-     * @param charSet assign charSet,null if use the default charSet
+     * @param append       true if can append
+     * @param charSet      assign charSet,null if use the default charSet
      * @return BufferedWriter
      * @throws IOException
      */
     public static BufferedWriter getBufferedWriter(String fileFullPath, boolean append,
-            String charSet) throws IOException {
+                                                   String charSet) throws IOException {
 
         return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileFullPath, append),
                 StringUtils.decideCharSet(charSet)));
     }
-    
+
     /**
      * get BufferedReader input stream
-     * 
+     *
      * @param fileFullPath the absolute file path
-     * @param charSet assign charSet,null if use the default charSet
+     * @param charSet      assign charSet,null if use the default charSet
      * @return BufferedReader
      * @throws IOException
      */
@@ -81,17 +81,17 @@ public class FileUtils {
         return new BufferedReader(new InputStreamReader(new FileInputStream(fileFullPath),
                 StringUtils.decideCharSet(charSet)));
     }
-    
+
     /**
      * 将字符串写入文件
-     * 
+     *
      * @param fileFullPath 文件全路径（务必保证外层目录存在）
-     * @param str 字符内容
-     * @param charSet null默认为UTP-8
-     * @param append 是否为追加
+     * @param str          字符内容
+     * @param charSet      null默认为UTP-8
+     * @param append       是否为追加
      */
     public static void writeStr2File(String fileFullPath, String str, String charSet,
-            boolean append) {
+                                     boolean append) {
         BufferedWriter out = null;
         try {
             out = getBufferedWriter(fileFullPath, append, charSet);
@@ -103,11 +103,11 @@ public class FileUtils {
             IOUtils.closeIO(out);
         }
     }
-    
+
 
     /**
      * deletes file or folder with all subfolders and subfiles.
-     * 
+     *
      * @param file [file or directory to delete]
      * @return true [if all files are deleted]
      */
@@ -121,7 +121,7 @@ public class FileUtils {
         }
         return file.delete();
     }
-    
+
     public static boolean deleteAll(final String fullPath) {
         final File file = new File(fullPath);
         if (file.isDirectory()) {
@@ -133,7 +133,7 @@ public class FileUtils {
         }
         return file.delete();
     }
-    
+
     /**
      * 递归创建文件的父目录
      */
@@ -144,7 +144,7 @@ public class FileUtils {
         }
         forceMkdir(parent);
     }
-    
+
     /**
      * 递归创建目录
      */
@@ -170,10 +170,10 @@ public class FileUtils {
             }
         }
     }
-    
+
     /**
      * 复制整个文件夹内容
-     * 
+     *
      * @param oldPath 原文件路径 如：c:/fqf
      * @param newPath 复制后路径 如：f:/fqf/ff
      * @return boolean
@@ -184,17 +184,17 @@ public class FileUtils {
 
     /**
      * 复制整个文件夹内容
-     * 
+     *
      * @param oldPath 原文件路径 如：c:/fqf
      * @param newPath 复制后路径 如：f:/fqf/ff
      * @return true if all success
      */
     public static boolean copyFolder(String oldPath, String newPath,
-            final boolean discardFileDate) {
+                                     final boolean discardFileDate) {
         File oldFile = new File(oldPath);
         if (oldFile.isFile()) {
             try {
-                if(discardFileDate) {
+                if (discardFileDate) {
                     cloneFile(oldFile, new File(newPath));
                 } else {
                     doCopyFile(oldFile, new File(newPath), true);
@@ -202,7 +202,7 @@ public class FileUtils {
                 return true;
             } catch (IOException e) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.warn(e, "cloneFile error. filePath=" 
+                    LOG.warn(e, "cloneFile error. filePath="
                             + oldPath + ", newPath=" + newPath);
                 }
                 return false;
@@ -216,13 +216,13 @@ public class FileUtils {
             return true;
         }
         File nfile = new File(newPath);
-        if (!(nfile.exists() || nfile.mkdirs())) { // 如果文件夹不存在 则建立新文件夹
+        // 如果文件夹不存在 则建立新文件夹
+        if (!(nfile.exists() || nfile.mkdirs())) {
             if (LOG.isInfoEnabled()) {
                 LOG.error("#copyFolder() - can't mk dir - [newPath={}]", newPath);
             }
             return false;
-        }
-        else if (!nfile.isDirectory()) {
+        } else if (!nfile.isDirectory()) {
             if (LOG.isInfoEnabled()) {
                 LOG.error("#copyFolder() - newPath is not a directory - [newPath={}]", newPath);
             }
@@ -236,21 +236,19 @@ public class FileUtils {
             sourceFile = new File(oldPath + SEPARATOR + fileName);
             if (sourceFile.isFile()) {
                 try {
-                    if(discardFileDate) {
+                    if (discardFileDate) {
                         cloneFile(sourceFile, new File(newPath + SEPARATOR + fileName));
                     } else {
                         doCopyFile(sourceFile, new File(newPath + SEPARATOR + fileName), true);
                     }
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     if (LOG.isInfoEnabled()) {
-                        LOG.warn(e, "cloneFile error. filePath=" 
+                        LOG.warn(e, "cloneFile error. filePath="
                                 + oldPath + SEPARATOR + fileName);
                     }
                     ret = false;
                 }
-            }
-            else if (sourceFile.isDirectory()) {
+            } else if (sourceFile.isDirectory()) {
                 // 如果是子文件夹
                 copyFolder(oldPath + SEPARATOR + fileName, newPath + SEPARATOR + fileName, discardFileDate);
             }
@@ -270,7 +268,7 @@ public class FileUtils {
             IOUtils.closeIO(in, out);
         }
     }
-    
+
     public static void cloneFile(final File srcFile, final File destFile, final boolean preserveFileDate)
             throws IOException {
         if (srcFile.isDirectory()) {
@@ -287,8 +285,9 @@ public class FileUtils {
         }
         doCopyFile(srcFile, destFile, preserveFileDate);
     }
-    
+
     //-----------------------------------------------------------------------
+
     /**
      * Copies a file to a directory preserving the file date.
      * <p>
@@ -304,7 +303,6 @@ public class FileUtils {
      *
      * @param srcFile an existing file to copy, must not be {@code null}
      * @param destDir the directory to place the copy in, must not be {@code null}
-     *
      * @throws NullPointerException if source or destination is null
      * @throws IOException          if source or destination is invalid
      * @throws IOException          if an IO error occurs during copying
@@ -332,12 +330,11 @@ public class FileUtils {
      * @param destDir          the directory to place the copy in, must not be {@code null}
      * @param preserveFileDate true if the file date of the copy
      *                         should be the same as the original
-     *
      * @throws NullPointerException if source or destination is {@code null}
      * @throws IOException          if source or destination is invalid
      * @throws IOException          if an IO error occurs during copying
      * @throws IOException          if the output file length is not the same as the input file length after the copy
-     * completes
+     *                              completes
      * @see #copyFile(File, File, boolean)
      */
     public static void copyFileToDirectory(final File srcFile, final File destDir, final boolean preserveFileDate)
@@ -354,7 +351,7 @@ public class FileUtils {
         final File destFile = new File(destDir, srcFile.getName());
         doCopyFile(srcFile, destFile, preserveFileDate);
     }
-    
+
     /**
      * Internal copy file method.
      * This caches the original file length, and throws an IOException
@@ -366,11 +363,11 @@ public class FileUtils {
      * @param srcFile          the validated source file, must not be {@code null}
      * @param destFile         the validated destination file, must not be {@code null}
      * @param preserveFileDate whether to preserve the file date
-     * @throws IOException     if an error occurs
-     * @throws IOException     if the output file length is not the same as the input file length after the
-     * copy completes
+     * @throws IOException              if an error occurs
+     * @throws IOException              if the output file length is not the same as the input file length after the
+     *                                  copy completes
      * @throws IllegalArgumentException "Negative size" if the file is truncated so that the size is less than the
-     * position
+     *                                  position
      */
     private static void doCopyFile(final File srcFile, final File destFile, final boolean preserveFileDate)
             throws IOException {
@@ -378,22 +375,25 @@ public class FileUtils {
              FileChannel input = fis.getChannel();
              FileOutputStream fos = new FileOutputStream(destFile);
              FileChannel output = fos.getChannel()) {
-            final long size = input.size(); // TODO See IO-386
+            // TODO See IO-386
+            final long size = input.size();
             long pos = 0;
             long count = 0;
             while (pos < size) {
                 final long remain = size - pos;
                 count = remain > FILE_COPY_BUFFER_SIZE ? FILE_COPY_BUFFER_SIZE : remain;
                 final long bytesCopied = output.transferFrom(input, pos, count);
-                if (bytesCopied == 0) { // IO-385 - can happen if file is truncated after caching the size
-                    break; // ensure we don't loop forever
+                // IO-385 - can happen if file is truncated after caching the size
+                if (bytesCopied == 0) {
+                    // ensure we don't loop forever
+                    break;
                 }
                 pos += bytesCopied;
             }
         }
-
-        final long srcLen = srcFile.length(); // TODO See IO-386
-        final long dstLen = destFile.length(); // TODO See IO-386
+        // TODO See IO-386
+        final long srcLen = srcFile.length();
+        final long dstLen = destFile.length();
         if (srcLen != dstLen) {
             throw new IOException("Failed to copy full contents from '" +
                     srcFile + "' to '" + destFile + "' Expected length: " + srcLen + " Actual: " + dstLen);
@@ -402,18 +402,20 @@ public class FileUtils {
             destFile.setLastModified(srcFile.lastModified());
         }
     }
-    
+
     /**
      * 获取 目录以及子目录中的所有无子目录的目录文件（也就是说不包含目录的父级目录）
+     *
      * @param file 最外层的目录
      */
     public static List<File> loopFolders(File file) {
         return loopFolders(file, false);
     }
-    
+
     /**
      * 获取 目录以及子目录中的所有（无子目录的）目录文件
-     * @param file 最外层的目录
+     *
+     * @param file               最外层的目录
      * @param includeInterFolder 是否包含中间目录，如果为false则获取“所有无子目录的目录文件“
      */
     public static List<File> loopFolders(File file, boolean includeInterFolder) {
@@ -438,7 +440,7 @@ public class FileUtils {
         }
         return result;
     }
-    
+
     /**
      * 获取 目录以及子目录中的所有文件
      */
@@ -448,14 +450,14 @@ public class FileUtils {
 
     /**
      * 获取 目录以及子目录中的所有文件
+     *
      * @param inludeType 文件结尾类型（endsWith），比如 jpg, .jpg 都可以
      */
     public static List<File> loopFiles(File file, String[] inludeType) {
         ArrayList<File> result = new ArrayList<File>();
         if (file.isFile() && checkFileType(file, inludeType)) {
             result.add(file);
-        }
-        else if (file.isDirectory()) {
+        } else if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files == null) {
                 LOG.warn("cannot read dir " + file.getAbsolutePath());
@@ -467,8 +469,10 @@ public class FileUtils {
         }
         return result;
     }
-    
-    /** 递归查找 目录以及子目录中 名为@fileName的文件 */
+
+    /**
+     * 递归查找 目录以及子目录中 名为@fileName的文件
+     */
     public static File findFile(File folder, String fileName) {
         if (folder.isFile()) {
             return folder.getName().equalsIgnoreCase(fileName) ? folder : null;
@@ -490,7 +494,7 @@ public class FileUtils {
             return null;
         }
     }
-    
+
     /**
      * 递归删除parent目录下面的所有空目录
      */
@@ -520,17 +524,19 @@ public class FileUtils {
         }
         return false;
     }
-    
+
     /**
      * 解析文本内容
+     *
      * @deprecated use getTextContent(in, null)
      */
     public static String getTextContent(InputStream in) {
         return getTextContent(in, null);
     }
-    
+
     /**
      * 按行解析文本文件
+     *
      * @deprecated use getTextFileContent(in, null)
      */
     public static List<String> getTextFileContent(InputStream in) {
@@ -544,7 +550,7 @@ public class FileUtils {
         List<String> ret = getTextFileContent(in, charSet);
         return CollectionUtils.toString(ret, Const.CRLF);
     }
-    
+
     /**
      * 解析文本内容
      */
@@ -552,7 +558,7 @@ public class FileUtils {
         List<String> ret = getTextFileContent(fileFullPath, charSet);
         return CollectionUtils.toString(ret, Const.CRLF);
     }
-    
+
     /**
      * 解析文本内容
      */
@@ -563,19 +569,18 @@ public class FileUtils {
             throw new NestedRuntimeException(e);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public static List<String> getTextFileContent(String fileFullPath, String charSet) {
         InputStream in;
         try {
             in = new FileInputStream(fileFullPath);
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             return Collections.EMPTY_LIST;
         }
         return getTextFileContent(in, charSet);
     }
-    
+
     /**
      * 按行解析文本文件
      */
@@ -589,15 +594,13 @@ public class FileUtils {
                 ret.add(buf);
             }
             return ret;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new NestedRuntimeException(e);
-        }
-        finally {
+        } finally {
             IOUtils.closeIO(br);
         }
     }
-    
+
     /**
      * 按行解析文本文件
      */
@@ -606,8 +609,7 @@ public class FileUtils {
         InputStream in;
         try {
             in = new FileInputStream(fileFullPath);
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             return Collections.EMPTY_LIST;
         }
         return parseTextFile(in, parser, charSet);
@@ -632,12 +634,10 @@ public class FileUtils {
                 }
             }
             return list;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOG.error(e);
             return null;
-        }
-        finally {
+        } finally {
             IOUtils.closeIO(in);
             IOUtils.closeIO(br);
         }
@@ -655,7 +655,7 @@ public class FileUtils {
         }
         return false;
     }
-    
+
     /**
      * 在Java的缓存目录（System.getProperty "java.io.tmpdir"）下创建一个新文件夹（如果已存在，则会清空）
      */
@@ -668,7 +668,7 @@ public class FileUtils {
         tmpdir.mkdir();
         return tmpdir;
     }
-    
+
     /**
      * 按文件修改日期降序排列【最新的排在最上面】
      */
@@ -682,10 +682,10 @@ public class FileUtils {
             return f1.lastModified() < f2.lastModified() ? 1 : -1;
         }
     }
-    
+
     /**
      * 将文本文件内容解析、封装成相应的对象。
-     * 
+     *
      * @author zollty
      * @date 2013-8-02
      */

@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2016-2018 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,7 @@ package org.jretty.util;
 
 /**
  * 可变的整数，API同AtomicInteger，但非线程安全，效率比AtomicInteger高得多。
- * 
+ *
  * @author zollty
  * @since 2016-09-14
  */
@@ -31,7 +31,6 @@ public class MutableInteger {
 
     /**
      * 获取当前的值
-     * @return
      */
     public final int get() {
         return value;
@@ -39,7 +38,7 @@ public class MutableInteger {
 
     /**
      * 取当前的值，并设置新的值
-     * @param newValue
+     *
      * @return 设置前的值
      */
     public final int getAndSet(int newValue) {
@@ -50,6 +49,7 @@ public class MutableInteger {
 
     /**
      * 获取当前的值，并自增
+     *
      * @return 自增后的值
      */
     public final int getAndIncrement() {
@@ -58,6 +58,7 @@ public class MutableInteger {
 
     /**
      * 获取当前的值，并自减
+     *
      * @return 递减后的值
      */
     public final int getAndDecrement() {
@@ -73,7 +74,8 @@ public class MutableInteger {
 
     /**
      * 获取当前的值，并加上预期的值
-     * @param delta
+     *
+     * @param delta 增加的值
      * @return 增加之前的值
      */
     public final int getAndAdd(int delta) {

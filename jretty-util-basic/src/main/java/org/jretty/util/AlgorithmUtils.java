@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2013-2015 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,19 +18,23 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * A Powerful Algorithmic utils.
- * 
- * @author zollty 
+ *
+ * @author zollty
  * @since 2013-10-27
  */
 public class AlgorithmUtils {
-    /** MessageDigest Algorithm: MD5 */
+    /**
+     * MessageDigest Algorithm: MD5
+     */
     public static final String MD5 = "MD5";
-    /** MessageDigest Algorithm: SHA1 */
+    /**
+     * MessageDigest Algorithm: SHA1
+     */
     public static final String SHA1 = "SHA1";
-    
+
     /**
      * Use the algorithm to encode a string (to hex string)
-     * 
+     *
      * @param str String to encode
      * @return Encoded String (use hex)
      */
@@ -42,36 +46,35 @@ public class AlgorithmUtils {
             MessageDigest msgdig = MessageDigest.getInstance(algorithm);
             msgdig.update(str.getBytes("UTF-8"));
             byte[] hash = msgdig.digest();
-            
+
             return toHexStr(hash);
         } catch (NoSuchAlgorithmException e) {
             throw new BasicRuntimeException(e.toString());
-        }
-        catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             throw new BasicRuntimeException(e.toString());
         }
     }
-    
+
     /**
      * Use MD5 algorithm to encode a string (to hex string)
-     * 
+     *
      * @param str String to encode
      * @return Encoded String (use hex)
      */
     public static String md5Crypt(String str) {
         return crypt(str, MD5);
     }
-    
+
     /**
      * Use SHA1 algorithm to encode a string (to hex string)
-     * 
+     *
      * @param str String to encode
      * @return Encoded String (use hex)
      */
     public static String sha1Crypt(String str) {
         return crypt(str, SHA1);
     }
-    
+
     public static String toHexStr(byte[] data) {
         if (data == null) {
             return null;
@@ -83,24 +86,24 @@ public class AlgorithmUtils {
         String stmp;
         for (int i = 0; i < data.length; i++) {
             stmp = Integer.toHexString(0xFF & data[i]);
-            if (stmp.length() == 1)
+            if (stmp.length() == 1) {
                 hexString.append('0').append(stmp);
-            else {
+            } else {
                 hexString.append(stmp);
             }
         }
         return hexString.toString();
     }
 
-    private static final String[] CHARS = new String[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
+    private static final String[] CHARS = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
             "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6",
             "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-            "S", "T", "U", "V", "W", "X", "Y", "Z" };
-    
+            "S", "T", "U", "V", "W", "X", "Y", "Z"};
+
     /**
-     * Short URL Algorithm, 
-     *     e.g. http://url.cn/WgGTqt, 
-     *     short string "WgGTqt" can use this method to generate.
+     * Short URL Algorithm,
+     * e.g. <a href="http://url.cn/WgGTqt">URL</a>,
+     * short string "WgGTqt" can use this method to generate.
      */
     public static String shortMsg(String msg) {
         // MD5 加密

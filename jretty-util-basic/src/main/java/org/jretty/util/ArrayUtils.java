@@ -4,23 +4,24 @@ import java.lang.reflect.Array;
 
 /**
  * 注意：通常建议 首选将数组转换成集合Connection来操作，不建议 直接操作数组
- * @see CollectionUtils
- * 
+ *
  * @author zollty
+ * @see CollectionUtils
  * @since 2015-6-15
  */
 public class ArrayUtils {
-    
+
     /**
      * Convenience method to return a String array as a delimited (e.g. CSV)
      * String. E.g. useful for <code>toString()</code> implementations.
      * <p>Elements are converted to strings as by</p>
      * <tt>String.valueOf(Object)</tt>.
-     * 
+     *
      * <p>e.g.（注意double可能会被转换成科学计数）</p>
      * <p>Object[]{2L,8L,5L} ==&gt; String "2,5,8" </p>
      * <p>Double[] {0.000001, 3.1215926} ==&gt; String "1.0E-6,3.1215926" </p>
-     * @param arr the array to display
+     *
+     * @param arr   the array to display
      * @param delim the delimiter to use (probably a ",")
      * @return the delimited String (if null return "")
      */
@@ -31,13 +32,14 @@ public class ArrayUtils {
         if (arr.length == 1) {
             return String.valueOf(arr[0]);
         }
-        int bufLen = 20 * arr.length; // 将StringBuilder默认16扩大到len的20倍
+        // 将StringBuilder默认16扩大到len的20倍
+        int bufLen = 20 * arr.length;
         if (bufLen <= 0) {
             bufLen = Integer.MAX_VALUE;
         }
         StringBuilder sb = new StringBuilder(bufLen);
         int max = arr.length - 1;
-        for (int i = 0;; i++) {
+        for (int i = 0; ; i++) {
             sb.append(arr[i]);
             if (i == max) {
                 break;
@@ -50,92 +52,94 @@ public class ArrayUtils {
     /**
      * Convenience method to return a String array as a CSV String.
      * E.g. useful for <code>toString()</code> implementations.
+     *
      * @param arr the array to display
      * @return the delimited String (if null return "")
      */
     public static String toString(Object[] arr) {
         return toString(arr, ",");
     }
-    
+
     /**
      * Checks if the array is null or empty (size==0).
+     *
      * @return true if is null or empty
      */
     public static boolean isNullOrEmpty(Object[] objs) {
-        return (objs == null || objs.length == 0) ? true : false;
+        return objs == null || objs.length == 0;
     }
-    
+
     /**
      * Checks if the array is null or empty (size==0).
-     * 
+     *
      * @return true if is not null and not empty
      */
     public static boolean isNotEmpty(Object[] objs) {
-        return (objs != null && objs.length != 0) ? true : false;
+        return objs != null && objs.length != 0;
     }
 
     public static boolean isNullOrEmpty(int[] objs) {
-        return (objs == null || objs.length == 0) ? true : false;
+        return objs == null || objs.length == 0;
     }
 
     public static boolean isNotEmpty(int[] objs) {
-        return (objs != null && objs.length != 0) ? true : false;
+        return objs != null && objs.length != 0;
     }
 
     public static boolean isNullOrEmpty(byte[] objs) {
-        return (objs == null || objs.length == 0) ? true : false;
+        return objs == null || objs.length == 0;
     }
 
     public static boolean isNotEmpty(byte[] objs) {
-        return (objs != null && objs.length != 0) ? true : false;
+        return objs != null && objs.length != 0;
     }
 
     public static boolean isNullOrEmpty(long[] objs) {
-        return (objs == null || objs.length == 0) ? true : false;
+        return objs == null || objs.length == 0;
     }
 
     public static boolean isNotEmpty(long[] objs) {
-        return (objs != null && objs.length != 0) ? true : false;
+        return objs != null && objs.length != 0;
     }
 
     public static boolean isNullOrEmpty(double[] objs) {
-        return (objs == null || objs.length == 0) ? true : false;
+        return objs == null || objs.length == 0;
     }
 
     public static boolean isNotEmpty(double[] objs) {
-        return (objs != null && objs.length != 0) ? true : false;
+        return objs != null && objs.length != 0;
     }
 
     public static boolean isNullOrEmpty(float[] objs) {
-        return (objs == null || objs.length == 0) ? true : false;
+        return objs == null || objs.length == 0;
     }
 
     public static boolean isNotEmpty(float[] objs) {
-        return (objs != null && objs.length != 0) ? true : false;
+        return objs != null && objs.length != 0;
     }
-    
+
     public static boolean isNullOrEmpty(short[] objs) {
-        return (objs == null || objs.length == 0) ? true : false;
+        return objs == null || objs.length == 0;
     }
 
     public static boolean isNotEmpty(short[] objs) {
-        return (objs != null && objs.length != 0) ? true : false;
+        return objs != null && objs.length != 0;
     }
 
     public static boolean isNullOrEmpty(char[] objs) {
-        return (objs == null || objs.length == 0) ? true : false;
+        return objs == null || objs.length == 0;
     }
 
     public static boolean isNotEmpty(char[] objs) {
-        return (objs != null && objs.length != 0) ? true : false;
+        return objs != null && objs.length != 0;
     }
 
     public static boolean isNullOrEmpty(boolean[] objs) {
-        return (objs == null || objs.length == 0) ? true : false;
+        return objs == null || objs.length == 0;
     }
 
     public static boolean isNotEmpty(boolean[] objs) {
-        return (objs != null && objs.length != 0) ? true : false;
+        return objs != null && objs.length != 0;
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -207,7 +211,7 @@ public class ArrayUtils {
         }
         return arr;
     }
-    
+
     public static Float[] changeType(float[] array) {
         if (array == null) {
             return null;
@@ -229,7 +233,7 @@ public class ArrayUtils {
         }
         return arr;
     }
-    
+
     public static Short[] changeType(short[] array) {
         if (array == null) {
             return null;
@@ -273,7 +277,7 @@ public class ArrayUtils {
         }
         return arr;
     }
-    
+
     public static Character[] changeType(char[] array) {
         if (array == null) {
             return null;
@@ -319,25 +323,23 @@ public class ArrayUtils {
     }
 
     /**
-     * 模拟list.add()方法，Append the given String to the given String array, 
+     * 模拟list.add()方法，Append the given String to the given String array,
      * returning a new array consisting of the input array contents plus the given String.
-     * 
-     * @param array
-     *            the array to append to (can be <code>null</code>)
-     * @param str
-     *            the String to append
+     *
+     * @param array the array to append to (can be <code>null</code>)
+     * @param str   the String to append
      * @return the new array (never <code>null</code>)
      */
     public static String[] add(String[] array, String str) {
         if (null == array || array.length == 0) {
-            return new String[] { str };
+            return new String[]{str};
         }
         String[] newArr = new String[array.length + 1];
         System.arraycopy(array, 0, newArr, 0, array.length);
         newArr[array.length] = str;
         return newArr;
     }
-    
+
     public static <T> T[] add(final T[] array, final T element) {
         Class<?> type;
         if (array != null) {
@@ -348,8 +350,7 @@ public class ArrayUtils {
             throw new IllegalArgumentException("Arguments cannot both be null");
         }
         @SuppressWarnings("unchecked") // type must be T
-        final
-        T[] newArray = (T[]) copyArrayGrow1(array, type);
+        final T[] newArray = (T[]) copyArrayGrow1(array, type);
         newArray[newArray.length - 1] = element;
         return newArray;
     }
@@ -366,7 +367,7 @@ public class ArrayUtils {
 
     public static boolean[] add(boolean[] array, boolean integer) {
         if (null == array || array.length == 0) {
-            return new boolean[] { integer };
+            return new boolean[]{integer};
         }
         boolean[] newArr = new boolean[array.length + 1];
         System.arraycopy(array, 0, newArr, 0, array.length);
@@ -376,7 +377,7 @@ public class ArrayUtils {
 
     public static char[] add(char[] array, char cchar) {
         if (null == array || array.length == 0) {
-            return new char[] { cchar };
+            return new char[]{cchar};
         }
         char[] newArr = new char[array.length + 1];
         System.arraycopy(array, 0, newArr, 0, array.length);
@@ -386,7 +387,7 @@ public class ArrayUtils {
 
     public static byte[] add(byte[] array, byte cchar) {
         if (null == array || array.length == 0) {
-            return new byte[] { cchar };
+            return new byte[]{cchar};
         }
         byte[] newArr = new byte[array.length + 1];
         System.arraycopy(array, 0, newArr, 0, array.length);
@@ -396,7 +397,7 @@ public class ArrayUtils {
 
     public static short[] add(short[] array, short cchar) {
         if (null == array || array.length == 0) {
-            return new short[] { cchar };
+            return new short[]{cchar};
         }
         short[] newArr = new short[array.length + 1];
         System.arraycopy(array, 0, newArr, 0, array.length);
@@ -406,7 +407,7 @@ public class ArrayUtils {
 
     public static int[] add(int[] array, int integer) {
         if (null == array || array.length == 0) {
-            return new int[] { integer };
+            return new int[]{integer};
         }
         int[] newArr = new int[array.length + 1];
         System.arraycopy(array, 0, newArr, 0, array.length);
@@ -416,7 +417,7 @@ public class ArrayUtils {
 
     public static long[] add(long[] array, long integer) {
         if (null == array || array.length == 0) {
-            return new long[] { integer };
+            return new long[]{integer};
         }
         long[] newArr = new long[array.length + 1];
         System.arraycopy(array, 0, newArr, 0, array.length);
@@ -426,7 +427,7 @@ public class ArrayUtils {
 
     public static float[] add(float[] array, float cchar) {
         if (null == array || array.length == 0) {
-            return new float[] { cchar };
+            return new float[]{cchar};
         }
         float[] newArr = new float[array.length + 1];
         System.arraycopy(array, 0, newArr, 0, array.length);
@@ -436,14 +437,14 @@ public class ArrayUtils {
 
     public static double[] add(double[] array, double cchar) {
         if (null == array || array.length == 0) {
-            return new double[] { cchar };
+            return new double[]{cchar};
         }
         double[] newArr = new double[array.length + 1];
         System.arraycopy(array, 0, newArr, 0, array.length);
         newArr[array.length] = cchar;
         return newArr;
     }
-    
+
     @SuppressWarnings("unchecked")
     public static <T> T[] addAll(T[] array1, T... array2) {
         if (array1 == null && array2 == null) {
@@ -461,8 +462,7 @@ public class ArrayUtils {
         System.arraycopy(array1, 0, joinedArray, 0, array1.length);
         try {
             System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        }
-        catch (ArrayStoreException ase) {
+        } catch (ArrayStoreException ase) {
             Class<?> type2 = array2.getClass().getComponentType();
             if (!type1.isAssignableFrom(type2)) {
                 throw new IllegalArgumentException("Cannot store " + type2.getName() + " in an array of " + type1.getName(), ase);
@@ -472,7 +472,7 @@ public class ArrayUtils {
         }
         return joinedArray;
     }
-    
+
     public static String[] addAll(String[] array1, String... array2) {
         if (array1 == null && array2 == null) {
             return null;
@@ -616,7 +616,7 @@ public class ArrayUtils {
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
     }
-    
+
     public static String[] remove(String[] array, int index) {
         if (array == null) {
             return null;
@@ -626,8 +626,8 @@ public class ArrayUtils {
         }
 
         String[] result = new String[array.length - 1];
-
-        System.arraycopy(array, 0, result, 0, index); // 前半部分
+        // 前半部分
+        System.arraycopy(array, 0, result, 0, index);
         if (index < array.length - 1) {
             System.arraycopy(array, index + 1, result, index, array.length - index - 1);
         }
@@ -689,5 +689,5 @@ public class ArrayUtils {
         }
         return result;
     }
-     
+
 }

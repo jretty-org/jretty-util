@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2013-2015 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,41 +17,41 @@ import org.jretty.log.Logger;
 
 /**
  * 常用的 Thread 工具类
- * 
- * @author zollty 
+ *
+ * @author zollty
  * @since 2013-8-20
  */
 public class ThreadUtils {
-    
+
     private static final Logger LOG = LogFactory.getLogger(ThreadUtils.class);
-    
+
     /**
      * 线程休眠
-     * @param sleepTime
+     *
+     * @param sleepTime 休眠秒数
      */
-    public static void sleepThread(long sleepTime){
+    public static void sleepThread(long sleepTime) {
         try {
             Thread.sleep(sleepTime);
         } catch (InterruptedException e) {
-            if(LOG.isDebugEnabled()) {
-                LOG.info("Thread "+Thread.currentThread().getName()+" sleep be interrupted.");
+            if (LOG.isDebugEnabled()) {
+                LOG.info("Thread " + Thread.currentThread().getName() + " sleep be interrupted.");
             }
         }
     }
-    
+
     /**
      * 强行杀死线程的方法
-     * @param thread
      */
     @SuppressWarnings("deprecation")
-    public static void stopThread(Thread thread){
+    public static void stopThread(Thread thread) {
         try {
             thread.setPriority(Thread.MIN_PRIORITY);
             thread.stop();
             thread.destroy();
         } catch (Throwable e) {
-            if(LOG.isDebugEnabled()) {
-                LOG.info("stop thread ["+thread.getName()+"]...");
+            if (LOG.isDebugEnabled()) {
+                LOG.info("stop thread [" + thread.getName() + "]...");
             }
         }
     }

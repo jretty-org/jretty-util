@@ -1,8 +1,8 @@
 package org.jretty.util;
 
-/* 
+/*
  * Copyright (C) 2015-2020 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,13 +12,14 @@ package org.jretty.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * Create by ZollTy on 2015-6-15 (http://blog.zollty.com/, zollty@163.com)
  */
+
 import java.lang.reflect.Array;
 
 /**
  * 注意：通常建议 首选将数组转换成集合Connection来操作，不建议 直接操作数组
- * @see CollectionUtils
- * 
+ *
  * @author zollty
+ * @see CollectionUtils
  * @since 2015-6-15
  */
 @SuppressWarnings("rawtypes")
@@ -30,9 +31,10 @@ public class Arrays {
     private int paramLen;
     private Class type;
     private boolean needClone = true;
-    
-    protected Arrays() {}
-    
+
+    protected Arrays() {
+    }
+
     public boolean isNotEmpty() {
         return arr != null && arrLen != 0;
     }
@@ -40,7 +42,7 @@ public class Arrays {
     public boolean isEmpty() {
         return arr == null || arrLen == 0;
     }
-    
+
     public Arrays add() {
         Object joinedArray = Array.newInstance(type, arrLen + paramLen);
         System.arraycopy(arr, 0, joinedArray, 0, arrLen);
@@ -48,7 +50,7 @@ public class Arrays {
         updateArr(joinedArray, arrLen + paramLen);
         return this;
     }
-    
+
     public Arrays remove() {
         int index = ((int[]) params)[0];
         Object result = Array.newInstance(type, arrLen - 1);
@@ -59,11 +61,12 @@ public class Arrays {
         updateArr(result, arrLen - 1);
         return this;
     }
-    
+
+    @Override
     public String toString() {
         return toString(Const.COMMA);
     }
-    
+
     public String toString(final String delim) {
         if (arr == null || arrLen == 0) {
             return "";
@@ -84,7 +87,7 @@ public class Arrays {
                 }
             });
         } else {
-            Object[] objArr =  (Object[]) arr;
+            Object[] objArr = (Object[]) arr;
             boolean append = false;
             for (int i = 0; i < arrLen; i++) {
                 if (append) {
@@ -97,8 +100,8 @@ public class Arrays {
         }
         return sb.toString();
     }
-    
-    
+
+
     public static Arrays from(Object[] array) {
         Arrays that = new Arrays();
         if (array == null) {
@@ -188,8 +191,8 @@ public class Arrays {
         that.type = boolean.class;
         return that;
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     public <T> Arrays param(T... array) {
         if (array == null) {
@@ -198,7 +201,7 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
+
     public Arrays param(String... array) {
         if (array == null) {
             return this;
@@ -206,7 +209,7 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
+
     public Arrays param(Integer... array) {
         if (array == null) {
             return this;
@@ -214,7 +217,7 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
+
     public Arrays param(Long... array) {
         if (array == null) {
             return this;
@@ -222,7 +225,7 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
+
     public Arrays param(Double... array) {
         if (array == null) {
             return this;
@@ -230,7 +233,7 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
+
     public Arrays param(Byte... array) {
         if (array == null) {
             return this;
@@ -238,7 +241,7 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
+
     public Arrays param(Character... array) {
         if (array == null) {
             return this;
@@ -246,7 +249,7 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
+
     public Arrays param(Boolean... array) {
         if (array == null) {
             return this;
@@ -254,7 +257,7 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
+
     public Arrays param(Short... array) {
         if (array == null) {
             return this;
@@ -262,7 +265,7 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
+
     public Arrays param(Float... array) {
         if (array == null) {
             return this;
@@ -270,8 +273,8 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
-    
+
+
     public Arrays param(int... array) {
         if (array == null) {
             return this;
@@ -335,71 +338,71 @@ public class Arrays {
         setParams(array, array.length);
         return this;
     }
-    
-    
+
+
     public Arrays param(int p) {
-        setParams(new int[] {p}, 1);
+        setParams(new int[]{p}, 1);
         return this;
     }
-    
-    
+
+
     public interface Action {
-        
+
         boolean use(Object ele, int index);
     }
-    
+
     protected void loopPrimObject(Action action) {
         // boolean, byte, char, short, int, long, float, and double
-        if(type==int.class) {
+        if (type == int.class) {
             int[] ta = (int[]) arr;
             for (int i = 0; i < arrLen; i++) {
                 if (!action.use(ta[i], i)) {
                     break;
                 }
             }
-        } else if(type==long.class) {
+        } else if (type == long.class) {
             long[] ta = (long[]) arr;
             for (int i = 0; i < arrLen; i++) {
                 if (!action.use(ta[i], i)) {
                     break;
                 }
             }
-        } else if(type==byte.class) {
+        } else if (type == byte.class) {
             byte[] ta = (byte[]) arr;
             for (int i = 0; i < arrLen; i++) {
                 if (!action.use(ta[i], i)) {
                     break;
                 }
             }
-        } else if(type==char.class) {
+        } else if (type == char.class) {
             char[] ta = (char[]) arr;
             for (int i = 0; i < arrLen; i++) {
                 if (!action.use(ta[i], i)) {
                     break;
                 }
             }
-        } else if(type==boolean.class) {
+        } else if (type == boolean.class) {
             boolean[] ta = (boolean[]) arr;
             for (int i = 0; i < arrLen; i++) {
                 if (!action.use(ta[i], i)) {
                     break;
                 }
             }
-        } else if(type==double.class) {
+        } else if (type == double.class) {
             double[] ta = (double[]) arr;
             for (int i = 0; i < arrLen; i++) {
                 if (!action.use(ta[i], i)) {
                     break;
                 }
             }
-        } else if(type==short.class) {
+        } else if (type == short.class) {
             short[] ta = (short[]) arr;
             for (int i = 0; i < arrLen; i++) {
                 if (!action.use(ta[i], i)) {
                     break;
                 }
             }
-        } else if(type==float.class) {
+        } else if (type == float.class) {
             float[] ta = (float[]) arr;
             for (int i = 0; i < arrLen; i++) {
                 if (!action.use(ta[i], i)) {
@@ -408,13 +411,13 @@ public class Arrays {
             }
         }
     }
-    
+
 
     public Integer[] toIntegerArray() {
         final Integer[] arr0 = new Integer[arrLen];
-        if(type==Integer.class) {
+        if (type == Integer.class) {
             return needClone ? ((Integer[]) arr).clone() : (Integer[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -436,7 +439,7 @@ public class Arrays {
         final int[] arr0 = new int[arrLen];
         if (type == int.class) {
             return needClone ? ((int[]) arr).clone() : (int[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -458,7 +461,7 @@ public class Arrays {
         final Long[] arr0 = new Long[arrLen];
         if (type == Long.class) {
             return needClone ? ((Long[]) arr).clone() : (Long[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -480,7 +483,7 @@ public class Arrays {
         final long[] arr0 = new long[arrLen];
         if (type == long.class) {
             return needClone ? ((long[]) arr).clone() : (long[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -502,7 +505,7 @@ public class Arrays {
         final Double[] arr0 = new Double[arrLen];
         if (type == Double.class) {
             return needClone ? ((Double[]) arr).clone() : (Double[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -524,7 +527,7 @@ public class Arrays {
         final double[] arr0 = new double[arrLen];
         if (type == double.class) {
             return needClone ? ((double[]) arr).clone() : (double[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -541,12 +544,12 @@ public class Arrays {
             return arr0;
         }
     }
-    
+
     public Float[] toFloatArray() {
         final Float[] arr0 = new Float[arrLen];
         if (type == Float.class) {
             return needClone ? ((Float[]) arr).clone() : (Float[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -568,7 +571,7 @@ public class Arrays {
         final float[] arr0 = new float[arrLen];
         if (type == float.class) {
             return needClone ? ((float[]) arr).clone() : (float[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -585,12 +588,12 @@ public class Arrays {
             return arr0;
         }
     }
-    
+
     public Short[] toShortArray() {
         final Short[] arr0 = new Short[arrLen];
         if (type == Short.class) {
             return needClone ? ((Short[]) arr).clone() : (Short[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -612,7 +615,7 @@ public class Arrays {
         final short[] arr0 = new short[arrLen];
         if (type == short.class) {
             return needClone ? ((short[]) arr).clone() : (short[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -629,12 +632,12 @@ public class Arrays {
             return arr0;
         }
     }
-    
+
     public Byte[] toByteArray() {
         final Byte[] arr0 = new Byte[arrLen];
         if (type == Byte.class) {
             return needClone ? ((Byte[]) arr).clone() : (Byte[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -656,7 +659,7 @@ public class Arrays {
         final byte[] arr0 = new byte[arrLen];
         if (type == byte.class) {
             return needClone ? ((byte[]) arr).clone() : (byte[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -673,12 +676,12 @@ public class Arrays {
             return arr0;
         }
     }
-    
+
     public Character[] toCharacterArray() {
         final Character[] arr0 = new Character[arrLen];
         if (type == Character.class) {
             return needClone ? ((Character[]) arr).clone() : (Character[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -700,7 +703,7 @@ public class Arrays {
         final char[] arr0 = new char[arrLen];
         if (type == char.class) {
             return needClone ? ((char[]) arr).clone() : (char[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -722,7 +725,7 @@ public class Arrays {
         final Boolean[] arr0 = new Boolean[arrLen];
         if (type == Boolean.class) {
             return needClone ? ((Boolean[]) arr).clone() : (Boolean[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -744,7 +747,7 @@ public class Arrays {
         final boolean[] arr0 = new boolean[arrLen];
         if (type == boolean.class) {
             return needClone ? ((boolean[]) arr).clone() : (boolean[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -761,12 +764,12 @@ public class Arrays {
             return arr0;
         }
     }
-    
+
     public String[] toStringArray() {
         final String[] arr0 = new String[arrLen];
         if (type == String.class) {
             return needClone ? ((String[]) arr).clone() : (String[]) arr;
-        } else if(type.isPrimitive()) {
+        } else if (type.isPrimitive()) {
             loopPrimObject(new Action() {
                 @Override
                 public boolean use(Object ele, int i) {
@@ -783,7 +786,7 @@ public class Arrays {
             return arr0;
         }
     }
-    
+
     public Object[] toObjectArray() {
         if (!type.isPrimitive()) {
             return needClone ? ((Object[]) arr).clone() : (Object[]) arr;
@@ -799,16 +802,16 @@ public class Arrays {
             return arr0;
         }
     }
-    
+
     /**
      * 将原始数组重新随机排序（=洗牌）
      */
     public Arrays shuffle() {
         java.util.Random rand = new java.util.Random();
         int pos;
-        if(type.isPrimitive()) {
+        if (type.isPrimitive()) {
             // boolean, byte, char, short, int, long, float, and double
-            if(type==int.class) {
+            if (type == int.class) {
                 int[] ta = (int[]) arr;
                 for (int r = arrLen - 1; r > 0; r--) {
                     // 0 ~ r
@@ -818,7 +821,7 @@ public class Arrays {
                     ta[pos] = ta[r];
                     ta[r] = temp;
                 }
-            } else if(type==long.class) {
+            } else if (type == long.class) {
                 long[] ta = (long[]) arr;
                 for (int r = arrLen - 1; r > 0; r--) {
                     pos = Math.abs(rand.nextInt()) % (r + 1);
@@ -826,7 +829,7 @@ public class Arrays {
                     ta[pos] = ta[r];
                     ta[r] = temp;
                 }
-            } else if(type==byte.class) {
+            } else if (type == byte.class) {
                 byte[] ta = (byte[]) arr;
                 for (int r = arrLen - 1; r > 0; r--) {
                     pos = Math.abs(rand.nextInt()) % (r + 1);
@@ -834,7 +837,7 @@ public class Arrays {
                     ta[pos] = ta[r];
                     ta[r] = temp;
                 }
-            } else if(type==char.class) {
+            } else if (type == char.class) {
                 char[] ta = (char[]) arr;
                 for (int r = arrLen - 1; r > 0; r--) {
                     pos = Math.abs(rand.nextInt()) % (r + 1);
@@ -842,7 +845,7 @@ public class Arrays {
                     ta[pos] = ta[r];
                     ta[r] = temp;
                 }
-            } else if(type==boolean.class) {
+            } else if (type == boolean.class) {
                 boolean[] ta = (boolean[]) arr;
                 for (int r = arrLen - 1; r > 0; r--) {
                     pos = Math.abs(rand.nextInt()) % (r + 1);
@@ -850,7 +853,7 @@ public class Arrays {
                     ta[pos] = ta[r];
                     ta[r] = temp;
                 }
-            } else if(type==double.class) {
+            } else if (type == double.class) {
                 double[] ta = (double[]) arr;
                 for (int r = arrLen - 1; r > 0; r--) {
                     pos = Math.abs(rand.nextInt()) % (r + 1);
@@ -858,7 +861,7 @@ public class Arrays {
                     ta[pos] = ta[r];
                     ta[r] = temp;
                 }
-            } else if(type==short.class) {
+            } else if (type == short.class) {
                 short[] ta = (short[]) arr;
                 for (int r = arrLen - 1; r > 0; r--) {
                     pos = Math.abs(rand.nextInt()) % (r + 1);
@@ -866,7 +869,7 @@ public class Arrays {
                     ta[pos] = ta[r];
                     ta[r] = temp;
                 }
-            } else if(type==float.class) {
+            } else if (type == float.class) {
                 float[] ta = (float[]) arr;
                 for (int r = arrLen - 1; r > 0; r--) {
                     pos = Math.abs(rand.nextInt()) % (r + 1);
@@ -886,16 +889,16 @@ public class Arrays {
         }
         return this;
     }
-    
+
     protected Object getArr() {
         return arr;
     }
-    
+
     protected void updateArr(Object arr, int arrLen) {
         setArr(arr, arrLen);
         needClone = false;
     }
-    
+
     protected void setArr(Object arr, int arrLen) {
         this.arr = arr;
         this.arrLen = arrLen;

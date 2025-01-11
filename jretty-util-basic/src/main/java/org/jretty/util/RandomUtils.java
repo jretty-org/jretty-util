@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2013-2014 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,7 @@ import java.util.Random;
 
 /**
  * 线程安全的随机数生成工具
- * 
+ *
  * @author zollty 高效的算法保证
  * @since 2013-6-07
  */
@@ -46,9 +46,8 @@ public class RandomUtils {
      * Generate radom number string 生成随机数字符串 <br>
      * the param (start, end) must in region [0,9] or ['A','Z'] or ['a', 'z'] <br>
      * e.g. (2,8) or ('A','K')
-     * 
-     * @param len
-     *            [the target string's length]
+     *
+     * @param len [the target string's length]
      */
     public static final String getRadomStr(int start, int end, int len) {
         if (start > -1 && end < 10 && start < end) {
@@ -134,16 +133,17 @@ public class RandomUtils {
 
     /**
      * 获取长度为{len}的随机字符串（A_Za_z组成）
-     * 
-     * @param len
-     *            随机字符串的长度
+     *
+     * @param len 随机字符串的长度
      */
     public static final String getRadomStrAZaz(int len) {
         StringBuilder bstr = new StringBuilder(len);
         int n;
         for (int i = 0; i < len; i++) {
-            n = 65 + nextInt(52); // 65-116（122-5）
-            if (n >= 91 && n <= 96) { // 将91-96映射成117-122
+            // 65-116（122-5）
+            n = 65 + nextInt(52);
+            if (n >= 91 && n <= 96) {
+                // 将91-96映射成117-122
                 n += 26;
             }
             bstr.append((char) n);
@@ -153,9 +153,8 @@ public class RandomUtils {
 
     /**
      * 获取长度为{len}的随机字符串（0_9A_Za_z组成）
-     * 
-     * @param len
-     *            随机字符串的长度
+     *
+     * @param len 随机字符串的长度
      */
     public static final String getRadomStr09AZaz(int len) {
         StringBuilder bstr = new StringBuilder(len);

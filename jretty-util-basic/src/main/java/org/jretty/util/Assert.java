@@ -44,7 +44,7 @@ import java.util.Map;
  * @author Juergen Hoeller
  * @author Colin Sampaleanu
  * @author Rob Harrop
- * @auther Zollty Tsou
+ * @author Zollty Tsou
  * 
  * @since 2013-6-27
  */

@@ -121,32 +121,34 @@ public class ObjectUtils {
                 }
 
                 String type = pd.getPropertyType().toString();
-                if ("class java.lang.String".equals(type)) {
-                    mSet.invoke(standardBean, "");
-                }
-                else if ("class java.lang.Integer".equals(type)) {
-                    mSet.invoke(standardBean, new Integer(0));
-                }
-                else if ("class java.lang.Byte".equals(type)) {
-                    mSet.invoke(standardBean, (byte) 0);
-                }
-                else if ("class java.lang.Boolean".equals(type)) {
-                    mSet.invoke(standardBean, false);
-                }
-                else if ("class java.util.Date".equals(type)) {
-                    mSet.invoke(standardBean, new Date(0));
-                }
-                else if ("class java.math.BigDecimal".equals(type)) {
-                    mSet.invoke(standardBean, new BigDecimal(0));
-                }
-                else if ("class java.lang.Float".equals(type)) {
-                    mSet.invoke(standardBean, new Float(0.0));
-                }
-                else if ("class java.lang.Double".equals(type)) {
-                    mSet.invoke(standardBean, new Double(0.0));
-                }
-                else if ("class java.lang.Short".equals(type)) {
-                    mSet.invoke(standardBean, (short) 0);
+                switch (type) {
+                    case "class java.lang.String":
+                        mSet.invoke(standardBean, "");
+                        break;
+                    case "class java.lang.Integer":
+                        mSet.invoke(standardBean, new Integer(0));
+                        break;
+                    case "class java.lang.Byte":
+                        mSet.invoke(standardBean, (byte) 0);
+                        break;
+                    case "class java.lang.Boolean":
+                        mSet.invoke(standardBean, false);
+                        break;
+                    case "class java.util.Date":
+                        mSet.invoke(standardBean, new Date(0));
+                        break;
+                    case "class java.math.BigDecimal":
+                        mSet.invoke(standardBean, new BigDecimal(0));
+                        break;
+                    case "class java.lang.Float":
+                        mSet.invoke(standardBean, new Float(0.0));
+                        break;
+                    case "class java.lang.Double":
+                        mSet.invoke(standardBean, new Double(0.0));
+                        break;
+                    case "class java.lang.Short":
+                        mSet.invoke(standardBean, (short) 0);
+                        break;
                 }
             }
         } catch (Exception e) {

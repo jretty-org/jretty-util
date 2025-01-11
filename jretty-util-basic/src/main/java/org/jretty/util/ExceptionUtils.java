@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2013-2015 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,7 +19,7 @@ import java.io.PrintWriter;
  * 1、有些错误信息(errorMsg)非常的长，比如Spring或Hibernate或JDBC的错误信息;<br>
  * 2、一些异常的堆栈特别大，动辄几十、上百行，例如Tomcat、WebSphere的异常信息。<br>
  * 为了精简错误信息，以及防止大量冗余信息记录到日志中，故设计了这个方案：截取核心的错误信息——详见下面的算法。
- * 
+ *
  * @author zollty
  * @since 2013-6-27
  */
@@ -40,21 +40,21 @@ public class ExceptionUtils {
 
     /**
      * 智能将StackTrace堆栈信息转换成字符串
-     * 
+     *
      * @param eleFilter 堆栈过滤器，可为 null
-     * @param e 异常实例
+     * @param e         异常实例
      * @return 堆栈信息String
      */
     public static String getStackTraceStr(StackTraceFilter eleFilter, Throwable e) {
         return getStackTraceStr(eleFilter, e, null);
     }
-    
+
     /**
      * 智能将StackTrace堆栈信息转换成字符串
-     * 
+     *
      * @param eleFilter 堆栈过滤器，可为 null
-     * @param e 异常实例
-     * @param prompt 附加提示，可为 null
+     * @param e         异常实例
+     * @param prompt    附加提示，可为 null
      * @return 堆栈信息String
      */
     public static String getStackTraceStr(StackTraceFilter eleFilter, Throwable e, String prompt) {
@@ -109,16 +109,16 @@ public class ExceptionUtils {
             }
 
             return sb.toString();
-            
+
         } catch (Exception exp) {
             throw new NestedRuntimeException(exp);
         }
     }
-    
+
     public static interface StackTraceFilter {
         /**
          * exclude：
-         *      true = 过滤，false = 不过滤（原样输出）
+         * true = 过滤，false = 不过滤（原样输出）
          */
         boolean exclude(String className);
     }
@@ -127,25 +127,23 @@ public class ExceptionUtils {
 
     /**
      * 获取精简过的错误信息，(错误类型+错误描述)，默认截取440个字符（前308个+后132个）
-     * 
-     * @param prompt 附加提示，可为 null
      */
     public static String getExceptionProfile(Throwable e) {
-        return getExceptionProfile(e, null, 440); // 默认440个字符
+        return getExceptionProfile(e, null, 440);
     }
 
     /**
      * 获取精简过的错误信息，(错误类型+错误描述)，默认截取440个字符（前320个+后120个）
-     * 
+     *
      * @param prompt 附加提示，可为 null
      */
     public static String getExceptionProfile(Throwable e, String prompt) {
-        return getExceptionProfile(e, prompt, 440); // 默认440个字符
+        return getExceptionProfile(e, prompt, 440);
     }
 
     /**
      * 获取精简过的错误信息，(错误类型+错误描述)，默认截取440个字符（前320个+后120个）
-     * 
+     *
      * @param errorLen 截取错误字符串的最大长度，比如 500
      */
     public static String getExceptionProfile(Throwable e, int errorLen) {
@@ -154,8 +152,8 @@ public class ExceptionUtils {
 
     /**
      * 获取精简过的错误信息，(错误类型+错误描述)，截取 errorLen 个字符。
-     * 
-     * @param prompt 附加提示，可为 null
+     *
+     * @param prompt   附加提示，可为 null
      * @param errorLen 截取错误字符串的最大长度，比如 500
      */
     public static String getExceptionProfile(Throwable e, String prompt, int errorLen) {
@@ -167,14 +165,14 @@ public class ExceptionUtils {
         }
         return errorMsgCut(e.toString(), errorLen);
     }
-    
+
     /**
      * 获取一个最长为Name+32的string作为Exception对象的标识
      */
     public static String getExceptionSign(Throwable ex) {
         String key = ex.getMessage();
         if (key != null && key.length() > 36) {
-            key = key.substring(0, 24) + key.substring(key.length() - 12, key.length());
+            key = key.substring(0, 24) + key.substring(key.length() - 12);
         }
         return ex.getClass().getSimpleName() + " " + key;
     }
@@ -184,7 +182,7 @@ public class ExceptionUtils {
      * 【只保留前面70%的字符+后面30%的字符】 <br>
      * 例如一个数据库的errorMessage长度可达1000个字符，用此方法裁剪后, <br>
      * 假设maxLen=550，那就只保留前385个字符+后165个字符。
-     * 
+     *
      * @param maxLen 截取错误字符串的最大长度，比如500
      * @return 精简后的错误信息字符串
      * @author zollty 2013-7-27
@@ -194,34 +192,35 @@ public class ExceptionUtils {
             return null;
         }
         int strLen = errorMsg.length();
-        if (strLen < 200 || strLen <= maxLen) { // 小于200的字符，不做处理
+        // 小于200的字符，不做处理
+        if (strLen < 200 || strLen <= maxLen) {
             return errorMsg;
         }
         int front = (int) (maxLen * 0.7);
         return errorMsg.substring(0, front) + "......"
                 + errorMsg.substring(strLen - maxLen + front, strLen);
     }
-    
+
     /**
      * 改造堆栈信息，remove第一个堆栈，便于外部调用程序直接定位到自己的调用出处。
      * 例如，Assert内部的堆栈，用removeFirstStack改造后，堆栈信息为：
      * <pre>
      * java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
-        at org.zollty.util.AssertTest.doService(AssertTest.java:25)
-        
+     * at org.zollty.util.AssertTest.doService(AssertTest.java:25)
+     *
      * </pre>
      * 改造前堆栈信息为：
      * <pre>
      * java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
-        at org.zollty.util.AssertTest.notNull(AssertTest.java:123)
-        at org.zollty.util.AssertTest.notNull(AssertTest.java:110)
-        at org.zollty.util.AssertTest.hasText(AssertTest.java:91)
-        at org.zollty.util.AssertTest.hasLength(AssertTest.java:51)
-        at org.zollty.util.AssertTest.doService(AssertTest.java:25)
-        
+     * at org.zollty.util.AssertTest.notNull(AssertTest.java:123)
+     * at org.zollty.util.AssertTest.notNull(AssertTest.java:110)
+     * at org.zollty.util.AssertTest.hasText(AssertTest.java:91)
+     * at org.zollty.util.AssertTest.hasLength(AssertTest.java:51)
+     * at org.zollty.util.AssertTest.doService(AssertTest.java:25)
+     *
      * </pre>
      */
-    public static <T extends Throwable> T removeFirstStack(T e){
+    public static <T extends Throwable> T removeFirstStack(T e) {
         StackTraceElement[] st = e.getStackTrace();
         st = (StackTraceElement[]) ArrayUtils.remove(st, 0);
         e.setStackTrace(st);
@@ -229,32 +228,32 @@ public class ExceptionUtils {
     }
 
     /**
-     * Run in try-catch Throwable, change Throwable to NestedCheckedException 
+     * Run in try-catch Throwable, change Throwable to NestedCheckedException
      * {捕获所有异常和错误}
-     * 
-     * @see doInSecure(final SecureRun<T> runHook)
+     *
+     * @see #doInSecure(SecureRun)
      */
     public static interface SecureRun<T> {
         T run() throws Throwable;
     }
 
     /**
-     * Run in try-catch Throwable, change Throwable to NestedCheckedException 
+     * Run in try-catch Throwable, change Throwable to NestedCheckedException
      * {捕获所有异常和错误}
      */
     public static <T> T doInSecure(final SecureRun<T> runHook) throws NestedCheckedException {
         try {
             return runHook.run();
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             throw new NestedCheckedException(t);
         }
     }
-    
+
     /**
-     * Handle {@code InvocationTargetException, ExceptionInInitializerError, 
-     *   RuntimeErrorException, SAXException, MBeanException}, 
+     * Handle {@code InvocationTargetException, ExceptionInInitializerError,
+     * RuntimeErrorException, SAXException, MBeanException},
      * get its nested cause exception in the wrap of NestedRuntimeException.
+     *
      * @param e the nested exception (Probably InvocationTargetException, ExceptionInInitializerError...) to handle
      * @return a NestedRuntimeException
      */

@@ -68,11 +68,11 @@ public class NamedThreadFactory implements ThreadFactory {
         }
 
         if (priority != null) {
-            t.setPriority(priority.intValue());
+            t.setPriority(priority);
         }
 
         if (daemonFlag != null) {
-            t.setDaemon(daemonFlag.booleanValue());
+            t.setDaemon(daemonFlag);
         }
 
         return t;

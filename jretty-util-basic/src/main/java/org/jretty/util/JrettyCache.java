@@ -22,14 +22,14 @@ import java.util.WeakHashMap;
  * 在这段时间内，相同的key无法再添加进来，只有key过期之后，才能重新加进来。
  * 另外，容器有容量限制，超过容量，则不再添加元素 且putIfAbsent返回true（相当于每次都是新元素，只是不保存，直接丢弃）
  * 
- * @see #putIfAbsent(String, Object, int)
+ * @see #putIfAbsent(Object, Object, long) 
  * 
  * @author zollty
  * @since 2018年3月6日
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class JrettyCache {
-    private static int DEFAULT_CAPACITY = 2048;
+    private static final int DEFAULT_CAPACITY = 2048;
     // 默认过期时间 20秒
     private static final long DEFUALT_EXPIRE_TIME = 20 * 1000;
     private final long expireTime;
@@ -174,8 +174,10 @@ public class JrettyCache {
 
     private class CacheEntry<T> {
         private final T data;
-        private final long saveTime; // 存活时间
-        private final long expire; // 过期时间 小于等于0标识永久存活
+        // 存活时间
+        private final long saveTime;
+        // 过期时间 小于等于0标识永久存活
+        private final long expire;
 
         CacheEntry(T t, long expire) {
             this.data = t;

@@ -28,7 +28,7 @@ import java.util.Map;
  * 2、可以自己new一个，例如new DateFormatUtils(yyyy_MM_dd)并保存为static常量，
  * new的时候可指定格式，后面就可以随时调用format和parse方法，线程安全.
  * <br>
- * 3、附带了一个[获取唯一时间字符串]的方法, 参见 {@link #getUniqueDatePattern_TimeMillis()}
+ * 3、附带了一个[获取唯一时间字符串]的方法, 参见 {@link #getUniqueDatePatternTimeMillis()}
  * <br>
  *  NO SONAR！
  * @author zollty 高效的算法保证
@@ -56,7 +56,7 @@ public class DateFormatUtils {
     /**
      * 自定义日期格式
      * 
-     * @param datePattern
+     * @param datePattern date pattern
      */
     public DateFormatUtils(final String datePattern) {
         this.defaultDatePattern = datePattern;
@@ -281,7 +281,7 @@ public class DateFormatUtils {
     }
 
     /**
-     * @param spitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
+     * @param dateSpitChar 指定分割年月日的字符，常用的分隔符有"-"、"/"
      */
     public static String format_yyyy_MM_dd_HH_mm_ss_SSS(long date, String dateSpitChar) {
         DateInfo dinfo = uniformat(date);
@@ -412,7 +412,7 @@ public class DateFormatUtils {
     }
 
     private static long lastTime = System.currentTimeMillis();
-    private static byte[] synO4GUDT = new byte[0];
+    private static final byte[] synO4GUDT = new byte[0];
 
     /**
      * 产生一个独一无二的long类型的TimeMillis，长度为13，按时间先后 依赖于系统时间的不可重复性（系统时间可以延后，但是不能提前）。
@@ -492,7 +492,7 @@ public class DateFormatUtils {
 
     ///////////////////////////////////////////////////////////////////////////////
     // 缓存calendar对象，但是使用时要线程同步，实测比每次都new calendar效率要高很多
-    private static Calendar calendar = Calendar.getInstance();
+    private static final Calendar calendar = Calendar.getInstance();
 
     protected static DateInfo uniformat(long dateTime) {
         DateInfo dinfo = new DateInfo();

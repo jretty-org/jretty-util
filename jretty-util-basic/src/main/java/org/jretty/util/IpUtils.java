@@ -18,15 +18,15 @@ import org.jretty.log.Logger;
 
 /**
  * IP utils
- * 
+ *
  * @author zollty  高效的算法保证
- * @since 2016-7-28
  * @see InetAddressHelper
+ * @since 2016-7-28
  */
 public class IpUtils {
-    
+
     private static final Logger LOG = LogFactory.getLogger(IpUtils.class);
-    
+
     /**
      * 智能分析，精确获取本机网卡，并转换成十六进制
      */
@@ -34,7 +34,7 @@ public class IpUtils {
         byte[] mac = getLocalMac();
         return toHexMac(mac);
     }
-    
+
     /**
      * 智能分析，精确获取本机网卡
      */
@@ -72,16 +72,18 @@ public class IpUtils {
         }
         return mac;
     }
-    
+
     /**
      * 智能分析，精确获取本机Local ip（内网）地址
      */
     public static String getLocalIP() {
         String ip = getDefaultHostAddress();
         if (ip != null) {
-            if (!"127.0.0.1".equals(ip)) { // 配置了host ip （/etc/hosts文件中）
+            // 配置了host ip （/etc/hosts文件中）
+            if (!"127.0.0.1".equals(ip)) {
                 return ip;
-            } else { // 没有配置 host ip
+            } else {
+                // 没有配置 host ip
                 ip = null;
             }
         } else {
@@ -102,10 +104,11 @@ public class IpUtils {
 
         return ip;
     }
-    
+
     /**
      * 获取本机Local ip（内网）地址，并自动区分Windows还是linux操作系统<br>
-     * @see {@link #findRealIP()}
+     *
+     * @see #findRealIP()
      */
     static String getLocalIP0() {
         InetAddress ip = null;
@@ -120,14 +123,14 @@ public class IpUtils {
         }
         return null != ip ? ip.getHostAddress() : null;
     }
-    
+
     /**
      * 智能分析，精准获取本机IP地址（针对linux/unix系统）
      */
     static InetAddress findRealIP() {
         InetAddress ip = null;
         try {
-            Enumeration<NetworkInterface> netInterfaces = 
+            Enumeration<NetworkInterface> netInterfaces =
                     (Enumeration<NetworkInterface>) NetworkInterface.getNetworkInterfaces();
             boolean bFindIP = false;
             Map<NetworkInterface, InetAddress> map = new HashMap<NetworkInterface, InetAddress>();
@@ -136,7 +139,8 @@ public class IpUtils {
                     break;
                 }
                 NetworkInterface ni = (NetworkInterface) netInterfaces.nextElement();
-                if (!ni.isUp()) { // 跳过没有启用的网卡
+                // 跳过没有启用的网卡
+                if (!ni.isUp()) {
                     continue;
                 }
                 // 遍历所有ip
@@ -144,17 +148,16 @@ public class IpUtils {
                 InetAddress tmp;
                 while (ips.hasMoreElements()) {
                     tmp = (InetAddress) ips.nextElement();
-                    if (!tmp.isLoopbackAddress() // 127.开头的都是lookback地址
-                            && tmp.getHostAddress().indexOf(":") == -1) {
+                    // 127.开头的都是lookback地址
+                    if (!tmp.isLoopbackAddress() && !tmp.getHostAddress().contains(":")) {
                         ip = tmp;
-                        
-                        if(LOG.isDebugEnabled()) {
-                            LOG.debug(ni + " - " + ni.getMTU() + 
-                                    " isVirtual: " + ni.isVirtual() + 
-                                    " Multicast: " + ni.supportsMulticast() + 
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(ni + " - " + ni.getMTU() +
+                                    " isVirtual: " + ni.isVirtual() +
+                                    " Multicast: " + ni.supportsMulticast() +
                                     " Parent: " + ni.getParent());
-                            LOG.debug(ni.getName() + 
-                                    " mac: " + toHexMac(ni.getHardwareAddress()) + 
+                            LOG.debug(ni.getName() +
+                                    " mac: " + toHexMac(ni.getHardwareAddress()) +
                                     " -ip- " + ip.getHostAddress());
                         }
 
@@ -181,9 +184,9 @@ public class IpUtils {
                 if (two.size() == 1) {
                     ip = map.get(two.iterator().next());
 
-                } else if (two.size() == 0) {
+                } else if (two.isEmpty()) {
                     two = findByMtu(org);
-                    if (two.size() == 0) {
+                    if (two.isEmpty()) {
                         ip = map.get(org.iterator().next());
                     } else if (two.size() == 1) {
                         ip = map.get(two.iterator().next());
@@ -191,8 +194,9 @@ public class IpUtils {
                         ip = map.get(two.iterator().next());
                     }
                 } else {
-                    Set<NetworkInterface> three = findByMtu(two); // 再次过滤
-                    if (three.size() == 0) {
+                    // 再次过滤
+                    Set<NetworkInterface> three = findByMtu(two);
+                    if (three.isEmpty()) {
                         ip = map.get(two.iterator().next());
                     } else if (three.size() == 1) {
                         ip = map.get(three.iterator().next());
@@ -218,7 +222,7 @@ public class IpUtils {
      * // 172.16/12 prefix
      * // 192.168/16 prefix
      * 但是，这个方法扩大了这个定义的范围，只要是xxx.xxx.xxx.xxx（xxx为数字）格式的，都是本机IP
-     * 
+     *
      * @return String IP地址，比如 172.16.14.160,或者null
      */
     public static String getLocalIP(String networkInterfaceName) {
@@ -230,7 +234,7 @@ public class IpUtils {
             }
             // 如果是Linux操作系统
             else {
-                Enumeration<NetworkInterface> netInterfaces = 
+                Enumeration<NetworkInterface> netInterfaces =
                         (Enumeration<NetworkInterface>) NetworkInterface.getNetworkInterfaces();
                 boolean bFindIP = false;
                 while (netInterfaces.hasMoreElements()) {
@@ -247,8 +251,8 @@ public class IpUtils {
                     InetAddress tmp;
                     while (ips.hasMoreElements()) {
                         tmp = (InetAddress) ips.nextElement();
-                        if (!tmp.isLoopbackAddress() // 127.开头的都是lookback地址
-                                && tmp.getHostAddress().indexOf(":") == -1) {
+                        // 127.开头的都是lookback地址
+                        if (!tmp.isLoopbackAddress() && !tmp.getHostAddress().contains(":")) {
                             ip = tmp;
                             bFindIP = true;
                             break;
@@ -267,10 +271,11 @@ public class IpUtils {
         }
         return sIP;
     }
-    
+
     /**
      * 根据Socket方式，获取本机出口IP<br>
      * 可以使用域名服务器作为测试，如果能连外网，可以使用：getSocketIp("1.1.1.1", 80)
+     *
      * @param host 远程通信地址
      * @param port 通信端口
      * @return 本机IP
@@ -295,9 +300,10 @@ public class IpUtils {
             }
         }
     }
-    
+
     /**
      * 获取HostName，并转换成大写 (toUpperCase)。此方法靠谱。
+     *
      * @return String HostName (toUpperCase) or null
      */
     public static String getHostName() {
@@ -322,7 +328,7 @@ public class IpUtils {
         // 转换成大写，以避免大小写问题
         return hostName != null ? hostName.toUpperCase() : null;
     }
-    
+
     /**
      * 获取本机hostname对应的IP地址（hostname映射的IP地址可以在hosts文件中配置） <br>
      * 如果没有配置hostname，则以“localhost”为默认hostname。<br>
@@ -338,9 +344,10 @@ public class IpUtils {
             return null;
         }
     }
-    
+
     /**
      * 可以读取在hosts文件中映射的IP地址，和ping hostName的结果相同
+     *
      * @param hostName host名称，忽略大小写
      * @return host对应的IP地址
      */
@@ -351,15 +358,16 @@ public class IpUtils {
         }
         return null;
     }
-    
+
     /**
      * check if on the WINDOWS system.
+     *
      * @return true if on windows system.
      */
     static boolean isWindowsOS() {
         boolean isWindowsOS = false;
         String osName = System.getProperty("os.name");
-        if (osName.toLowerCase().indexOf("windows") > -1) {
+        if (osName.toLowerCase().contains("windows")) {
             isWindowsOS = true;
         }
         return isWindowsOS;
@@ -374,7 +382,7 @@ public class IpUtils {
         }
         return sel2;
     }
-    
+
     private static Set<NetworkInterface> findByMtu(Set<NetworkInterface> sel) throws SocketException {
         Set<NetworkInterface> sel2 = new HashSet<NetworkInterface>();
         for (NetworkInterface ni : sel) {
@@ -384,12 +392,12 @@ public class IpUtils {
         }
         return sel2;
     }
-    
+
     private static String toHexMac(byte[] mac) {
         if (mac == null) {
             return null;
         }
-        StringBuffer sb = new StringBuffer("");
+        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < mac.length; i++) {
             if (i != 0) {
                 sb.append(":");
@@ -398,12 +406,12 @@ public class IpUtils {
             int temp = mac[i] & 0xff;
             String str = Integer.toHexString(temp);
             if (str.length() == 1) {
-                sb.append("0" + str);
+                sb.append("0").append(str);
             } else {
                 sb.append(str);
             }
         }
         return sb.toString().toUpperCase();
     }
-    
+
 }

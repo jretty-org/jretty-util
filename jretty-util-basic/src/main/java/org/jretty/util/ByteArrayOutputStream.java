@@ -49,7 +49,7 @@ import org.jretty.util.support.ClosedInputStream;
  * the contents don't have to be copied to the new buffer. This class is
  * designed to behave exactly like the original. The only exception is the
  * deprecated toString(int) method that has been ignored.
- *
+ * @author zollty and the other original authors
  */
 public class ByteArrayOutputStream extends OutputStream {
 
@@ -382,7 +382,7 @@ public class ByteArrayOutputStream extends OutputStream {
         if (remaining == 0) {
             return EMPTY_BYTE_ARRAY;
         }
-        final byte newbuf[] = new byte[remaining];
+        final byte[] newbuf = new byte[remaining];
         int pos = 0;
         for (final byte[] buf : buffers) {
             final int c = Math.min(buf.length, remaining);
