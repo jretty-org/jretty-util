@@ -28,14 +28,14 @@
 
   <modules>
     <module>jretty-util-basic</module>
-    <module>jretty-util-json</module>
+    <!--<module>jretty-util-json</module>
     <module>jretty-util-zip</module>
     <module>jretty-util-match</module>
     <module>jretty-util-resource</module>
     <module>jretty-util-msg</module>
     <module>jretty-util-order</module>
     <module>jretty-util-web</module>
-    <module>jretty-util-ext</module>
+    <module>jretty-util-ext</module>-->
   </modules>
 
   <!-- CONST -->
