@@ -18,6 +18,7 @@ import static org.jretty.exception.ExceptionTestTools.UNDER_UNKNOWN_EXCEPTION;
 
 import java.io.IOException;
 
+import org.jretty.log.LOG;
 import org.jretty.util.NestedCheckedException;
 import org.jretty.util.NestedIOException;
 import org.junit.Assert;
@@ -30,13 +31,23 @@ import org.junit.Test;
 public class NestedCheckedExceptionTest {
     
 
-    @Test
+     @Test
     public void testGetCause() {
         try {
             throw new NestedCheckedException(new NestedIOException(new IOException(CONTROLLER_ALERT)));
         }
         catch (Exception ne) {
-            Assert.assertEquals(IOException.class, ne.getCause().getClass());
+            Assert.assertNull(ne.getCause());
+        }
+    }
+
+    @Test
+    public void testGetOrigException() {
+        try {
+            throw new NestedCheckedException(new NestedIOException(new IOException(CONTROLLER_ALERT)));
+        }
+        catch (NestedCheckedException ne) {
+            Assert.assertEquals(IOException.class, ne.getOrigException().getClass());
         }
     }
     

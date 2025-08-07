@@ -1,4 +1,4 @@
-jretty-core-all/
+tmp-jretty-core-all/
 .idea
 # ----------java---------
 *.class

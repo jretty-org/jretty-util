@@ -98,18 +98,24 @@ public class NestedCheckedException extends BasicCheckedException
     public String toString() {
         return delegate.toString();
     }
-    
-    /**
-     * 获取最原始的那个异常对象
-     */
-    @Override
-    public Throwable getCause() {
-        return delegate.getCause();
-    }
-    
+
     @Override
     public NestedExceptionDelegate getDelegate() {
         return delegate;
     }
+    
+    /**
+     * 获取最原始的那个异常对象，Nested Exception API 默认屏蔽掉此函数的结果
+     * 如果要获取原始异常，请调用 {@link #getOrigException()}
+     */
+    @Override
+    public Throwable getCause() {
+        // return delegate.getCause();
+        return null;
+    }
 
+    @Override
+    public Throwable getOrigException() {
+        return delegate.getOrigException();
+    }
 }

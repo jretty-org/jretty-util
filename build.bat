@@ -4,8 +4,8 @@ setlocal
 echo.
 call java -version
 echo.
-SET JAVA_HOME=D:\__SYNC1\Softwares\Java\jdk1.7.0_79
-set settings=D:\__SYNC0\00WORK\ide-config\settings-local.xml
+SET JAVA_HOME=D:\__SYNC0\soft-portable\Java\jdk1.8.0_152
+set settings=D:\__SYNC3\BaiduSyncdisk\10-WORK\ide-config\settings-local.xml
 echo ------------------------- maven info -------------------------------
 call mvn -v
 
@@ -35,13 +35,13 @@ if [%1]==[deploy] goto DEPLOY
 
 :: add "-Pjretty-doc" to generate java docs
 echo ------------------------- starting to install -------------------------
-call mvn clean install -Pjretty-release --settings %settings%
+call mvn clean install -Pjretty-doc --settings %settings%
 
 goto EOF
 
 :DEPLOY
 echo ------------------------- starting to deploy -------------------------
-call mvn clean deploy -Pjretty-release -Plocal-deploy --settings %settings%
+call mvn clean deploy -DaltDeploymentRepository=local.git.repo::default::file:///D:/__SYNC2/git/repository --settings %settings%
 
 goto EOF
 

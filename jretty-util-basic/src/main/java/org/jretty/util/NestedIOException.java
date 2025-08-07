@@ -136,6 +136,7 @@ public class NestedIOException extends IOException
     /**
      * 重造一个原始的、包含堆栈信息的IOException
      */
+    @Override
     public IOException getOrigException() {
         if (null != exception) {
             if (NestedIOException.class.isInstance(exception)) {
@@ -158,9 +159,9 @@ public class NestedIOException extends IOException
      */
     @Override
     public Throwable getCause() {
-        return delegate.getCause();
+//        return delegate.getCause();
+        return null;
     }
-
     
     @Override
     public NestedExceptionDelegate getDelegate() {

@@ -25,4 +25,8 @@ public interface ExceptionDelegateSupport {
      */
     NestedExceptionDelegate getDelegate();
 
+    /**
+     * 获取原始异常，使用 delegate.getOrigException()，替代JDK的getCause()
+     */
+    Throwable getOrigException();
 }

@@ -29,8 +29,8 @@ import org.jretty.util.StringUtils;
 public class NestedExceptionDelegate implements Serializable {
     
     private static final long serialVersionUID = -2100639812838514912L;
-    public static final String MSG_SPLIT = " |- ";
-    public static final String CAUSED_BY = "\nCaused by: ";
+    public static final String MSG_SPLIT = " --> ";
+    public static final String CAUSED_BY = " --> Caused by: \n|- ";
     public static final String EXCEPTION_PRIFIX = "org.jretty.NestedException: ";
     
     private final Object errorMsg;
@@ -138,12 +138,12 @@ public class NestedExceptionDelegate implements Serializable {
         return exception.getClass().getName()+": ";
     }
     
-    public Throwable getCause() {
+    public Throwable getOrigException() {
         if (null == exception) {
             return null;
         }
         if (ExceptionDelegateSupport.class.isInstance(exception)) {
-            return ((ExceptionDelegateSupport) exception).getDelegate().getCause();
+            return ((ExceptionDelegateSupport) exception).getDelegate().getOrigException();
         }
         return exception;
     }

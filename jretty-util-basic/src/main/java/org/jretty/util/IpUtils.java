@@ -26,6 +26,30 @@ import org.jretty.log.Logger;
 public class IpUtils {
 
     private static final Logger LOG = LogFactory.getLogger(IpUtils.class);
+    private String cachedHostName;
+    private String cachedLocalIP;
+    private static final IpUtils INSTANCE = new IpUtils();
+
+    public IpUtils() {
+        cachedHostName = getHostName();
+        cachedLocalIP = getLocalIP();
+    }
+
+    public static String getCachedHostName() {
+        return INSTANCE.cachedHostName;
+    }
+
+    public static void setCachedHostName(String cachedHostName) {
+        INSTANCE.cachedHostName = cachedHostName;
+    }
+
+    public static String getCachedLocalIP() {
+        return INSTANCE.cachedLocalIP;
+    }
+
+    public static void setCachedLocalIP(String cachedLocalIP) {
+        INSTANCE.cachedLocalIP = cachedLocalIP;
+    }
 
     /**
      * 智能分析，精确获取本机网卡，并转换成十六进制
