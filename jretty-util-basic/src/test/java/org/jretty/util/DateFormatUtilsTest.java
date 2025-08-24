@@ -11,7 +11,10 @@ public class DateFormatUtilsTest {
     public static void main(String[] args) throws Exception {
         final Date date = new Date();
         // 效率最高，且高得多，而且线程安全
+        System.out.println(DateFormatUtils.formatNowTime());
         System.out.println(DateFormatUtils.format_yyyy_MM_dd_HH_mm_ss(date));
+        // 等价于上面，规避驼峰命名问题
+        System.out.println(DateFormatUtils.format(date, DateFormatUtils.YYYY_MM_DD_HH_MM_SS));
     }
     
     public static void main1(String[] args) throws Exception {
@@ -19,9 +22,9 @@ public class DateFormatUtilsTest {
 
         // 效率最高，且高得多，而且线程安全
         System.out.println(DateFormatUtils.format_yyyy_MM_dd_HH_mm_ss(date));
-        
+
         // 效率最低
-        System.out.println(new SimpleDateFormat(DateFormatUtils.yyyy_MM_dd_HH_mm_ss).format(date));
+        System.out.println(new SimpleDateFormat(DateFormatUtils.YYYY_MM_DD_HH_MM_SS).format(date));
         
         System.out.println(new DateFormatUtils().format(date));
         
@@ -48,7 +51,7 @@ public class DateFormatUtilsTest {
             }
         }, "DateFormatUtils-01");
         
-        final SimpleDateFormat sformat = new SimpleDateFormat(DateFormatUtils.yyyy_MM_dd_HH_mm_ss);
+        final SimpleDateFormat sformat = new SimpleDateFormat(DateFormatUtils.YYYY_MM_DD_HH_MM_SS);
         TestTools.loopExecute(new LoopExecute() {
 
             @Override

@@ -38,20 +38,31 @@ public class DateFormatUtils {
 
     // 常用常量定义
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    public static final String yyyy_MM_dd = "yyyy-MM-dd";
-    public static final String yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
-    public static final String yyyy_MM_dd_HH_mm_ss_SSS = "yyyy-MM-dd HH:mm:ss,SSS";
-
-    public static final String dd_MM_yy = "dd-MM-yy";
-    public static final String dd_MM_yyyy = "dd-MM-yyyy";
-    public static final String dd_MM_yyyy_HH_mm = "dd-MM-yyyy HH:mm";
-    public static final String dd_MM_yyyy_HH_mm_ss = "dd-MM-yyyy HH:mm:ss";
-    public static final String dd_MM_yyyy_HH_mm_ss_SSS = "dd-MM-yyyy HH:mm:ss,SSS";
-
-    public static final String HH_mm_ss = "HH:mm:ss";
-    public static final String HH_mm_ss_SSS = "HH:mm:ss,SSS";
+//    public static final String yyyy_MM_dd = "yyyy-MM-dd";
+//    public static final String yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
+//    public static final String yyyy_MM_dd_HH_mm_ss_SSS = "yyyy-MM-dd HH:mm:ss,SSS";
+//
+//    public static final String dd_MM_yy = "dd-MM-yy";
+//    public static final String dd_MM_yyyy = "dd-MM-yyyy";
+//    public static final String dd_MM_yyyy_HH_mm = "dd-MM-yyyy HH:mm";
+//    public static final String dd_MM_yyyy_HH_mm_ss = "dd-MM-yyyy HH:mm:ss";
+//    public static final String dd_MM_yyyy_HH_mm_ss_SSS = "dd-MM-yyyy HH:mm:ss,SSS";
+//
+//    public static final String HH_mm_ss = "HH:mm:ss";
+//    public static final String HH_mm_ss_SSS = "HH:mm:ss,SSS";
 
     // 其他格式 可调用 format() 和 formatDate(Date) 方法 自行组装
+    public static final String YYYY_MM_DD = "yyyy-MM-dd";
+    public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+    public static final String YYYY_MM_DD_HH_MM_SS_SSS = "yyyy-MM-dd HH:mm:ss,SSS";
+
+    public static final String DD_MM_YY = "dd-MM-yy";
+    public static final String DD_MM_YYYY = "dd-MM-yyyy";
+    public static final String DD_MM_YYYY_HH_MM_SS = "dd-MM-yyyy HH:mm:ss";
+    public static final String DD_MM_YYYY_HH_MM_SS_SSS = "dd-MM-yyyy HH:mm:ss,SSS";
+
+    public static final String HH_MM_SS = "HH:mm:ss";
+    public static final String HH_MM_SS_SSS = "HH:mm:ss,SSS";
 
     /**
      * 自定义日期格式
@@ -76,7 +87,7 @@ public class DateFormatUtils {
      * <p>默认为：yyyy-MM-dd HH:mm:ss格式
      */
     public DateFormatUtils() {
-        this(yyyy_MM_dd_HH_mm_ss);
+        this(YYYY_MM_DD_HH_MM_SS);
     }
     
     private static volatile DateFormatUtils instance;
@@ -707,6 +718,30 @@ public class DateFormatUtils {
             sss = sss + Integer.toString(millis);
             return sss;
         }
+    }
+
+    public static String format(Date date, String dateFormat) {
+        switch (dateFormat) {
+            case YYYY_MM_DD:
+                return format_yyyy_MM_dd(date);
+            case YYYY_MM_DD_HH_MM_SS:
+                return format_yyyy_MM_dd_HH_mm_ss(date);
+            case YYYY_MM_DD_HH_MM_SS_SSS:
+                return format_yyyy_MM_dd_HH_mm_ss_SSS(date);
+            case DD_MM_YYYY:
+                return format_dd_MM_yyyy(date);
+            case DD_MM_YYYY_HH_MM_SS:
+                return format_dd_MM_yyyy_HH_mm_ss(date);
+            default:
+                return new DateFormatUtils(dateFormat).format(date);
+        }
+    }
+
+    /**
+     * 以“date=当前时间戳”，调用format_yyyy_MM_dd_HH_mm_ss(date);
+     */
+    public static String formatNowTime() {
+        return format_yyyy_MM_dd_HH_mm_ss(System.currentTimeMillis(), DateInfo.SEP_MS);
     }
 
 }

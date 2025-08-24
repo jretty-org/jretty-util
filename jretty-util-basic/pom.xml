@@ -23,7 +23,7 @@
   </parent>
   <artifactId>jretty-util-basic</artifactId>
   <packaging>jar</packaging>
-  <version>2.0.4</version>
+  <version>2.0.5</version>
   <name>jretty-util-basic</name>
   <description>A simple Java util's library. See the parent pom for more information.</description>
 
