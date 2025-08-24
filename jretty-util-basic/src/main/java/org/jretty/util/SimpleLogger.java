@@ -90,7 +90,7 @@ public class SimpleLogger {
                 sb.append(Const.STRING_EMPTY);
             }
         } else {
-            sb.append(DateFormatUtils.format_dd_MM_yyyy_HH_mm_ss(System.currentTimeMillis()));
+            sb.append(DateFormatUtils.format_dd_MM_yyyy_HH_mm_ss(System.currentTimeMillis(), DateFormatUtils.DateInfo.SEP_MS));
             if (showThread) {
                 sb.append(" [");
                 sb.append(Thread.currentThread().getName());
