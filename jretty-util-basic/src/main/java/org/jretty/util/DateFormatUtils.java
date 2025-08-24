@@ -176,10 +176,6 @@ public class DateFormatUtils {
     /**
      * format成 yyyy-MM-dd 格式
      */
-    public static String format_yyyy_MM_dd(long date) {
-        return format_yyyy_MM_dd(date, DateInfo.SEP_MS);
-    }
-    
     public static String format_yyyy_MM_dd(Date date) {
         return format_yyyy_MM_dd(date.getTime(), DateInfo.SEP_MS);
     }
@@ -199,10 +195,6 @@ public class DateFormatUtils {
         }
         sbu.append(dinfo.day);
         return sbu.toString();
-    }
-
-    public static String format_yyyy_MM_dd_HH_mm(long date) {
-        return format_yyyy_MM_dd_HH_mm_ss(date, DateInfo.SEP_MS);
     }
     
     public static String format_yyyy_MM_dd_HH_mm(Date date) {
@@ -239,10 +231,6 @@ public class DateFormatUtils {
         return sbu.toString();
     }
 
-    public static String format_yyyy_MM_dd_HH_mm_ss(long date) {
-        return format_yyyy_MM_dd_HH_mm_ss(date, DateInfo.SEP_MS);
-    }
-    
     public static String format_yyyy_MM_dd_HH_mm_ss(Date date) {
         return format_yyyy_MM_dd_HH_mm_ss(date.getTime(), DateInfo.SEP_MS);
     }
@@ -281,10 +269,6 @@ public class DateFormatUtils {
         sbu.append(dinfo.secs);
 
         return sbu.toString();
-    }
-
-    public static String format_yyyy_MM_dd_HH_mm_ss_SSS(long date) {
-        return format_yyyy_MM_dd_HH_mm_ss_SSS(date, DateInfo.SEP_MS);
     }
     
     public static String format_yyyy_MM_dd_HH_mm_ss_SSS(Date date) {
@@ -337,10 +321,6 @@ public class DateFormatUtils {
         return sbu.toString();
     }
 
-    public static String format_dd_MM_yyyy(long date) {
-        return format_dd_MM_yyyy(date, DateInfo.SEP_MS);
-    }
-    
     public static String format_dd_MM_yyyy(Date date) {
         return format_dd_MM_yyyy(date.getTime(), DateInfo.SEP_MS);
     }
@@ -364,10 +344,6 @@ public class DateFormatUtils {
 
     public static String format_dd_MM_yyyy_HH_mm_ss(Date date) {
         return format_dd_MM_yyyy_HH_mm_ss(date.getTime(), DateInfo.SEP_MS);
-    }
-    
-    public static String format_dd_MM_yyyy_HH_mm_ss(long date) {
-        return format_dd_MM_yyyy_HH_mm_ss(date, DateInfo.SEP_MS);
     }
 
     /**
